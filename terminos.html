@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Términos y Condiciones — Quiéndamas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap');
+
+        :root {
+            --verde: #2e7d32;
+            --verde-claro: #43a047;
+            --verde-fondo: #f1f8e9;
+            --verde-medio: #e8f5e9;
+            --texto: #1a1a1a;
+            --texto-suave: #555;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background-color: var(--verde-fondo);
+            color: var(--texto);
+            line-height: 1.7;
+        }
+
+        /* HEADER */
+        .header {
+            background: var(--verde);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50px; right: -50px;
+            width: 200px; height: 200px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -30px; left: -30px;
+            width: 150px; height: 150px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2em;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+        .header p {
+            font-size: 0.9em;
+            opacity: 0.85;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* NAVEGACIÓN */
+        .nav-btn {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background: white;
+            color: var(--verde);
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .nav-center { text-align: center; }
+
+        /* CONTENIDO */
+        .contenido {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* SECCIONES */
+        .seccion {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--verde-claro);
+        }
+
+        .seccion h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--verde);
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .seccion h3 {
+            color: var(--verde);
+            font-size: 1.05em;
+            margin: 20px 0 8px;
+            font-weight: 600;
+        }
+
+        .seccion p {
+            color: var(--texto-suave);
+            margin-bottom: 12px;
+            font-size: 0.95em;
+        }
+
+        .seccion ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .seccion ul li {
+            color: var(--texto-suave);
+            padding: 6px 0 6px 25px;
+            position: relative;
+            font-size: 0.95em;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .seccion ul li:last-child { border-bottom: none; }
+
+        .seccion ul li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--verde-claro);
+            font-weight: bold;
+        }
+
+        .seccion ul.prohibidos li::before {
+            content: '✗';
+            color: #e53935;
+        }
+
+        /* PASOS */
+        .pasos {
+            counter-reset: paso;
+            list-style: none;
+            padding: 0;
+        }
+        .pasos li {
+            counter-increment: paso;
+            padding: 12px 12px 12px 55px;
+            position: relative;
+            border-bottom: 1px solid #f0f0f0;
+            color: var(--texto-suave);
+            font-size: 0.95em;
+        }
+        .pasos li:last-child { border-bottom: none; }
+        .pasos li::before {
+            content: counter(paso);
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            background: var(--verde);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        /* HIGHLIGHT BOX */
+        .highlight {
+            background: var(--verde-medio);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin: 15px 0;
+            font-size: 0.9em;
+            color: var(--verde);
+            font-weight: 600;
+        }
+
+        /* CONTACTO */
+        .contacto-box {
+            background: var(--verde);
+            color: white;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .contacto-box h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+        }
+        .contacto-box p { opacity: 0.9; margin-bottom: 15px; font-size: 0.95em; }
+        .contacto-box a {
+            display: inline-block;
+            background: white;
+            color: var(--verde);
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 1em;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>⚖️ Términos y Condiciones</h1>
+        <p>Quiéndamas — Plataforma de subastas online para toda Argentina</p>
+    </div>
+
+    <div class="nav-center">
+        <a href="vidriera.html" class="nav-btn">← Volver a la vidriera</a>
+    </div>
+
+    <div class="contenido">
+
+        <!-- CÓMO FUNCIONA -->
+        <div class="seccion">
+            <h2>🏷️ ¿Cómo funciona Quiéndamas?</h2>
+            <p>Quiéndamas es una plataforma de subastas online donde cualquier persona puede publicar artículos y servicios para que otros usuarios oferten por ellos. Quien más oferte al cierre de la subasta, gana.</p>
+
+            <h3>Para comprar:</h3>
+            <ol class="pasos">
+                <li>Registrate gratuitamente con tu nombre, DNI, dirección y teléfono.</li>
+                <li>Explorá los artículos y servicios disponibles en la vidriera.</li>
+                <li>Ofertá en los que te interesen. Cada oferta sube $500 el precio actual.</li>
+                <li>Si sos el mayor ofertante cuando cierra la subasta, ¡ganás!</li>
+                <li>Abonás el 5% del precio final como comisión de la plataforma.</li>
+                <li>Una vez confirmado el pago, recibís los datos del vendedor para coordinar la entrega.</li>
+            </ol>
+
+            <h3>Para vender:</h3>
+            <ol class="pasos">
+                <li>Iniciá sesión y tocá el botón "Publicar".</li>
+                <li>Completá los datos del artículo o servicio: título, descripción, precio base, categoría, foto y fecha de cierre.</li>
+                <li>Tu publicación aparece en la vidriera y los usuarios comienzan a ofertar.</li>
+                <li>Al cierre, el ganador abona la comisión del 5% a la plataforma.</li>
+                <li>Confirmado el pago, los datos del comprador se liberan para que puedas contactarlo y coordinar la entrega.</li>
+            </ol>
+
+            <div class="highlight">
+                💡 La publicación es gratuita. Solo se cobra una comisión del 5% al comprador ganador sobre el precio final de la subasta.
+            </div>
+        </div>
+
+        <!-- COMISIONES -->
+        <div class="seccion">
+            <h2>💰 Comisiones y pagos</h2>
+            <p>El uso de la plataforma como vendedor es <strong>completamente gratuito</strong>. Solo se cobra una comisión al comprador ganador.</p>
+            <ul>
+                <li>Comisión: 5% del precio final de la subasta.</li>
+                <li>El monto exacto se calcula y muestra automáticamente al finalizar la subasta.</li>
+                <li>El pago se realiza por transferencia bancaria a la cuenta de Quiéndamas.</li>
+                <li>Una vez confirmado el pago, se liberan los datos de contacto del vendedor.</li>
+                <li>La comisión no es reembolsable una vez que los datos fueron entregados.</li>
+            </ul>
+
+            <div class="highlight">
+                📌 Datos para la transferencia:<br>
+                Titular: Laura Fernanda Arrieta — CBU: 3840200500000011572611 — Alias: qdm.uala
+            </div>
+        </div>
+
+        <!-- RESPONSABILIDADES -->
+        <div class="seccion">
+            <h2>🤝 Responsabilidades</h2>
+            <p>Quiéndamas actúa como plataforma intermediaria entre compradores y vendedores. No somos parte de la transacción comercial entre usuarios.</p>
+
+            <h3>El vendedor es responsable de:</h3>
+            <ul>
+                <li>Publicar información veraz y completa sobre el artículo o servicio.</li>
+                <li>Respetar el precio final acordado en la subasta.</li>
+                <li>Cumplir con la entrega del artículo o la prestación del servicio.</li>
+                <li>Coordinar la logística de entrega directamente con el comprador.</li>
+            </ul>
+
+            <h3>El comprador es responsable de:</h3>
+            <ul>
+                <li>Verificar las condiciones del artículo antes de ofertar.</li>
+                <li>Abonar la comisión del 5% si resulta ganador.</li>
+                <li>Coordinar la recepción del artículo o servicio con el vendedor.</li>
+            </ul>
+
+            <h3>Quiéndamas no se responsabiliza por:</h3>
+            <ul>
+                <li>El estado, calidad o autenticidad de los artículos publicados.</li>
+                <li>Incumplimientos entre compradores y vendedores.</li>
+                <li>La logística o costos de envío entre las partes.</li>
+                <li>Disputas posteriores a la entrega de datos de contacto.</li>
+            </ul>
+        </div>
+
+        <!-- ARTÍCULOS PERMITIDOS Y PROHIBIDOS -->
+        <div class="seccion">
+            <h2>📦 Artículos y servicios permitidos</h2>
+            <p>Podés publicar prácticamente cualquier artículo o servicio legal. Algunas categorías disponibles:</p>
+            <ul>
+                <li>Vehículos: autos, motos, bicicletas.</li>
+                <li>Tecnología: computadoras, celulares, audio y video.</li>
+                <li>Hogar: electrodomésticos, muebles, decoración.</li>
+                <li>Moda: ropa, calzado, accesorios, joyas y relojes.</li>
+                <li>Construcción, herramientas y materiales.</li>
+                <li>Antigüedades y coleccionables.</li>
+                <li>Vivero y jardín.</li>
+                <li>Servicios: belleza, peluquería, reparaciones del hogar, plomería, electricidad, tecnología, clases, diseño y servicios profesionales.</li>
+            </ul>
+
+            <h3>Está prohibido publicar:</h3>
+            <ul class="prohibidos">
+                <li>Armas de fuego, municiones o explosivos de cualquier tipo.</li>
+                <li>Animales vivos o productos derivados de especies protegidas.</li>
+                <li>Sustancias ilegales o controladas.</li>
+                <li>Medicamentos sin autorización de venta.</li>
+                <li>Artículos robados o de procedencia dudosa.</li>
+                <li>Material pornográfico o para adultos.</li>
+                <li>Artículos falsificados o que violen derechos de propiedad intelectual.</li>
+                <li>Cualquier artículo cuya venta esté prohibida por la legislación argentina.</li>
+            </ul>
+
+            <p style="margin-top:15px;">Quiéndamas se reserva el derecho de eliminar publicaciones que no cumplan estas condiciones y suspender las cuentas de los usuarios que las infrinjan.</p>
+        </div>
+
+        <!-- REGISTRO Y PRIVACIDAD -->
+        <div class="seccion">
+            <h2>🔒 Registro y privacidad</h2>
+            <p>Para usar la plataforma es obligatorio registrarse con datos reales. Los datos personales (nombre, DNI, dirección y teléfono) son necesarios para facilitar las transacciones entre usuarios.</p>
+            <ul>
+                <li>Los datos personales solo se comparten entre comprador y vendedor tras confirmar el pago de la comisión.</li>
+                <li>No compartimos tus datos con terceros con fines comerciales.</li>
+                <li>Podés solicitar la eliminación de tu cuenta escribiendo a nuestro correo de contacto.</li>
+                <li>Al registrarte aceptás recibir notificaciones relacionadas con tus subastas.</li>
+            </ul>
+        </div>
+
+        <!-- CONDICIONES GENERALES -->
+        <div class="seccion">
+            <h2>📋 Condiciones generales de uso</h2>
+            <ul>
+                <li>El uso de la plataforma implica la aceptación de estos términos y condiciones.</li>
+                <li>Quiéndamas se reserva el derecho de modificar estos términos con previo aviso.</li>
+                <li>Las subastas son vinculantes: si ganás, tenés la obligación de abonar la comisión.</li>
+                <li>Quiéndamas puede suspender cuentas que incumplan las normas de uso.</li>
+                <li>Cualquier disputa entre usuarios debe resolverse entre las partes. Quiéndamas puede mediar pero no tiene obligación legal de hacerlo.</li>
+                <li>La plataforma opera para toda la República Argentina.</li>
+            </ul>
+        </div>
+
+        <!-- CONTACTO -->
+        <div class="contacto-box">
+            <h2>📬 ¿Tenés dudas o consultas?</h2>
+            <p>Estamos para ayudarte. Escribinos y te respondemos a la brevedad.</p>
+            <a href="mailto:quiendamas.app@gmail.com">quiendamas.app@gmail.com</a>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        © 2026 Quiéndamas — Todos los derechos reservados.<br>
+        Última actualización: Mayo 2026
+    </div>
+
+</body>
+</html>
