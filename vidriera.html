@@ -477,7 +477,7 @@
                         const tarjeta = display.closest('.tarjeta');
                         const btnActual = tarjeta ? tarjeta.querySelector('button:last-child') : null;
                         if (btnActual && !btnActual.classList.contains('btn-ganador')) {
-                            btnActual.outerHTML = `<button class="btn-ganador" onclick="abrirModalPago(${precioFinal})">🏆 ¡Felicitaciones, ganaste!</button>`;
+                            btnActual.outerHTML = `<button class="btn-ganador" onclick="abrirModalPago(${art.precio_actual || art.precio_base}, '${art.id}', '${art.perfil_id}')">🏆 ¡Felicitaciones, ganaste!</button>`;
                         }
                     }
                     return;
