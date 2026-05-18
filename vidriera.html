@@ -202,7 +202,7 @@
             <div class="modal-aviso">
                 📌 Una vez realizada la transferencia, verificamos el pago y liberamos los datos del vendedor en un plazo de hasta 24hs hábiles. Si tenés alguna consulta escribinos a <b>quiendamas.app@gmail.com</b>
             </div>
-            <button class="btn-cerrar-modal" onclick="cerrarModal()">Cerrar</button>
+            <button class="btn-oferta" style="background:#1565c0; margin-bottom:10px;" onclick="verDatosVendedor(articuloIdActual, perfilIdActual)">📋 Ver datos del vendedor</button> <button class="btn-cerrar-modal" onclick="cerrarModal()">Cerrar</button>
         </div>
     </div>
 
@@ -542,12 +542,16 @@
 
 
         // MODAL DE PAGO
-        function abrirModalPago(precioFinal) {
-            const comision = Math.round(precioFinal * 0.05);
-            document.getElementById('modal-monto-display').innerText = '$' + comision.toLocaleString('es-AR');
-            document.getElementById('modal-ganador').classList.add('activo');
-        }
+      let articuloIdActual = null;
+let perfilIdActual = null;
 
+function abrirModalPago(precioFinal, articuloId, perfilId) {
+    articuloIdActual = articuloId;
+    perfilIdActual = perfilId;
+    const comision = Math.round(precioFinal * 0.05);
+    document.getElementById('modal-monto-display').innerText = '$' + comision.toLocaleString('es-AR');
+    document.getElementById('modal-ganador').classList.add('activo');
+}
         function cerrarModal() {
             document.getElementById('modal-ganador').classList.remove('activo');
         }
