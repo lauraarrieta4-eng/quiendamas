@@ -202,7 +202,7 @@
             <div class="modal-aviso">
                 📌 Una vez realizada la transferencia, verificamos el pago y liberamos los datos del vendedor en un plazo de hasta 24hs hábiles. Si tenés alguna consulta escribinos a <b>quiendamas.app@gmail.com</b>
             </div>
-            <button class="btn-oferta" style="background:#1565c0; margin-bottom:10px;" onclick="verDatosVendedor(articuloIdActual, perfilIdActual)">📋 Ver datos del vendedor</button> <button class="btn-cerrar-modal" onclick="cerrarModal()">Cerrar</button>
+            <button class="btn-cerrar-modal" onclick="cerrarModal()">Cerrar</button>
         </div>
     </div>
 
@@ -392,9 +392,52 @@
                 const lista = document.getElementById('articulos-lista');
                 lista.innerHTML = articulos.length ? "" : "<div class='sin-resultados'>No publicaste ningún artículo todavía.</div>";
 
-                articulos.forEach(art => renderTarjeta(art, lista, true));
+                for (const art of articulos) {
+                    const div = document.createElement('div');
+                    div.className = 'tarjeta';
+                    div.style.border = "2px solid #43a047";
+
+                    const yaTermino = art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
+                    const tieneGanador = art.ganador_id && yaTermino;
+                    const pagoConfirmado = art.pago_confirmado;
+
+                    let botonComprador = '';
+                    if (tieneGanador && pagoConfirmado) {
+                        botonComprador = `<button class="btn-oferta" style="background:#1565c0; margin-top:8px;" onclick="verDatosComprador('${art.ganador_id}')">👤 Ver datos del comprador</button>`;
+                    } else if (tieneGanador && !pagoConfirmado) {
+                        botonComprador = `<button class="btn-oferta" style="background:#f57f17; margin-top:8px;" disabled>⏳ Esperando pago del comprador</button>`;
+                    }
+
+                    div.innerHTML = `
+                        <span class="tag-cat">${art.categoria || 'Otros'}</span>
+                        <img src="${art.foto_url || ''}" class="foto-art">
+                        <div class="titulo">${art.Titulo} (Tuya)</div>
+                        <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
+                        <div class="precio">$<span id="precio-${art.id}">${art.precio_actual || art.precio_base}</span></div>
+                        <div class="reloj" id="reloj-${art.id}">⏳ Cargando...</div>
+                        <button class="btn-oferta" style="background:#666;" disabled>Tu propia publicación</button>
+                        ${botonComprador}
+                    `;
+                    lista.appendChild(div);
+                    iniciarReloj(art.id, art.finaliza_en);
+                }
             } catch (e) {
                 console.error(e);
+            }
+        }
+
+        // VER DATOS DEL COMPRADOR
+        async function verDatosComprador(ganadorId) {
+            const { data: perfil } = await _supabase
+                .from('perfiles')
+                .select('nombre_completo, telefono, direccion')
+                .eq('id', ganadorId)
+                .maybeSingle();
+
+            if (perfil) {
+                alert(`👤 Datos del comprador:\n\nNombre: ${perfil.nombre_completo}\nTeléfono: ${perfil.telefono}\nDirección: ${perfil.direccion}`);
+            } else {
+                alert('No se pudieron obtener los datos del comprador. Verificá que el pago haya sido confirmado.');
             }
         }
 
@@ -477,7 +520,7 @@
                         const tarjeta = display.closest('.tarjeta');
                         const btnActual = tarjeta ? tarjeta.querySelector('button:last-child') : null;
                         if (btnActual && !btnActual.classList.contains('btn-ganador')) {
-                            btnActual.outerHTML = `<button class="btn-ganador" onclick="abrirModalPago(${art.precio_actual || art.precio_base}, '${art.id}', '${art.perfil_id}')">🏆 ¡Felicitaciones, ganaste!</button>`;
+                            btnActual.outerHTML = `<button class="btn-ganador" onclick="abrirModalPago(${precioFinal})">🏆 ¡Felicitaciones, ganaste!</button>`;
                         }
                     }
                     return;
@@ -542,16 +585,12 @@
 
 
         // MODAL DE PAGO
-      let articuloIdActual = null;
-let perfilIdActual = null;
+        function abrirModalPago(precioFinal) {
+            const comision = Math.round(precioFinal * 0.05);
+            document.getElementById('modal-monto-display').innerText = '$' + comision.toLocaleString('es-AR');
+            document.getElementById('modal-ganador').classList.add('activo');
+        }
 
-function abrirModalPago(precioFinal, articuloId, perfilId) {
-    articuloIdActual = articuloId;
-    perfilIdActual = perfilId;
-    const comision = Math.round(precioFinal * 0.05);
-    document.getElementById('modal-monto-display').innerText = '$' + comision.toLocaleString('es-AR');
-    document.getElementById('modal-ganador').classList.add('activo');
-}
         function cerrarModal() {
             document.getElementById('modal-ganador').classList.remove('activo');
         }
@@ -589,4 +628,4 @@ function abrirModalPago(precioFinal, articuloId, perfilId) {
 </body>
 </html>
 
-   
+    
