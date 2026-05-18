@@ -359,7 +359,7 @@
             if (esMia) {
                 boton = `<button class="btn-oferta" style="background:#666;" disabled>Tu propia publicación</button>`;
             } else if (soyGanador && pagoConfirmado) {
-                boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
+                boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
             } else if (soyGanador && !pagoConfirmado) {
                 boton = `<button class="btn-ganador" onclick="abrirModalPago(${art.precio_actual || art.precio_base})">🏆 ¡Felicitaciones, ganaste!</button>`;
             } else if (yaTermino) {
@@ -504,6 +504,13 @@
                 return;
             }
 
+            // Verificamos que la subasta no haya terminado
+            const { data: art } = await _supabase.from('articulos').select('finaliza_en').eq('id', id).maybeSingle();
+            if (art && new Date(art.finaliza_en).getTime() < Date.now()) {
+                alert("🛑 Esta subasta ya terminó, no podés ofertar.");
+                return;
+            }
+
             const span = document.getElementById(`precio-${id}`);
             const nuevo = parseFloat(span.innerText) + 500;
 
@@ -546,7 +553,19 @@
         }
 
         // VER DATOS DEL VENDEDOR (solo si pago_confirmado = true)
-        async function verDatosVendedor(perfilId) {
+        async function verDatosVendedor(articuloId, perfilId) {
+            // Verificamos si el pago fue confirmado
+            const { data: art } = await _supabase
+                .from('articulos')
+                .select('pago_confirmado')
+                .eq('id', articuloId)
+                .maybeSingle();
+
+            if (!art || !art.pago_confirmado) {
+                alert("⏳ Tu pago todavía no fue confirmado. Una vez verificado, los datos del vendedor estarán disponibles. Consultas: quiendamas.app@gmail.com");
+                return;
+            }
+
             const { data: perfil } = await _supabase
                 .from('perfiles')
                 .select('nombre_completo, telefono, direccion')
@@ -565,3 +584,4 @@
     </script>
 </body>
 </html>
+
