@@ -145,8 +145,8 @@
                     .from('fotos_subastas')
                     .getPublicUrl(nombreFoto);
 
-                // Ajuste de zona horaria: sumamos 3 horas para compensar UTC vs Argentina
-                const fechaCorregida = new Date(new Date(fecha).getTime() + 3 * 60 * 60 * 1000).toISOString();
+                
+                const fechaCorregida = new Date(fecha).toISOString();
 
                 const { error: errorTabla } = await _supabase.from('articulos').insert([{ 
                     "Titulo": titulo, 
