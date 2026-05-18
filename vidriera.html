@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <title>Vidriera Quiéndamas</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <style>
+        body { 
+            font-family: sans-serif; 
+            background-color: #f1f8e9; 
+            padding: 10px; 
+            margin: 0; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        h1 { color: #2e7d32; text-align: center; font-size: 1.5rem; }
+        
+        .barra-usuario { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: #e8f5e9; 
+            padding: 10px; 
+            margin-bottom: 10px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .barra-interacciones {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 5px;
+        }
+        .btn-interaccion {
+            background: #ffffff;
+            border: 1px solid #43a047;
+            color: #43a047;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.85em;
+            cursor: pointer;
+            flex: 1;
+            max-width: 150px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .btn-interaccion:hover {
+            background: #e8f5e9;
+        }
+
+        /* BUSCADOR */
+        .barra-busqueda {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .barra-busqueda input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #2e7d32;
+            border-radius: 20px;
+            font-size: 0.95em;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .barra-busqueda input:focus {
+            border-color: #43a047;
+            box-shadow: 0 0 0 3px rgba(67,160,71,0.15);
+        }
+        .barra-busqueda button {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        .barra-busqueda button:hover {
+            background: #43a047;
+        }
+
+        .filtros { 
+            display: flex; 
+            flex-wrap: nowrap; 
+            overflow-x: auto; 
+            gap: 8px; 
+            padding: 10px 5px; 
+            margin-bottom: 20px;
+            -webkit-overflow-scrolling: touch; 
+        }
+        .filtros::-webkit-scrollbar { display: none; } 
+
+        .btn-filtro { 
+            background: white; 
+            border: 2px solid #2e7d32; 
+            color: #2e7d32; 
+            padding: 8px 15px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 0.85em; 
+            white-space: nowrap; 
+        }
+        .btn-filtro:hover { background: #2e7d32; color: white; }
+        
+        .contenedor { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 15px; 
+            justify-items: center; 
+        }
+        
+        .tarjeta { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 15px; 
+            width: 90%; 
+            max-width: 320px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+            position: relative; 
+            display: flex; 
+            flex-direction: column; 
+        }
+
+        .tag-cat { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9); font-size: 0.7em; padding: 3px 8px; border-radius: 10px; color: #2e7d32; font-weight: bold; }
+        .foto-art { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+        .titulo { font-size: 1.1em; font-weight: bold; color: #1b5e20; }
+        .descripcion { font-size: 0.85em; color: #555; margin: 10px 0; min-height: 40px; line-height: 1.4; }
+        .precio { font-size: 1.5em; color: #2e7d32; margin: 10px 0; font-weight: bold; }
+        .reloj { font-size: 0.85em; font-weight: bold; color: #d32f2f; background: #ffeaee; padding: 8px; border-radius: 6px; text-align: center; margin-bottom: 10px; }
+        .btn-oferta { background-color: #43a047; color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+        
+        .logo-contenedor img { width: 130px; border-radius: 50%; }
+
+
+        .sin-resultados {
+            text-align: center;
+            width: 100%;
+            color: #666;
+            padding: 30px;
+            font-size: 1em;
+        }
+
+        /* MODAL GANADOR */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.activo { display: flex; }
+        .modal-box {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 360px;
+            width: 90%;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .modal-box h2 { color: #2e7d32; margin-top: 0; font-size: 1.4em; }
+        .modal-monto { font-size: 2em; font-weight: bold; color: #1b5e20; margin: 10px 0; }
+        .modal-datos { background: #f1f8e9; border-radius: 10px; padding: 15px; margin: 15px 0; text-align: left; font-size: 0.9em; line-height: 1.8; }
+        .modal-datos b { color: #2e7d32; }
+        .modal-aviso { font-size: 0.8em; color: #888; margin-top: 10px; line-height: 1.5; }
+        .btn-cerrar-modal { background: #ccc; color: #333; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 0.95em; }
+        .btn-cerrar-modal:hover { background: #bbb; }
+        .btn-ganador { background: linear-gradient(135deg, #f9a825, #f57f17); color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+
+    </style>
+</head>
+<body>
+
+    <!-- MODAL GANADOR -->
+    <div class="modal-overlay" id="modal-ganador">
+        <div class="modal-box">
+            <div style="font-size:3em;">🏆</div>
+            <h2>¡Felicitaciones, ganaste la subasta!</h2>
+            <p style="color:#555; font-size:0.95em;">Para poder ponerte en contacto con el vendedor y coordinar la entrega, necesitás abonar la comisión de la plataforma, que es el <b>5% del precio final</b>:</p>
+            <div class="modal-monto" id="modal-monto-display">$0</div>
+            <div class="modal-datos">
+                <b>Titular:</b> Laura Fernanda Arrieta<br>
+                <b>CBU:</b> 3840200500000011572611<br>
+                <b>Alias:</b> qdm.uala<br>
+                <b>Billetera:</b> Ualá
+            </div>
+            <div class="modal-aviso">
+                📌 Una vez realizada la transferencia, verificamos el pago y liberamos los datos del vendedor en un plazo de hasta 24hs hábiles. Si tenés alguna consulta escribinos a <b>quiendamas.app@gmail.com</b>
+            </div>
+            <button class="btn-cerrar-modal" onclick="cerrarModal()">Cerrar</button>
+        </div>
+    </div>
+
+    <div class="barra-usuario">
+        <div>
+            <span id="usuario-nombre" style="font-weight: bold; color: #2e7d32; font-size: 0.9em;">Cargando...</span>
+        </div>
+        <div style="display: flex; gap: 5px;">
+            <button onclick="window.location.href='index.html'" class="btn-filtro" style="background: #2e7d32; color: white; border: none; padding: 6px 12px;">➕ Publicar</button>
+            <button id="btn-sesion" onclick="gestionarSesion()" class="btn-filtro" style="padding: 6px 12px;">🔑 Ingresar</button>
+        </div>
+    </div>
+
+    <div class="barra-interacciones" id="bloque-interacciones" style="display: none;">
+        <button class="btn-interaccion" onclick="filtrarMisPublicaciones()">📝 Mis Pubs</button>
+        <button class="btn-interaccion" onclick="filtrarMisOfertas()">💰 Mis Ofertas</button>
+    </div>
+
+    <div class="logo-contenedor" style="text-align: center; margin-top: 5px;">
+        <img src="logo.jpg" alt="Logo Quiéndamas">
+    </div>
+
+    <!-- BUSCADOR -->
+    <div class="barra-busqueda">
+        <input type="text" id="input-busqueda" placeholder="🔍 Buscar artículo por título..." onkeydown="if(event.key==='Enter') buscarArticulos()">
+        <button onclick="buscarArticulos()">Buscar</button>
+    </div>
+    
+    <div class="filtros">
+        <button class="btn-filtro" onclick="cargarArticulos('Todos')">Todos</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Autos')">🚗 Autos</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Motos')">🏍️ Motos</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Computacion')">💻 Computación</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Celulares')">📱 Celulares</button>
+        <button class="btn-filtro" onclick="cargarArticulos('AudioVideo')">📺 Audio</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Electro')">🔌 Electro</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Moda')">👗 Moda</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Joyas')">⌚ Joyas</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Belleza')">💄 Belleza</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Construccion')">🏗️ Const.</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Antiguedades')">🏺 Antigüedades</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Vivero')">🌿 Vivero</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Hogar')">🏠 Hogar</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Otros')">📦 Otros</button>
+    </div>
+
+    <div id="articulos-lista" class="contenedor"></div>
+
+    <script>
+        let usuarioActualId = null;
+
+        // 1. REVISAR SESIÓN
+        async function revisarSesion() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            const btn = document.getElementById('btn-sesion');
+            const display = document.getElementById('usuario-nombre');
+            const bloqueInteracciones = document.getElementById('bloque-interacciones');
+
+            if (user) {
+                usuarioActualId = user.id;
+                const { data: perfil, error } = await _supabase.from('perfiles').select('nombre_completo').eq('id', user.id).maybeSingle();
+                
+                if (error) {
+                    console.error("Error trayendo perfil:", error);
+                }
+
+                display.innerText = "Hola, " + (perfil && perfil.nombre_completo ? perfil.nombre_completo : "Usuario");
+                btn.innerText = "🚪 Salir";
+                bloqueInteracciones.style.display = "flex"; 
+            } else {
+                usuarioActualId = null;
+                display.innerText = "Invitado";
+                btn.innerText = "🔑 Ingresar";
+                bloqueInteracciones.style.display = "none";
+            }
+        }
+
+        function gestionarSesion() {
+            const btn = document.getElementById('btn-sesion');
+            if (btn.innerText === "🚪 Salir") {
+                _supabase.auth.signOut().then(() => window.location.reload());
+            } else {
+                window.location.href = 'login.html';
+            }
+        }
+
+        // 2. BUSCAR POR TÍTULO
+        async function buscarArticulos() {
+            const termino = document.getElementById('input-busqueda').value.trim();
+            if (!termino) {
+                cargarArticulos('Todos');
+                return;
+            }
+
+            try {
+                const { data: articulos, error } = await _supabase
+                    .from('articulos')
+                    .select('*')
+                    .ilike('Titulo', `%${termino}%`);
+
+                if (error) throw error;
+
+                const lista = document.getElementById('articulos-lista');
+                lista.innerHTML = "";
+
+                if (articulos.length === 0) {
+                    lista.innerHTML = `<div class="sin-resultados">😕 No encontramos artículos con "<b>${termino}</b>"</div>`;
+                    return;
+                }
+
+                articulos.forEach(art => renderTarjeta(art, lista));
+            } catch (e) {
+                console.error("Error al buscar:", e);
+            }
+        }
+
+        // 3. CARGAR ARTÍCULOS GENERALES
+        async function cargarArticulos(filtro = 'Todos') {
+            // Limpiar el buscador al usar los filtros de categoría
+            document.getElementById('input-busqueda').value = '';
+
+            try {
+                let consulta = _supabase.from('articulos').select('*');
+                if (filtro !== 'Todos') consulta = consulta.eq('categoria', filtro);
+                
+                const { data: articulos, error } = await consulta;
+                if (error) throw error;
+
+                const lista = document.getElementById('articulos-lista');
+                lista.innerHTML = "";
+
+                if (articulos.length === 0) {
+                    lista.innerHTML = `<div class="sin-resultados">😕 No hay artículos en esta categoría todavía.</div>`;
+                    return;
+                }
+
+                articulos.forEach(art => renderTarjeta(art, lista));
+            } catch (e) {
+                console.error("Error al cargar artículos:", e);
+            }
+        }
+
+        // FUNCIÓN COMPARTIDA PARA RENDERIZAR TARJETAS
+        function renderTarjeta(art, lista, esMia = false) {
+            const div = document.createElement('div');
+            div.className = 'tarjeta';
+            if (esMia) div.style.border = "2px solid #43a047";
+
+            const yaTermino = art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
+            const soyGanador = yaTermino && art.ganador_id === usuarioActualId;
+            const pagoConfirmado = art.pago_confirmado;
+
+            let boton = '';
+            if (esMia) {
+                boton = `<button class="btn-oferta" style="background:#666;" disabled>Tu propia publicación</button>`;
+            } else if (soyGanador && pagoConfirmado) {
+                boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
+            } else if (soyGanador && !pagoConfirmado) {
+                boton = `<button class="btn-ganador" onclick="abrirModalPago(${art.precio_actual || art.precio_base})">🏆 ¡Felicitaciones, ganaste!</button>`;
+            } else if (yaTermino) {
+                boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
+            } else {
+                boton = `<button class="btn-oferta" onclick="ofertar('${art.id}')">¡OFERTAR +$500!</button>`;
+            }
+
+            div.innerHTML = `
+                <span class="tag-cat">${art.categoria || 'Otros'}</span>
+                <img src="${art.foto_url || ''}" class="foto-art">
+                <div class="titulo">${art.Titulo}${esMia ? ' (Tuya)' : ''}</div>
+                <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
+                <div class="precio">$<span id="precio-${art.id}">${art.precio_actual || art.precio_base}</span></div>
+                <div class="reloj" id="reloj-${art.id}">⏳ Cargando...</div>
+                ${boton}
+            `;
+            lista.appendChild(div);
+            iniciarReloj(art.id, art.finaliza_en, soyGanador, art.precio_actual || art.precio_base);
+        }
+
+        // INTERACCIÓN: MIS PUBLICACIONES
+        async function filtrarMisPublicaciones() {
+            if (!usuarioActualId) return;
+            document.getElementById('input-busqueda').value = '';
+            try {
+                const { data: articulos, error } = await _supabase.from('articulos').select('*').eq('perfil_id', usuarioActualId);
+                if (error) throw error;
+
+                const lista = document.getElementById('articulos-lista');
+                lista.innerHTML = articulos.length ? "" : "<div class='sin-resultados'>No publicaste ningún artículo todavía.</div>";
+
+                articulos.forEach(art => renderTarjeta(art, lista, true));
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // INTERACCIÓN: MIS OFERTAS
+        async function filtrarMisOfertas() {
+            if (!usuarioActualId) return;
+            document.getElementById('input-busqueda').value = '';
+
+            try {
+                // Traemos todas las ofertas del usuario
+                const { data: ofertas, error: errorOfertas } = await _supabase
+                    .from('ofertas')
+                    .select('articulo_id, monto, created_at')
+                    .eq('perfil_id', usuarioActualId)
+                    .order('created_at', { ascending: false });
+
+                if (errorOfertas) throw errorOfertas;
+
+                const lista = document.getElementById('articulos-lista');
+
+                if (!ofertas || ofertas.length === 0) {
+                    lista.innerHTML = "<div class='sin-resultados'>💰 Todavía no hiciste ninguna oferta.</div>";
+                    return;
+                }
+
+                // IDs únicos de artículos donde ofertó
+                const idsUnicos = [...new Set(ofertas.map(o => o.articulo_id))];
+
+                const { data: articulos, error: errorArticulos } = await _supabase
+                    .from('articulos')
+                    .select('*')
+                    .in('id', idsUnicos);
+
+                if (errorArticulos) throw errorArticulos;
+
+                lista.innerHTML = "";
+
+                articulos.forEach(art => {
+                    // Última oferta del usuario en este artículo
+                    const miOferta = ofertas.find(o => o.articulo_id === art.id);
+                    const div = document.createElement('div');
+                    div.className = 'tarjeta';
+                    div.style.border = "2px solid #f9a825";
+                    div.innerHTML = `
+                        <span class="tag-cat">${art.categoria || 'Otros'}</span>
+                        <img src="${art.foto_url || ''}" class="foto-art">
+                        <div class="titulo">${art.Titulo}</div>
+                        <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
+                        <div class="precio">$<span id="precio-${art.id}">${art.precio_actual || art.precio_base}</span></div>
+                        <div style="font-size:0.8em; color:#f57f17; font-weight:bold; margin-bottom:8px;">💰 Tu última oferta: $${miOferta.monto}</div>
+                        <div class="reloj" id="reloj-${art.id}">⏳ Cargando...</div>
+                        <button class="btn-oferta" onclick="ofertar('${art.id}')">¡OFERTAR +$500!</button>
+                    `;
+                    lista.appendChild(div);
+                    iniciarReloj(art.id, art.finaliza_en);
+                });
+
+            } catch (e) {
+                console.error("Error en Mis Ofertas:", e);
+            }
+        }
+
+        function iniciarReloj(id, fecha, soyGanador = false, precioFinal = 0) {
+            const display = document.getElementById(`reloj-${id}`);
+            if (!fecha || !display) return;
+
+            const intervalo = setInterval(() => {
+                const ahora = new Date().getTime();
+                const fin = new Date(fecha).getTime();
+                const diff = fin - ahora;
+
+                if (diff <= 0) {
+                    display.innerText = "🛑 SUBASTA CERRADA";
+                    display.style.background = "#eee";
+                    display.style.color = "#666";
+                    clearInterval(intervalo);
+
+                    // Si soy el ganador, cambio el botón
+                    if (soyGanador) {
+                        const tarjeta = display.closest('.tarjeta');
+                        const btnActual = tarjeta ? tarjeta.querySelector('button:last-child') : null;
+                        if (btnActual && !btnActual.classList.contains('btn-ganador')) {
+                            btnActual.outerHTML = `<button class="btn-ganador" onclick="abrirModalPago(${precioFinal})">🏆 ¡Felicitaciones, ganaste!</button>`;
+                        }
+                    }
+                    return;
+                }
+
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+                let texto = "";
+                if (d > 0) texto += `${d}d `;
+                texto += `${h}h ${m}m ${s}s`;
+                display.innerText = "⏳ Faltan: " + texto;
+            }, 1000);
+        }
+
+        // 4. OFERTAR
+        async function ofertar(id) {
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (!user) {
+                alert("⚠️ Tenés que ingresar para ofertar.");
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const span = document.getElementById(`precio-${id}`);
+            const nuevo = parseFloat(span.innerText) + 500;
+
+            // Actualizamos el precio del artículo
+            const { error } = await _supabase.from('articulos').update({ "precio_actual": nuevo }).eq('id', id);
+            if (error) {
+                alert("Error al ofertar: " + error.message);
+                return;
+            }
+
+            // Guardamos la oferta en el historial y actualizamos el ganador
+            await _supabase.from('ofertas').insert([{
+                articulo_id: id,
+                perfil_id: user.id,
+                monto: nuevo
+            }]);
+
+            // El último en ofertar queda como ganador provisional
+            await _supabase.from('articulos').update({ ganador_id: user.id }).eq('id', id);
+        }
+
+        // 5. REALTIME
+        _supabase.channel('cambios').on('postgres_changes', { 
+            event: 'UPDATE', schema: 'public', table: 'articulos' 
+        }, payload => {
+            const span = document.getElementById(`precio-${payload.new.id}`);
+            if (span) span.innerText = payload.new.precio_actual;
+        }).subscribe();
+
+
+        // MODAL DE PAGO
+        function abrirModalPago(precioFinal) {
+            const comision = Math.round(precioFinal * 0.05);
+            document.getElementById('modal-monto-display').innerText = '$' + comision.toLocaleString('es-AR');
+            document.getElementById('modal-ganador').classList.add('activo');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-ganador').classList.remove('activo');
+        }
+
+        // VER DATOS DEL VENDEDOR (solo si pago_confirmado = true)
+        async function verDatosVendedor(perfilId) {
+            const { data: perfil } = await _supabase
+                .from('perfiles')
+                .select('nombre_completo, telefono, direccion')
+                .eq('id', perfilId)
+                .maybeSingle();
+
+            if (perfil) {
+                alert(`📋 Datos del vendedor:\n\nNombre: ${perfil.nombre_completo}\nTeléfono: ${perfil.telefono}\nDirección: ${perfil.direccion}`);
+            } else {
+                alert('No se pudieron obtener los datos del vendedor.');
+            }
+        }
+
+        revisarSesion();
+        cargarArticulos();
+    </script>
+</body>
+</html>

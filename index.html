@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <title>Quiéndamas - Publicar</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <style>
+        body { 
+            font-family: sans-serif; 
+            background-color: #f1f8e9; 
+            display: flex; 
+            justify-content: center; 
+            padding: 10px;
+            margin: 0;
+        }
+        .card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 450px;
+            box-sizing: border-box;
+        }
+        h1 { color: #2e7d32; text-align: center; margin-top: 10px; }
+        label { display: block; margin-top: 15px; font-weight: bold; color: #333; font-size: 0.9em; }
+        
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            margin-top: 5px; 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 16px;
+        }
+        
+        button { 
+            background-color: #43a047; 
+            color: white; 
+            border: none; 
+            padding: 16px; 
+            width: 100%; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            margin-top: 25px; 
+            font-size: 1.1em; 
+        }
+        button:hover { background-color: #2e7d32; }
+        .btn-volver { background-color: #666; margin-top: 12px; padding: 12px; font-size: 0.9em; }
+        #mensaje { margin-top: 15px; text-align: center; font-weight: bold; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🌿 Quiéndamas</h1>
+        <p style="text-align: center; font-size: 0.9em; color: #666;">Carga los datos de tu subasta</p>
+        
+        <label>Título del artículo:</label>
+        <input type="text" id="titulo" placeholder="Ej: Honda Wave 110">
+        
+        <label>Precio Base ($):</label>
+        <input type="number" id="precio_base" placeholder="0.00">
+        
+        <label>Descripción:</label>
+        <textarea id="descripcion" rows="3" placeholder="Detalles, estado, km, etc..."></textarea>
+        
+        <label>Categoría:</label>
+        <select id="categoria">
+            <option value="Autos">🚗 Autos</option>
+            <option value="Motos">🏍️ Motos</option>
+            <option value="Computacion">💻 Computación</option>
+            <option value="Celulares">📱 Celulares</option>
+            <option value="AudioVideo">📺 Audio y Video</option>
+            <option value="Electro">🔌 Electrodomésticos</option>
+            <option value="Moda">👗 Moda y Accesorios</option>
+            <option value="Joyas">⌚ Joyas y Relojes</option>
+            <option value="Belleza">💄 Belleza y Salud</option>
+            <option value="Construccion">🏗️ Construcción</option>
+            <option value="Antiguedades">🏺 Antigüedades</option>
+            <option value="Vivero">🌿 Vivero y Jardín</option>
+            <option value="Hogar">🏠 Hogar y Muebles</option>
+            <option value="Herramientas">🛠️ Herramientas</option>
+            <option value="Otros">📦 Otros</option>
+        </select>
+
+        <label>Foto del producto:</label>
+        <input type="file" id="foto" accept="image/*">
+
+        <label>¿Cuándo termina la subasta?</label>
+        <input type="datetime-local" id="fecha_cierre">
+
+        <button onclick="subastar()">🚀 ¡Publicar Subasta!</button>
+        <button class="btn-volver" onclick="window.location.href='vidriera.html'">⬅ Volver a la vidriera</button>
+        
+        <div id="mensaje"></div>
+    </div>
+
+    <script>
+        async function protegerPagina() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (!user) {
+                alert("⚠️ Tenés que iniciar sesión para publicar.");
+                window.location.href = 'login.html';
+            }
+        }
+        protegerPagina();
+
+        async function subastar() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            
+            const titulo = document.getElementById('titulo').value;
+            const precio = document.getElementById('precio_base').value;
+            const desc = document.getElementById('descripcion').value;
+            const fecha = document.getElementById('fecha_cierre').value;
+            const cat = document.getElementById('categoria').value;
+            const fotoArchivo = document.getElementById('foto').files[0];
+            const msgDiv = document.getElementById('mensaje');
+
+            if(!titulo || !precio || !fecha || !fotoArchivo) {
+                msgDiv.style.color = "red";
+                msgDiv.innerText = "⚠️ Completá todo, ¡incluyendo la foto!";
+                return;
+            }
+
+            msgDiv.style.color = "blue";
+            msgDiv.innerText = "⏳ Subiendo y publicando...";
+
+            try {
+                const nombreFoto = Date.now() + "_" + fotoArchivo.name.replace(/\s/g, '_');
+                const { data: dataFoto, error: errorFoto } = await _supabase.storage
+                    .from('fotos_subastas')
+                    .upload(nombreFoto, fotoArchivo);
+
+                if (errorFoto) throw errorFoto;
+
+                const { data: urlPublica } = _supabase.storage
+                    .from('fotos_subastas')
+                    .getPublicUrl(nombreFoto);
+
+                // Ajuste de zona horaria: sumamos 3 horas para compensar UTC vs Argentina
+                const fechaCorregida = new Date(new Date(fecha).getTime() + 3 * 60 * 60 * 1000).toISOString();
+
+                const { error: errorTabla } = await _supabase.from('articulos').insert([{ 
+                    "Titulo": titulo, 
+                    "precio_base": parseFloat(precio), 
+                    "precio_actual": parseFloat(precio), 
+                    "descripcion": desc,
+                    "finaliza_en": fechaCorregida,
+                    "categoria": cat,
+                    "foto_url": urlPublica.publicUrl,
+                    "perfil_id": user.id 
+                }]);
+
+                if (errorTabla) throw errorTabla;
+
+                msgDiv.style.color = "green";
+                msgDiv.innerText = "✅ ¡Publicado con éxito!";
+                
+                setTimeout(() => { window.location.href = "vidriera.html"; }, 1500);
+
+            } catch (err) {
+                msgDiv.style.color = "red";
+                msgDiv.innerText = "❌ Error: " + err.message;
+                console.error("Error completo:", err);
+            }
+        }
+    </script>
+</body>
+</html>

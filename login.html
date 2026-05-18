@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <title>Quiéndamas - Login</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <style>
+        body { 
+            font-family: sans-serif; 
+            background-color: #f1f8e9; 
+            display: flex; 
+            justify-content: center; 
+            padding: 15px; 
+            margin: 0;
+            min-height: 100vh;
+            align-items: center; 
+        }
+        .card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 400px; 
+            box-sizing: border-box;
+        }
+        h2 { color: #2e7d32; text-align: center; margin-top: 0; }
+        label { display: block; margin-top: 15px; font-weight: bold; font-size: 0.9em; color: #333; }
+        
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin-top: 5px; 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+        }
+        
+        button { 
+            background-color: #43a047; 
+            color: white; 
+            border: none; 
+            padding: 15px; 
+            width: 100%; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            margin-top: 25px; 
+            font-size: 1rem;
+        }
+        button:hover { background-color: #2e7d32; }
+        .toggle { text-align: center; margin-top: 20px; font-size: 0.9em; color: #2e7d32; cursor: pointer; text-decoration: underline; font-weight: bold; }
+        .terminos { margin-top: 15px; font-size: 0.8em; color: #444; background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px solid #eee; }
+        #mensaje { margin-top: 15px; text-align: center; font-size: 0.9em; font-weight: bold; line-height: 1.4; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 id="titulo">Ingresar</h2>
+        
+        <div id="campos-comunes">
+            <label>Email:</label>
+            <input type="email" id="email" placeholder="ejemplo@correo.com">
+            <label>Contraseña:</label>
+            <input type="password" id="password" placeholder="******">
+        </div>
+
+        <div id="campos-registro" style="display: none;">
+            <label>Nombre Completo:</label>
+            <input type="text" id="nombre">
+            <label>DNI:</label>
+            <input type="text" id="dni">
+            <label>Dirección (para envíos):</label>
+            <input type="text" id="direccion">
+            <label>Teléfono:</label>
+            <input type="text" id="telefono">
+            
+            <div class="terminos">
+                <input type="checkbox" id="acepto_terminos" style="width: auto;"> 
+                Acepto que <b>Quiéndamas</b> es solo una plataforma intermediaria. No se responsabiliza por el estado de los bienes ni por la logística.
+            </div>
+        </div>
+
+        <button id="btn-principal" onclick="ejecutarAccion()">Entrar</button>
+        <div id="toggle-link" class="toggle" onclick="cambiarModo()">¿No tenés cuenta? Registrate aquí</div>
+        <div id="mensaje"></div>
+    </div>
+
+    <script>
+        let esRegistro = false;
+
+        function cambiarModo() {
+            esRegistro = !esRegistro;
+            document.getElementById('titulo').innerText = esRegistro ? "Crear Cuenta" : "Ingresar";
+            document.getElementById('btn-principal').innerText = esRegistro ? "Registrarse" : "Entrar";
+            document.getElementById('campos-registro').style.display = esRegistro ? "block" : "none";
+            document.getElementById('toggle-link').innerText = esRegistro ? "¿Ya tenés cuenta? Ingresá" : "¿No tenés cuenta? Registrate aquí";
+            document.getElementById('mensaje').innerText = "";
+        }
+
+        async function ejecutarAccion() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const msg = document.getElementById('mensaje');
+
+            if (!email || !password) {
+                msg.style.color = "red";
+                msg.innerText = "⚠️ Completá email y contraseña.";
+                return;
+            }
+
+            msg.style.color = "blue";
+            msg.innerText = "⏳ Procesando...";
+
+            if (esRegistro) {
+                const nombre = document.getElementById('nombre').value;
+                const dni = document.getElementById('dni').value;
+                const dir = document.getElementById('direccion').value;
+                const tel = document.getElementById('telefono').value;
+                const acepto = document.getElementById('acepto_terminos').checked;
+
+                if (!nombre || !dni || !dir || !acepto) {
+                    msg.style.color = "red";
+                    msg.innerText = "⚠️ Completá todos los datos y aceptá los términos.";
+                    return;
+                }
+
+                // REGISTRO EN SUPABASE — los datos viajan dentro de Supabase, no en localStorage
+                const { data, error } = await _supabase.auth.signUp({ 
+                    email, 
+                    password,
+                    options: {
+                        data: {
+                            nombre_completo: nombre,
+                            dni: dni,
+                            direccion: dir,
+                            telefono: tel
+                        }
+                    }
+                });
+                
+                if (error) {
+                    msg.style.color = "red";
+                    msg.innerText = "❌ " + error.message;
+                    return;
+                }
+
+                if (data.user) {
+                    msg.style.color = "green";
+                    msg.innerHTML = "📩 <b>¡Cuenta creada!</b><br>Te enviamos un correo de confirmación. Por favor, buscalo en tu bandeja, confirmalo y luego volvé acá para iniciar sesión.";
+                }
+
+            } else {
+                // INICIO DE SESIÓN
+                const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+                
+                if (error) {
+                    msg.style.color = "red";
+                    msg.innerText = "❌ " + error.message;
+                } else {
+                    // Chequeamos si ya existe el perfil en la tabla
+                    const { data: perfilExistente } = await _supabase
+                        .from('perfiles')
+                        .select('id')
+                        .eq('id', data.user.id)
+                        .maybeSingle();
+                    
+                    // Si no existe, lo creamos con los datos que viajaron en los metadatos
+                    if (!perfilExistente) {
+                        const meta = data.user.user_metadata;
+
+                        await _supabase.from('perfiles').insert([{ 
+                            id: data.user.id, 
+                            nombre_completo: meta.nombre_completo || "Usuario",
+                            dni: meta.dni || "",
+                            direccion: meta.direccion || "",
+                            telefono: meta.telefono || ""
+                        }]);
+                    }
+
+                    msg.style.color = "green";
+                    msg.innerText = "✅ ¡Hola de nuevo! Entrando...";
+                    setTimeout(() => { window.location.href = "vidriera.html"; }, 1000);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
