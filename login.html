@@ -132,16 +132,16 @@
                     return;
                 }
 
-                // REGISTRO NUEVO CORREGIDO
-                const { data, error } = await _supabase.auth.signUp({
-                    email: email,
-                    password: password,
+                // REGISTRO EN SUPABASE — los datos viajan dentro de Supabase, no en localStorage
+                const { data, error } = await _supabase.auth.signUp({ 
+                    email, 
+                    password,
                     options: {
-                        data: { 
-                            nombre_completo: nombre, 
-                            dni: dni, 
-                            direccion: dir, 
-                            telefono: tel 
+                        data: {
+                            nombre_completo: nombre,
+                            dni: dni,
+                            direccion: dir,
+                            telefono: tel
                         }
                     }
                 });
@@ -194,7 +194,13 @@
     </script>
 </body>
 </html>
-      
+
+    
+
+
+              
+                   
+   
       
 
 
