@@ -132,17 +132,19 @@
                     return;
                 }
 
-               // REGISTRO NUEVO
-const { data, error } = await _supabase.auth.signUp({
-    email,
-    password,
-    options: {
-        // Guardamos los datos extra en los metadatos
-        data: { nombre_completo, dni, direccion, telefono },
-        // 🚨 ACÁ ESTÁ LA CLAVE: Reemplazá por la URL donde corre tu app realmente
-        emailRedirectTo: 'http://localhost:5500/vidriera.html' 
-    }
-});
+                // REGISTRO NUEVO CORREGIDO
+                const { data, error } = await _supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: { 
+                            nombre_completo: nombre, 
+                            dni: dni, 
+                            direccion: dir, 
+                            telefono: tel 
+                        }
+                    }
+                });
                 
                 if (error) {
                     msg.style.color = "red";
@@ -192,6 +194,15 @@ const { data, error } = await _supabase.auth.signUp({
     </script>
 </body>
 </html>
+      
+      
+
+
+   
+           
+
+
+         
 
     
 
