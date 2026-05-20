@@ -26,7 +26,12 @@
         .btn-tipo { flex: 1; max-width: 180px; padding: 10px; border: 2px solid #2e7d32; border-radius: 20px; background: white; color: #2e7d32; font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; }
         .btn-tipo.activo { background: #2e7d32; color: white; }
 
-        .filtros { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 8px; padding: 10px 5px; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
+        .filtros { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 8px; padding: 10px 5px; margin-bottom: 20px; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+        .filtros-wrapper { position: relative; }
+        .filtros-arrow { display: none; position: absolute; top: 50%; transform: translateY(-50%); background: #2e7d32; color: white; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.1em; cursor: pointer; z-index: 10; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+        .filtros-arrow.izq { left: -5px; }
+        .filtros-arrow.der { right: -5px; }
+        @media (hover: hover) { .filtros-arrow { display: flex; } }
         .filtros::-webkit-scrollbar { display: none; }
         .btn-filtro { background: white; border: 2px solid #2e7d32; color: #2e7d32; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85em; white-space: nowrap; }
         .btn-filtro:hover { background: #2e7d32; color: white; }
@@ -135,7 +140,9 @@
     </div>
 
     <!-- FILTROS PRODUCTOS -->
-    <div class="filtros" id="filtros-productos">
+    <div class="filtros-wrapper">
+        <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-productos', -200)">‹</button>
+        <div class="filtros" id="filtros-productos">
         <button class="btn-filtro" onclick="cargarArticulos('Todos')">Todos</button>
         <button class="btn-filtro" onclick="cargarArticulos('Autos')">🚗 Autos</button>
         <button class="btn-filtro" onclick="cargarArticulos('Motos')">🏍️ Motos</button>
@@ -152,9 +159,13 @@
         <button class="btn-filtro" onclick="cargarArticulos('Hogar')">🏠 Hogar</button>
         <button class="btn-filtro" onclick="cargarArticulos('Otros')">📦 Otros</button>
     </div>
+        <button class="filtros-arrow der" onclick="scrollFiltros('filtros-productos', 200)">›</button>
+    </div>
 
     <!-- FILTROS SERVICIOS -->
-    <div class="filtros" id="filtros-servicios" style="display:none;">
+    <div class="filtros-wrapper">
+        <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-servicios', -200)">‹</button>
+        <div class="filtros" id="filtros-servicios" style="display:none;">
         <button class="btn-filtro" onclick="cargarArticulos('Todos-Servicios')">Todos</button>
         <button class="btn-filtro" onclick="cargarArticulos('Belleza-Estetica')">💅 Belleza y estética</button>
         <button class="btn-filtro" onclick="cargarArticulos('Peluqueria')">✂️ Peluquería</button>
@@ -165,6 +176,8 @@
         <button class="btn-filtro" onclick="cargarArticulos('Diseno-Creatividad')">🎨 Diseño</button>
         <button class="btn-filtro" onclick="cargarArticulos('Servicios-Profesionales')">⚖️ Profesionales</button>
         <button class="btn-filtro" onclick="cargarArticulos('Otros-Servicios')">📦 Otros servicios</button>
+    </div>
+        <button class="filtros-arrow der" onclick="scrollFiltros('filtros-servicios', 200)">›</button>
     </div>
 
     <div id="articulos-lista" class="contenedor"></div>
@@ -445,6 +458,22 @@
             }
         }
 
+
+
+        // SCROLL CATEGORÍAS CON FLECHAS Y RUEDA DEL MOUSE
+        function scrollFiltros(id, px) {
+            document.getElementById(id).scrollBy({ left: px, behavior: 'smooth' });
+        }
+
+        ['filtros-productos', 'filtros-servicios'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('wheel', function(e) {
+                    e.preventDefault();
+                    el.scrollBy({ left: e.deltaY * 2, behavior: 'smooth' });
+                }, { passive: false });
+            }
+        });
 
         // CARRUSEL
         let carruselFotos = [];
