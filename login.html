@@ -132,7 +132,7 @@
                     return;
                 }
 
-                // REGISTRO EN SUPABASE — los datos viajan dentro de Supabase, no en localStorage
+                // REGISTRO EN SUPABASE
                 const { data, error } = await _supabase.auth.signUp({ 
                     email, 
                     password,
@@ -154,7 +154,23 @@
 
                 if (data.user) {
                     msg.style.color = "green";
-                    msg.innerHTML = "📩 <b>¡Cuenta creada!</b><br>Te enviamos un correo de confirmación. Por favor, buscalo en tu bandeja, confirmalo y luego volvé acá para iniciar sesión.";
+                    msg.innerHTML = `
+                        <div style="text-align: center; margin-top: 15px; padding: 12px; background-color: #e8f5e9; border-radius: 8px; border: 1px solid #c8e6c9;">
+                            <span style="font-size: 2rem;">📩</span><br>
+                            <b style="color: #2e7d32; font-size: 1.1em;">¡Cuenta creada con éxito!</b><br>
+                            <p style="margin: 8px 0 0 0; color: #333; font-size: 0.95em;">Te enviamos un correo de confirmación. Por favor, buscalo en tu bandeja de entrada o correo no deseado (SPAM).</p>
+                            <p style="margin: 8px 0 0 0; font-weight: normal; color: #555; font-size: 0.85em; border-top: 1px dashed #a5d6a7; padding-top: 8px;"><i>Nota: Si el enlace del mail te da un error 404 al tocarlo por temas del navegador, no te preocupes. Volvé directo a esta pantalla, seleccioná "Ingresar" e iniciá sesión con tus datos normales.</i></p>
+                        </div>
+                    `;
+
+                    // Limpiamos los campos del formulario para que quede prolijo
+                    document.getElementById('email').value = "";
+                    document.getElementById('password').value = "";
+                    document.getElementById('nombre').value = "";
+                    document.getElementById('dni').value = "";
+                    document.getElementById('direccion').value = "";
+                    document.getElementById('telefono').value = "";
+                    document.getElementById('acepto_terminos').checked = false;
                 }
 
             } else {
@@ -194,23 +210,3 @@
     </script>
 </body>
 </html>
-
-    
-
-
-              
-                   
-   
-      
-
-
-   
-           
-
-
-         
-
-    
-
-         
-   
