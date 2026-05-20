@@ -11,169 +11,228 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <style>
-        body { 
-            font-family: sans-serif; 
-            background-color: #f1f8e9; 
-            display: flex; 
-            justify-content: center; 
-            padding: 10px;
-            margin: 0;
-        }
-        .card { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-            width: 100%; 
-            max-width: 450px;
-            box-sizing: border-box;
-        }
+        body { font-family: sans-serif; background-color: #f1f8e9; display: flex; justify-content: center; padding: 10px; margin: 0; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 450px; box-sizing: border-box; }
         h1 { color: #2e7d32; text-align: center; margin-top: 10px; }
         label { display: block; margin-top: 15px; font-weight: bold; color: #333; font-size: 0.9em; }
-        
-        input, select, textarea { 
-            width: 100%; 
-            padding: 12px; 
-            margin-top: 5px; 
-            border: 1px solid #ccc; 
-            border-radius: 8px; 
-            box-sizing: border-box; 
-            font-size: 16px;
-        }
-        
-        button { 
-            background-color: #43a047; 
-            color: white; 
-            border: none; 
-            padding: 16px; 
-            width: 100%; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            margin-top: 25px; 
-            font-size: 1.1em; 
-        }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { background-color: #43a047; color: white; border: none; padding: 16px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 25px; font-size: 1.1em; }
         button:hover { background-color: #2e7d32; }
         .btn-volver { background-color: #666; margin-top: 12px; padding: 12px; font-size: 0.9em; }
         #mensaje { margin-top: 15px; text-align: center; font-weight: bold; font-size: 0.9em; }
+
+        /* SELECTOR TIPO */
+        .selector-tipo { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-tipo { flex: 1; padding: 10px; border: 2px solid #2e7d32; border-radius: 20px; background: white; color: #2e7d32; font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; margin-top: 0; }
+        .btn-tipo.activo { background: #2e7d32; color: white; }
+
+        /* FOTOS */
+        .fotos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+        .foto-slot { border: 2px dashed #ccc; border-radius: 8px; height: 90px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; background: #fafafa; }
+        .foto-slot:hover { border-color: #43a047; background: #f1f8e9; }
+        .foto-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
+        .foto-slot .btn-borrar { position: absolute; top: 3px; right: 3px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 0.75em; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-top: 0; padding: 0; width: 22px; }
+        .foto-slot .icono-agregar { font-size: 1.8em; color: #aaa; }
+        .foto-hint { font-size: 0.78em; color: #888; margin-top: 5px; }
     </style>
 </head>
 <body>
     <div class="card">
         <h1>🌿 Quiéndamas</h1>
-        <p style="text-align: center; font-size: 0.9em; color: #666;">Carga los datos de tu subasta</p>
-        
-        <label>Título del artículo:</label>
-        <input type="text" id="titulo" placeholder="Ej: Honda Wave 110">
-        
+        <p style="text-align: center; font-size: 0.9em; color: #666;">Cargá los datos de tu subasta</p>
+
+        <!-- SELECTOR PRODUCTO / SERVICIO -->
+        <label>¿Qué vas a subastar?</label>
+        <div class="selector-tipo">
+            <button type="button" class="btn-tipo activo" id="btn-producto" onclick="cambiarTipo('producto')">🛍️ Producto</button>
+            <button type="button" class="btn-tipo" id="btn-servicio" onclick="cambiarTipo('servicio')">🛠️ Servicio</button>
+        </div>
+
+        <label>Título:</label>
+        <input type="text" id="titulo" placeholder="Ej: Honda Wave 110 / Corte de cabello">
+
         <label>Precio Base ($):</label>
         <input type="number" id="precio_base" placeholder="0.00">
-        
-        <label>Descripción:</label>
-        <textarea id="descripcion" rows="3" placeholder="Detalles, estado, km, etc..."></textarea>
-        
-        <label>Categoría:</label>
-        <select id="categoria">
-            <option value="Autos">🚗 Autos</option>
-            <option value="Motos">🏍️ Motos</option>
-            <option value="Computacion">💻 Computación</option>
-            <option value="Celulares">📱 Celulares</option>
-            <option value="AudioVideo">📺 Audio y Video</option>
-            <option value="Electro">🔌 Electrodomésticos</option>
-            <option value="Moda">👗 Moda y Accesorios</option>
-            <option value="Joyas">⌚ Joyas y Relojes</option>
-            <option value="Belleza">💄 Belleza y Salud</option>
-            <option value="Construccion">🏗️ Construcción</option>
-            <option value="Antiguedades">🏺 Antigüedades</option>
-            <option value="Vivero">🌿 Vivero y Jardín</option>
-            <option value="Hogar">🏠 Hogar y Muebles</option>
-            <option value="Herramientas">🛠️ Herramientas</option>
-            <option value="Otros">📦 Otros</option>
-        </select>
 
-        <label>Foto del producto:</label>
-        <input type="file" id="foto" accept="image/*">
+        <label>Descripción:</label>
+        <textarea id="descripcion" rows="3" placeholder="Detalles, estado, condiciones, etc..."></textarea>
+
+        <!-- CATEGORÍAS PRODUCTOS -->
+        <div id="cats-producto">
+            <label>Categoría:</label>
+            <select id="categoria-producto">
+                <option value="Autos">🚗 Autos</option>
+                <option value="Motos">🏍️ Motos</option>
+                <option value="Computacion">💻 Computación</option>
+                <option value="Celulares">📱 Celulares</option>
+                <option value="AudioVideo">📺 Audio y Video</option>
+                <option value="Electro">🔌 Electrodomésticos</option>
+                <option value="Moda">👗 Moda y Accesorios</option>
+                <option value="Joyas">⌚ Joyas y Relojes</option>
+                <option value="Belleza">💄 Belleza y Salud</option>
+                <option value="Construccion">🏗️ Construcción</option>
+                <option value="Antiguedades">🏺 Antigüedades</option>
+                <option value="Vivero">🌿 Vivero y Jardín</option>
+                <option value="Hogar">🏠 Hogar y Muebles</option>
+                <option value="Herramientas">🛠️ Herramientas</option>
+                <option value="Otros">📦 Otros</option>
+            </select>
+        </div>
+
+        <!-- CATEGORÍAS SERVICIOS -->
+        <div id="cats-servicio" style="display:none;">
+            <label>Categoría de servicio:</label>
+            <select id="categoria-servicio">
+                <option value="Belleza-Estetica">💅 Belleza y estética</option>
+                <option value="Peluqueria">✂️ Peluquería</option>
+                <option value="Hogar-Reparaciones">🏠 Hogar y reparaciones</option>
+                <option value="Plomeria-Electricidad">🔧 Plomería y electricidad</option>
+                <option value="Tecnologia-Soporte">💻 Tecnología y soporte</option>
+                <option value="Clases-Tutorias">📚 Clases y tutorías</option>
+                <option value="Diseno-Creatividad">🎨 Diseño y creatividad</option>
+                <option value="Servicios-Profesionales">⚖️ Servicios profesionales</option>
+                <option value="Otros-Servicios">📦 Otros servicios</option>
+            </select>
+        </div>
+
+        <!-- FOTOS (hasta 5) -->
+        <label>Fotos (hasta 5):</label>
+        <div class="fotos-grid" id="fotos-grid">
+            <!-- Los slots se generan con JS -->
+        </div>
+        <p class="foto-hint">La primera foto es la principal. Tocá cada cuadro para agregar una imagen.</p>
+        <input type="file" id="input-foto-hidden" accept="image/*" style="display:none;" onchange="agregarFoto(this)">
 
         <label>¿Cuándo termina la subasta?</label>
         <input type="datetime-local" id="fecha_cierre">
 
         <button onclick="subastar()">🚀 ¡Publicar Subasta!</button>
         <button class="btn-volver" onclick="window.location.href='vidriera.html'">⬅ Volver a la vidriera</button>
-        
+
         <div id="mensaje"></div>
     </div>
 
     <script>
         if (window.location.hash.includes('access_token=')) {
-            const hash = window.location.hash;
-            window.location.href = 'login.html' + hash;
+            window.location.href = 'login.html' + window.location.hash;
         }
+
         async function protegerPagina() {
             const { data: { user } } = await _supabase.auth.getUser();
-            if (!user) {
-                alert("⚠️ Tenés que iniciar sesión para publicar.");
-                window.location.href = 'login.html';
-            }
+            if (!user) { alert("⚠️ Tenés que iniciar sesión para publicar."); window.location.href = 'login.html'; }
         }
         protegerPagina();
 
+        // TIPO PRODUCTO / SERVICIO
+        let tipoActual = 'producto';
+        function cambiarTipo(tipo) {
+            tipoActual = tipo;
+            document.getElementById('btn-producto').classList.toggle('activo', tipo === 'producto');
+            document.getElementById('btn-servicio').classList.toggle('activo', tipo === 'servicio');
+            document.getElementById('cats-producto').style.display = tipo === 'producto' ? 'block' : 'none';
+            document.getElementById('cats-servicio').style.display = tipo === 'servicio' ? 'block' : 'none';
+        }
+
+        // FOTOS
+        const MAX_FOTOS = 5;
+        let fotosArchivos = [];
+        let slotActual = null;
+
+        function renderFotosGrid() {
+            const grid = document.getElementById('fotos-grid');
+            grid.innerHTML = '';
+            for (let i = 0; i < MAX_FOTOS; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'foto-slot';
+                if (fotosArchivos[i]) {
+                    const url = URL.createObjectURL(fotosArchivos[i]);
+                    slot.innerHTML = `
+                        <img src="${url}" alt="foto ${i+1}">
+                        <button class="btn-borrar" onclick="borrarFoto(${i})">✕</button>
+                    `;
+                } else {
+                    slot.innerHTML = `<span class="icono-agregar">📷</span>`;
+                    slot.onclick = () => { slotActual = i; document.getElementById('input-foto-hidden').click(); };
+                }
+                grid.appendChild(slot);
+            }
+        }
+
+        function agregarFoto(input) {
+            if (input.files[0] && slotActual !== null) {
+                fotosArchivos[slotActual] = input.files[0];
+                input.value = '';
+                slotActual = null;
+                renderFotosGrid();
+            }
+        }
+
+        function borrarFoto(i) {
+            fotosArchivos.splice(i, 1);
+            renderFotosGrid();
+        }
+
+        renderFotosGrid();
+
+        // PUBLICAR
         async function subastar() {
             const { data: { user } } = await _supabase.auth.getUser();
-            
             const titulo = document.getElementById('titulo').value;
             const precio = document.getElementById('precio_base').value;
             const desc = document.getElementById('descripcion').value;
             const fecha = document.getElementById('fecha_cierre').value;
-            const cat = document.getElementById('categoria').value;
-            const fotoArchivo = document.getElementById('foto').files[0];
+            const cat = tipoActual === 'producto'
+                ? document.getElementById('categoria-producto').value
+                : document.getElementById('categoria-servicio').value;
             const msgDiv = document.getElementById('mensaje');
 
-            if(!titulo || !precio || !fecha || !fotoArchivo) {
+            const fotosValidas = fotosArchivos.filter(Boolean);
+
+            if (!titulo || !precio || !fecha || fotosValidas.length === 0) {
                 msgDiv.style.color = "red";
-                msgDiv.innerText = "⚠️ Completá todo, ¡incluyendo la foto!";
+                msgDiv.innerText = "⚠️ Completá todo y agregá al menos una foto.";
                 return;
             }
 
             msgDiv.style.color = "blue";
-            msgDiv.innerText = "⏳ Subiendo y publicando...";
+            msgDiv.innerText = "⏳ Subiendo fotos y publicando...";
 
             try {
-                const nombreFoto = Date.now() + "_" + fotoArchivo.name.replace(/\s/g, '_');
-                const { data: dataFoto, error: errorFoto } = await _supabase.storage
-                    .from('fotos_subastas')
-                    .upload(nombreFoto, fotoArchivo);
+                // Subir todas las fotos
+                const urlsFotos = [];
+                for (let i = 0; i < fotosValidas.length; i++) {
+                    const archivo = fotosValidas[i];
+                    const nombreFoto = Date.now() + "_" + i + "_" + archivo.name.replace(/\s/g, '_');
+                    const { error: errorFoto } = await _supabase.storage.from('fotos_subastas').upload(nombreFoto, archivo);
+                    if (errorFoto) throw errorFoto;
+                    const { data: urlPublica } = _supabase.storage.from('fotos_subastas').getPublicUrl(nombreFoto);
+                    urlsFotos.push(urlPublica.publicUrl);
+                }
 
-                if (errorFoto) throw errorFoto;
-
-                const { data: urlPublica } = _supabase.storage
-                    .from('fotos_subastas')
-                    .getPublicUrl(nombreFoto);
-
-                
                 const fechaCorregida = new Date(fecha).toISOString();
 
-                const { error: errorTabla } = await _supabase.from('articulos').insert([{ 
-                    "Titulo": titulo, 
-                    "precio_base": parseFloat(precio), 
-                    "precio_actual": parseFloat(precio), 
+                const { error: errorTabla } = await _supabase.from('articulos').insert([{
+                    "Titulo": titulo,
+                    "precio_base": parseFloat(precio),
+                    "precio_actual": parseFloat(precio),
                     "descripcion": desc,
                     "finaliza_en": fechaCorregida,
                     "categoria": cat,
-                    "foto_url": urlPublica.publicUrl,
-                    "perfil_id": user.id 
+                    "foto_url": urlsFotos[0],
+                    "fotos_extra": urlsFotos.slice(1),
+                    "perfil_id": user.id
                 }]);
 
                 if (errorTabla) throw errorTabla;
 
                 msgDiv.style.color = "green";
                 msgDiv.innerText = "✅ ¡Publicado con éxito!";
-                
                 setTimeout(() => { window.location.href = "vidriera.html"; }, 1500);
 
             } catch (err) {
                 msgDiv.style.color = "red";
                 msgDiv.innerText = "❌ Error: " + err.message;
-                console.error("Error completo:", err);
+                console.error(err);
             }
         }
     </script>
