@@ -33,6 +33,11 @@
         h2 { color: #2e7d32; text-align: center; margin-top: 0; }
         label { display: block; margin-top: 15px; font-weight: bold; font-size: 0.9em; color: #333; }
         
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+        
         input { 
             width: 100%; 
             padding: 12px; 
@@ -41,6 +46,21 @@
             border-radius: 8px; 
             box-sizing: border-box; 
             font-size: 16px; 
+        }
+        
+        .password-container input {
+            padding-right: 45px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-3px);
+            cursor: pointer;
+            font-size: 1.2rem;
+            user-select: none;
+            color: #666;
         }
         
         button { 
@@ -57,52 +77,156 @@
         }
         button:hover { background-color: #2e7d32; }
         .toggle { text-align: center; margin-top: 20px; font-size: 0.9em; color: #2e7d32; cursor: pointer; text-decoration: underline; font-weight: bold; }
+        .recuperar-link { text-align: center; margin-top: 12px; font-size: 0.85em; color: #666; cursor: pointer; text-decoration: underline; display: block; }
+        .recuperar-link:hover { color: #2e7d32; }
         .terminos { margin-top: 15px; font-size: 0.8em; color: #444; background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px solid #eee; }
         #mensaje { margin-top: 15px; text-align: center; font-size: 0.9em; font-weight: bold; line-height: 1.4; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2 id="titulo">Ingresar</h2>
-        
-        <div id="campos-comunes">
-            <label>Email:</label>
-            <input type="email" id="email" placeholder="ejemplo@correo.com">
-            <label>Contraseña:</label>
-            <input type="password" id="password" placeholder="******">
-        </div>
-
-        <div id="campos-registro" style="display: none;">
-            <label>Nombre Completo:</label>
-            <input type="text" id="nombre">
-            <label>DNI:</label>
-            <input type="text" id="dni">
-            <label>Dirección (para envíos):</label>
-            <input type="text" id="direccion">
-            <label>Teléfono:</label>
-            <input type="text" id="telefono">
+        <div id="contenedor-principal">
+            <h2 id="titulo">Ingresar</h2>
             
-            <div class="terminos">
-                <input type="checkbox" id="acepto_terminos" style="width: auto;"> 
-                Acepto los <a href="terminos.html" target="_blank" style="color:#2e7d32; font-weight:bold;">Términos y Condiciones</a> de Quiéndamas. La plataforma es intermediaria y no se responsabiliza por el estado de los bienes ni la logística.
+            <div id="campos-comunes">
+                <label>Email:</label>
+                <input type="email" id="email" placeholder="ejemplo@correo.com">
+                
+                <label>Contraseña:</label>
+                <div class="password-container">
+                    <input type="password" id="password" placeholder="******">
+                    <span class="toggle-password" onclick="alternarVisibilidadContrasena('password')">👁️</span>
+                </div>
             </div>
+
+            <div id="campos-registro" style="display: none;">
+                <label>Nombre Completo:</label>
+                <input type="text" id="nombre">
+                <label>DNI:</label>
+                <input type="text" id="dni">
+                <label>Dirección (para envíos):</label>
+                <input type="text" id="direccion">
+                <label>Teléfono:</label>
+                <input type="text" id="telefono">
+                
+                <div class="terminos">
+                    <input type="checkbox" id="acepto_terminos" style="width: auto;"> 
+                    Acepto los <a href="terminos.html" target="_blank" style="color:#2e7d32; font-weight:bold;">Términos y Condiciones</a> de Quiéndamas. La plataforma es intermediaria y no se responsabiliza por el estado de los bienes ni la logística.
+                </div>
+            </div>
+
+            <button id="btn-principal" onclick="ejecutarAccion()">Entrar</button>
+            <a id="link-recuperar" class="recuperar-link" onclick="recuperarContrasena()">¿Te olvidaste tu contraseña?</a>
+            <div id="toggle-link" class="toggle" onclick="cambiarModo()">¿No tenés cuenta? Registrate aquí</div>
         </div>
 
-        <button id="btn-principal" onclick="ejecutarAccion()">Entrar</button>
-        <div id="toggle-link" class="toggle" onclick="cambiarModo()">¿No tenés cuenta? Registrate aquí</div>
+        <div id="contenedor-recuperacion" style="display: none;">
+            <h2>Nueva Contraseña</h2>
+            <p style="text-align: center; color: #555; font-size: 0.9em;">Escribí tu nueva clave de acceso para Quiéndamas.</p>
+            
+            <label>Nueva Contraseña:</label>
+            <div class="password-container">
+                <input type="password" id="nueva-password" placeholder="Mínimo 6 caracteres">
+                <span class="toggle-password" onclick="alternarVisibilidadContrasena('nueva-password')">👁️</span>
+            </div>
+            
+            <button onclick="guardarNuevaContrasena()">Guardar y Entrar</button>
+        </div>
+        
         <div id="mensaje"></div>
     </div>
 
     <script>
         let esRegistro = false;
 
+        // DETECTOR AUTOMÁTICO DE ENLACES DE RECUPERACIÓN
+        window.addEventListener('DOMContentLoaded', () => {
+            // Si la URL que viene desde el mail de Supabase contiene "type=recovery"
+            if (window.location.hash.includes('type=recovery') || window.location.href.includes('type=recovery')) {
+                document.getElementById('contenedor-principal').style.display = 'none';
+                document.getElementById('contenedor-recuperacion').style.display = 'block';
+            }
+        });
+
         function cambiarModo() {
             esRegistro = !esRegistro;
             document.getElementById('titulo').innerText = esRegistro ? "Crear Cuenta" : "Ingresar";
             document.getElementById('btn-principal').innerText = esRegistro ? "Registrarse" : "Entrar";
             document.getElementById('campos-registro').style.display = esRegistro ? "block" : "none";
+            document.getElementById('link-recuperar').style.display = esRegistro ? "none" : "block";
             document.getElementById('toggle-link').innerText = esRegistro ? "¿Ya tenés cuenta? Ingresá" : "¿No tenés cuenta? Registrate aquí";
             document.getElementById('mensaje').innerText = "";
+        }
+
+        function alternarVisibilidadContrasena(idInput) {
+            const inputPass = document.getElementById(idInput);
+            const iconoOjo = inputPass.nextElementSibling;
+            if (inputPass.type === "password") {
+                inputPass.type = "text";
+                iconoOjo.innerText = "🔒";
+            } else {
+                inputPass.type = "password";
+                iconoOjo.innerText = "👁️";
+            }
+        }
+
+        async function recuperarContrasena() {
+            const email = document.getElementById('email').value;
+            const msg = document.getElementById('mensaje');
+
+            if (!email) {
+                msg.style.color = "red";
+                msg.innerText = "⚠️ Por favor, escribe primero tu Email en el casillero de arriba para enviarte el enlace.";
+                return;
+            }
+
+            msg.style.color = "blue";
+            msg.innerText = "⏳ Enviando enlace de recuperación...";
+
+            const { error } = await _supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html',
+            });
+
+            if (error) {
+                msg.style.color = "red";
+                msg.innerText = "❌ " + error.message;
+            } else {
+                msg.style.color = "green";
+                msg.innerHTML = `
+                    <div style="text-align: center; margin-top: 15px; padding: 12px; background-color: #e3f2fd; border-radius: 8px; border: 1px solid #bbdefb;">
+                        📧 <b>¡Correo enviado!</b><br>
+                        Revisá tu bandeja de entrada o SPAM. Te enviamos un enlace para restablecer tu contraseña.
+                    </div>
+                `;
+            }
+        }
+
+        // ACCIÓN PARA GUARDAR LA NUEVA CLAVE DESDE LA VENTANITA
+        async function guardarNuevaContrasena() {
+            const nuevaPassword = document.getElementById('nueva-password').value;
+            const msg = document.getElementById('mensaje');
+
+            if (!nuevaPassword || nuevaPassword.length < 6) {
+                msg.style.color = "red";
+                msg.innerText = "⚠️ La contraseña debe tener al menos 6 caracteres.";
+                return;
+            }
+
+            msg.style.color = "blue";
+            msg.innerText = "⏳ Actualizando contraseña...";
+
+            const { error } = await _supabase.auth.updateUser({ password: nuevaPassword });
+
+            if (error) {
+                msg.style.color = "red";
+                msg.innerText = "❌ " + error.message;
+            } else {
+                msg.style.color = "green";
+                msg.innerText = "✅ ¡Contraseña cambiada con éxito! Iniciando sesión...";
+                setTimeout(() => {
+                    window.location.href = "vidriera.html";
+                }, 1500);
+            }
         }
 
         async function ejecutarAccion() {
@@ -132,7 +256,6 @@
                     return;
                 }
 
-                // REGISTRO EN SUPABASE CON REDIRECCIÓN FORZADA A TU SUB-CARPETA
                 const { data, error } = await _supabase.auth.signUp({ 
                     email, 
                     password,
@@ -143,7 +266,6 @@
                             direccion: dir,
                             telefono: tel
                         },
-                        // Esto obliga a Supabase a armar el link del mail apuntando adentro de /quiendamas/
                         emailRedirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html'
                     }
                 });
@@ -164,7 +286,6 @@
                         </div>
                     `;
 
-                    // Limpiamos los campos del formulario para que quede prolijo
                     document.getElementById('email').value = "";
                     document.getElementById('password').value = "";
                     document.getElementById('nombre').value = "";
@@ -182,14 +303,12 @@
                     msg.style.color = "red";
                     msg.innerText = "❌ " + error.message;
                 } else {
-                    // Chequeamos si ya existe el perfil en la tabla
                     const { data: perfilExistente } = await _supabase
                         .from('perfiles')
                         .select('id')
                         .eq('id', data.user.id)
                         .maybeSingle();
                     
-                    // Si no existe, lo creamos con los datos que viajaron en los metadatos
                     if (!perfilExistente) {
                         const meta = data.user.user_metadata;
 
