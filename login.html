@@ -111,7 +111,7 @@
                 
                 <div class="terminos">
                     <input type="checkbox" id="acepto_terminos" style="width: auto;"> 
-                    Acepto los <a href="terminos.html" target="_blank" style="color:#2e7d32; font-weight:bold;">Términos y Condiciones</a> de Quiéndamas. La plataforma es intermediaria y no se responsabiliza por el estado de los bienes ni la logística.
+                    Acepto los <a href="terminos.html" target="_blank" style="color:#2e7d32; font-weight:bold;">Términos y Conditions</a> de Quiéndamas.
                 </div>
             </div>
 
@@ -139,10 +139,10 @@
     <script>
         let esRegistro = false;
 
-        // DETECTOR AUTOMÁTICO DE ENLACES DE RECUPERACIÓN
+        // DETECTOR DE ENLACE DE RECUPERACIÓN (REVISIÓN DE TOKEN DE RECOVERY)
         window.addEventListener('DOMContentLoaded', () => {
-            // Si la URL que viene desde el mail de Supabase contiene "type=recovery"
-            if (window.location.hash.includes('type=recovery') || window.location.href.includes('type=recovery')) {
+            const URLActual = window.location.href;
+            if (URLActual.includes('type=recovery') || window.location.hash.includes('type=recovery')) {
                 document.getElementById('contenedor-principal').style.display = 'none';
                 document.getElementById('contenedor-recuperacion').style.display = 'block';
             }
@@ -170,21 +170,27 @@
             }
         }
 
+        // 🚨 FUNCIÓN CORREGIDA CON EL SISTEMA SEGURO DE OTP PARA ENLACES
         async function recuperarContrasena() {
             const email = document.getElementById('email').value;
             const msg = document.getElementById('mensaje');
 
             if (!email) {
                 msg.style.color = "red";
-                msg.innerText = "⚠️ Por favor, escribe primero tu Email en el casillero de arriba para enviarte el enlace.";
+                msg.innerText = "⚠️ Escribí primero tu Email en el casillero de arriba para enviarte el enlace.";
                 return;
             }
 
             msg.style.color = "blue";
-            msg.innerText = "⏳ Enviando enlace de recuperación...";
+            msg.innerText = "⏳ Solicitando enlace a Supabase...";
 
-            const { error } = await _supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html',
+            // Usamos signInWithOtp con la opción de redirección limpia para recuperación
+            const { error } = await _supabase.auth.signInWithOtp({
+                email: email,
+                options: {
+                    shouldCreateUser: false,
+                    emailRedirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html?type=recovery'
+                }
             });
 
             if (error) {
@@ -194,14 +200,13 @@
                 msg.style.color = "green";
                 msg.innerHTML = `
                     <div style="text-align: center; margin-top: 15px; padding: 12px; background-color: #e3f2fd; border-radius: 8px; border: 1px solid #bbdefb;">
-                        📧 <b>¡Correo enviado!</b><br>
-                        Revisá tu bandeja de entrada o SPAM. Te enviamos un enlace para restablecer tu contraseña.
+                        📧 <b>¡Solicitud enviada!</b><br>
+                        Si el correo está registrado, te llegará un enlace para iniciar sesión y cambiar tu contraseña. Buscalo también en SPAM.
                     </div>
                 `;
             }
         }
 
-        // ACCIÓN PARA GUARDAR LA NUEVA CLAVE DESDE LA VENTANITA
         async function guardarNuevaContrasena() {
             const nuevaPassword = document.getElementById('nueva-password').value;
             const msg = document.getElementById('mensaje');
@@ -213,7 +218,7 @@
             }
 
             msg.style.color = "blue";
-            msg.innerText = "⏳ Actualizando contraseña...";
+            msg.innerText = "⏳ Guardando nueva contraseña...";
 
             const { error } = await _supabase.auth.updateUser({ password: nuevaPassword });
 
@@ -222,7 +227,7 @@
                 msg.innerText = "❌ " + error.message;
             } else {
                 msg.style.color = "green";
-                msg.innerText = "✅ ¡Contraseña cambiada con éxito! Iniciando sesión...";
+                msg.innerText = "✅ ¡Contraseña cambiada con éxito! Entrando...";
                 setTimeout(() => {
                     window.location.href = "vidriera.html";
                 }, 1500);
@@ -282,47 +287,23 @@
                         <div style="text-align: center; margin-top: 15px; padding: 12px; background-color: #e8f5e9; border-radius: 8px; border: 1px solid #c8e6c9;">
                             <span style="font-size: 2rem;">📩</span><br>
                             <b style="color: #2e7d32; font-size: 1.1em;">¡Cuenta creada con éxito!</b><br>
-                            <p style="margin: 8px 0 0 0; color: #333; font-size: 0.95em;">Te enviamos un correo de confirmación. Por favor, buscalo en tu bandeja de entrada o correo no deseado (SPAM).</p>
+                            <p style="margin: 8px 0 0 0; color: #333; font-size: 0.95em;">Te enviamos un correo de confirmación.</p>
                         </div>
                     `;
-
+                    // Limpieza básica
                     document.getElementById('email').value = "";
                     document.getElementById('password').value = "";
-                    document.getElementById('nombre').value = "";
-                    document.getElementById('dni').value = "";
-                    document.getElementById('direccion').value = "";
-                    document.getElementById('telefono').value = "";
-                    document.getElementById('acepto_terminos').checked = false;
                 }
-
             } else {
-                // INICIO DE SESIÓN
+                // INICIO DE SESIÓN NORMAL
                 const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
                 
                 if (error) {
                     msg.style.color = "red";
                     msg.innerText = "❌ " + error.message;
                 } else {
-                    const { data: perfilExistente } = await _supabase
-                        .from('perfiles')
-                        .select('id')
-                        .eq('id', data.user.id)
-                        .maybeSingle();
-                    
-                    if (!perfilExistente) {
-                        const meta = data.user.user_metadata;
-
-                        await _supabase.from('perfiles').insert([{ 
-                            id: data.user.id, 
-                            nombre_completo: meta.nombre_completo || "Usuario",
-                            dni: meta.dni || "",
-                            direccion: meta.direccion || "",
-                            telefono: meta.telefono || ""
-                        }]);
-                    }
-
                     msg.style.color = "green";
-                    msg.innerText = "✅ ¡Hola de nuevo! Entrando...";
+                    msg.innerText = "✅ ¡Entrando...";
                     setTimeout(() => { window.location.href = "vidriera.html"; }, 1000);
                 }
             }
