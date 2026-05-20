@@ -104,6 +104,10 @@
     </div>
 
     <script>
+        if (window.location.hash.includes('access_token=')) {
+            const hash = window.location.hash;
+            window.location.href = 'login.html' + hash;
+        }
         async function protegerPagina() {
             const { data: { user } } = await _supabase.auth.getUser();
             if (!user) {
