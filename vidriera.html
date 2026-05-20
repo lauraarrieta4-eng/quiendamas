@@ -288,11 +288,12 @@
 
             const todasFotos = [art.foto_url].concat(art.fotos_extra || []).filter(Boolean);
             const badgeFotos = todasFotos.length > 1 ? `<span class="badge-fotos">📷 ${todasFotos.length}</span>` : '';
-            const fotosJson = JSON.stringify(todasFotos).replace(/"/g, '&quot;');
+            // Guardamos las fotos en un atributo data para evitar problemas con comillas en onclick
+            const artId = art.id;
 
             div.innerHTML = `
                 <span class="tag-cat">${art.categoria || 'Otros'}</span>
-                <img src="${art.foto_url || ''}" class="foto-art" onclick="abrirCarrusel(${JSON.stringify(fotosJson)}, 0)" style="cursor:pointer;">
+                <img src="${art.foto_url || ''}" class="foto-art" data-fotos-id="${artId}" style="cursor:pointer;">
                 ${badgeFotos}
                 <div class="titulo">${art.Titulo}</div>
                 <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
@@ -301,6 +302,12 @@
                 ${boton}
             `;
             lista.appendChild(div);
+            // Guardar fotos en cache y asignar click
+            fotosCache[art.id] = todasFotos;
+            const imgEl = div.querySelector('.foto-art');
+            if (imgEl) {
+                imgEl.addEventListener('click', () => abrirCarrusel(fotosCache[art.id], 0));
+            }
             iniciarReloj(art.id, art.finaliza_en);
         }
 
@@ -442,9 +449,10 @@
         // CARRUSEL
         let carruselFotos = [];
         let carruselIndex = 0;
+        let fotosCache = {}; // guardamos fotos por id de articulo
 
-        function abrirCarrusel(fotosJson, index) {
-            carruselFotos = JSON.parse(fotosJson);
+        function abrirCarrusel(fotos, index) {
+            carruselFotos = fotos;
             carruselIndex = index;
             actualizarCarrusel();
             document.getElementById('modal-carrusel').classList.add('activo');
