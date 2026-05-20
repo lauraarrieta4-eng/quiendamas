@@ -132,7 +132,7 @@
                     return;
                 }
 
-                // REGISTRO EN SUPABASE
+                // REGISTRO EN SUPABASE CON REDIRECCIÓN FORZADA A TU SUB-CARPETA
                 const { data, error } = await _supabase.auth.signUp({ 
                     email, 
                     password,
@@ -142,7 +142,9 @@
                             dni: dni,
                             direccion: dir,
                             telefono: tel
-                        }
+                        },
+                        // Esto obliga a Supabase a armar el link del mail apuntando adentro de /quiendamas/
+                        emailRedirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html'
                     }
                 });
                 
@@ -159,7 +161,6 @@
                             <span style="font-size: 2rem;">📩</span><br>
                             <b style="color: #2e7d32; font-size: 1.1em;">¡Cuenta creada con éxito!</b><br>
                             <p style="margin: 8px 0 0 0; color: #333; font-size: 0.95em;">Te enviamos un correo de confirmación. Por favor, buscalo en tu bandeja de entrada o correo no deseado (SPAM).</p>
-                            <p style="margin: 8px 0 0 0; font-weight: normal; color: #555; font-size: 0.85em; border-top: 1px dashed #a5d6a7; padding-top: 8px;"><i>Nota: Si el enlace del mail te da un error 404 al tocarlo por temas del navegador, no te preocupes. Volvé directo a esta pantalla, seleccioná "Ingresar" e iniciá sesión con tus datos normales.</i></p>
                         </div>
                     `;
 
