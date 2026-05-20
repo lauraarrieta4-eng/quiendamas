@@ -11,128 +11,27 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <style>
-        body { 
-            font-family: sans-serif; 
-            background-color: #f1f8e9; 
-            padding: 10px; 
-            margin: 0; 
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        h1 { color: #2e7d32; text-align: center; font-size: 1.5rem; }
-        
-        .barra-usuario { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: #e8f5e9; 
-            padding: 10px; 
-            margin-bottom: 10px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+        body { font-family: sans-serif; background-color: #f1f8e9; padding: 10px; margin: 0; -webkit-tap-highlight-color: transparent; }
+        .barra-usuario { display: flex; justify-content: space-between; align-items: center; background: #e8f5e9; padding: 10px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .barra-interacciones { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; padding: 5px; }
+        .btn-interaccion { background: #ffffff; border: 1px solid #43a047; color: #43a047; padding: 8px 12px; border-radius: 8px; font-weight: bold; font-size: 0.85em; cursor: pointer; flex: 1; max-width: 150px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .btn-interaccion:hover { background: #e8f5e9; }
+        .barra-busqueda { display: flex; gap: 8px; margin-bottom: 15px; }
+        .barra-busqueda input { flex: 1; padding: 10px 15px; border: 2px solid #2e7d32; border-radius: 20px; font-size: 0.95em; outline: none; box-sizing: border-box; }
+        .barra-busqueda input:focus { border-color: #43a047; box-shadow: 0 0 0 3px rgba(67,160,71,0.15); }
+        .barra-busqueda button { background: #2e7d32; color: white; border: none; padding: 10px 18px; border-radius: 20px; font-weight: bold; font-size: 0.9em; cursor: pointer; }
 
-        .barra-interacciones {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            padding: 5px;
-        }
-        .btn-interaccion {
-            background: #ffffff;
-            border: 1px solid #43a047;
-            color: #43a047;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 0.85em;
-            cursor: pointer;
-            flex: 1;
-            max-width: 150px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .btn-interaccion:hover {
-            background: #e8f5e9;
-        }
+        /* SELECTOR PRODUCTOS / SERVICIOS */
+        .selector-tipo { display: flex; gap: 10px; margin-bottom: 10px; justify-content: center; }
+        .btn-tipo { flex: 1; max-width: 180px; padding: 10px; border: 2px solid #2e7d32; border-radius: 20px; background: white; color: #2e7d32; font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; }
+        .btn-tipo.activo { background: #2e7d32; color: white; }
 
-        /* BUSCADOR */
-        .barra-busqueda {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        .barra-busqueda input {
-            flex: 1;
-            padding: 10px 15px;
-            border: 2px solid #2e7d32;
-            border-radius: 20px;
-            font-size: 0.95em;
-            outline: none;
-            box-sizing: border-box;
-        }
-        .barra-busqueda input:focus {
-            border-color: #43a047;
-            box-shadow: 0 0 0 3px rgba(67,160,71,0.15);
-        }
-        .barra-busqueda button {
-            background: #2e7d32;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.9em;
-            cursor: pointer;
-        }
-        .barra-busqueda button:hover {
-            background: #43a047;
-        }
-
-        .filtros { 
-            display: flex; 
-            flex-wrap: nowrap; 
-            overflow-x: auto; 
-            gap: 8px; 
-            padding: 10px 5px; 
-            margin-bottom: 20px;
-            -webkit-overflow-scrolling: touch; 
-        }
-        .filtros::-webkit-scrollbar { display: none; } 
-
-        .btn-filtro { 
-            background: white; 
-            border: 2px solid #2e7d32; 
-            color: #2e7d32; 
-            padding: 8px 15px; 
-            border-radius: 20px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            font-size: 0.85em; 
-            white-space: nowrap; 
-        }
+        .filtros { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 8px; padding: 10px 5px; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
+        .filtros::-webkit-scrollbar { display: none; }
+        .btn-filtro { background: white; border: 2px solid #2e7d32; color: #2e7d32; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85em; white-space: nowrap; }
         .btn-filtro:hover { background: #2e7d32; color: white; }
-        
-        .contenedor { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 15px; 
-            justify-items: center; 
-        }
-        
-        .tarjeta { 
-            background: white; 
-            border-radius: 12px; 
-            padding: 15px; 
-            width: 90%; 
-            max-width: 320px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-            position: relative; 
-            display: flex; 
-            flex-direction: column; 
-        }
-
+        .contenedor { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; justify-items: center; }
+        .tarjeta { background: white; border-radius: 12px; padding: 15px; width: 90%; max-width: 320px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; display: flex; flex-direction: column; }
         .tag-cat { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9); font-size: 0.7em; padding: 3px 8px; border-radius: 10px; color: #2e7d32; font-weight: bold; }
         .foto-art { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
         .titulo { font-size: 1.1em; font-weight: bold; color: #1b5e20; }
@@ -140,59 +39,32 @@
         .precio { font-size: 1.5em; color: #2e7d32; margin: 10px 0; font-weight: bold; }
         .reloj { font-size: 0.85em; font-weight: bold; color: #d32f2f; background: #ffeaee; padding: 8px; border-radius: 6px; text-align: center; margin-bottom: 10px; }
         .btn-oferta { background-color: #43a047; color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; }
-        
         .logo-contenedor img { width: 130px; border-radius: 50%; }
+        .sin-resultados { text-align: center; width: 100%; color: #666; padding: 30px; font-size: 1em; }
 
-
-        .sin-resultados {
-            text-align: center;
-            width: 100%;
-            color: #666;
-            padding: 30px;
-            font-size: 1em;
-        }
-
-        /* MODAL GANADOR */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
+        /* MODAL VENDEDOR */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
         .modal-overlay.activo { display: flex; }
-        .modal-box {
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-            max-width: 360px;
-            width: 90%;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-            text-align: center;
-        }
+        .modal-box { background: white; border-radius: 16px; padding: 25px; max-width: 360px; width: 90%; box-shadow: 0 8px 30px rgba(0,0,0,0.2); text-align: center; }
         .modal-box h2 { color: #2e7d32; margin-top: 0; font-size: 1.4em; }
         .modal-monto { font-size: 2em; font-weight: bold; color: #1b5e20; margin: 10px 0; }
         .modal-datos { background: #f1f8e9; border-radius: 10px; padding: 15px; margin: 15px 0; text-align: left; font-size: 0.9em; line-height: 1.8; }
         .modal-datos b { color: #2e7d32; }
         .modal-aviso { font-size: 0.8em; color: #888; margin-top: 10px; line-height: 1.5; }
         .btn-cerrar-modal { background: #ccc; color: #333; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 0.95em; }
-        .btn-cerrar-modal:hover { background: #bbb; }
+        .btn-vendedor { background: linear-gradient(135deg, #1565c0, #1976d2); color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; }
         .btn-ganador { background: linear-gradient(135deg, #f9a825, #f57f17); color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; }
-
     </style>
 </head>
 <body>
 
-    <!-- MODAL GANADOR -->
-    <div class="modal-overlay" id="modal-ganador">
+    <!-- MODAL PAGO VENDEDOR -->
+    <div class="modal-overlay" id="modal-vendedor">
         <div class="modal-box">
-            <div style="font-size:3em;">🏆</div>
-            <h2>¡Felicitaciones, ganaste la subasta!</h2>
-            <p style="color:#555; font-size:0.95em;">Para poder ponerte en contacto con el vendedor y coordinar la entrega, necesitás abonar la comisión de la plataforma, que es el <b>5% del precio final</b>:</p>
-            <div class="modal-monto" id="modal-monto-display">$0</div>
+            <div style="font-size:3em;">💰</div>
+            <h2>¡Tu artículo fue vendido!</h2>
+            <p style="color:#555; font-size:0.95em;">Para ver los datos del comprador y coordinar la entrega, abonás la comisión del <b>5% del precio final</b>:</p>
+            <div class="modal-monto" id="modal-monto-vendedor">$0</div>
             <div class="modal-datos">
                 <b>Titular:</b> Laura Fernanda Arrieta<br>
                 <b>CBU:</b> 3840200500000011572611<br>
@@ -200,9 +72,9 @@
                 <b>Billetera:</b> Ualá
             </div>
             <div class="modal-aviso">
-                📌 Una vez realizada la transferencia, verificamos el pago y liberamos los datos del vendedor en un plazo de hasta 24hs hábiles. Si tenés alguna consulta escribinos a <b>quiendamas.app@gmail.com</b>
+                📌 Una vez realizada la transferencia, verificamos el pago y liberamos los datos del comprador en un plazo de hasta 24hs hábiles. Consultas: <b>quiendamas.app@gmail.com</b>
             </div>
-            <button class="btn-cerrar-modal" onclick="cerrarModal()">Cerrar</button>
+            <button class="btn-cerrar-modal" onclick="cerrarModalVendedor()">Cerrar</button>
         </div>
     </div>
 
@@ -225,13 +97,19 @@
         <img src="logo.jpg" alt="Logo Quiéndamas">
     </div>
 
-    <!-- BUSCADOR -->
     <div class="barra-busqueda">
-        <input type="text" id="input-busqueda" placeholder="🔍 Buscar artículo por título..." onkeydown="if(event.key==='Enter') buscarArticulos()">
+        <input type="text" id="input-busqueda" placeholder="🔍 Buscar por título..." onkeydown="if(event.key==='Enter') buscarArticulos()">
         <button onclick="buscarArticulos()">Buscar</button>
     </div>
-    
-    <div class="filtros">
+
+    <!-- SELECTOR PRODUCTOS / SERVICIOS -->
+    <div class="selector-tipo">
+        <button class="btn-tipo activo" id="btn-productos" onclick="cambiarTipo('productos')">🛍️ Productos</button>
+        <button class="btn-tipo" id="btn-servicios" onclick="cambiarTipo('servicios')">🛠️ Servicios</button>
+    </div>
+
+    <!-- FILTROS PRODUCTOS -->
+    <div class="filtros" id="filtros-productos">
         <button class="btn-filtro" onclick="cargarArticulos('Todos')">Todos</button>
         <button class="btn-filtro" onclick="cargarArticulos('Autos')">🚗 Autos</button>
         <button class="btn-filtro" onclick="cargarArticulos('Motos')">🏍️ Motos</button>
@@ -249,29 +127,50 @@
         <button class="btn-filtro" onclick="cargarArticulos('Otros')">📦 Otros</button>
     </div>
 
+    <!-- FILTROS SERVICIOS -->
+    <div class="filtros" id="filtros-servicios" style="display:none;">
+        <button class="btn-filtro" onclick="cargarArticulos('Todos-Servicios')">Todos</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Belleza-Estetica')">💅 Belleza y estética</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Peluqueria')">✂️ Peluquería</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Hogar-Reparaciones')">🏠 Hogar y reparaciones</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Plomeria-Electricidad')">🔧 Plomería y electricidad</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Tecnologia-Soporte')">💻 Tecnología</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Clases-Tutorias')">📚 Clases y tutorías</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Diseno-Creatividad')">🎨 Diseño</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Servicios-Profesionales')">⚖️ Profesionales</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Otros-Servicios')">📦 Otros servicios</button>
+    </div>
+
     <div id="articulos-lista" class="contenedor"></div>
 
     <script>
         let usuarioActualId = null;
+        let tipoActual = 'productos';
 
-        // 1. REVISAR SESIÓN
+        const CATEGORIAS_SERVICIOS = ['Belleza-Estetica','Peluqueria','Hogar-Reparaciones','Plomeria-Electricidad','Tecnologia-Soporte','Clases-Tutorias','Diseno-Creatividad','Servicios-Profesionales','Otros-Servicios'];
+
+        function cambiarTipo(tipo) {
+            tipoActual = tipo;
+            document.getElementById('btn-productos').classList.toggle('activo', tipo === 'productos');
+            document.getElementById('btn-servicios').classList.toggle('activo', tipo === 'servicios');
+            document.getElementById('filtros-productos').style.display = tipo === 'productos' ? 'flex' : 'none';
+            document.getElementById('filtros-servicios').style.display = tipo === 'servicios' ? 'flex' : 'none';
+            document.getElementById('input-busqueda').value = '';
+            if (tipo === 'productos') cargarArticulos('Todos');
+            else cargarArticulos('Todos-Servicios');
+        }
+
         async function revisarSesion() {
             const { data: { user } } = await _supabase.auth.getUser();
             const btn = document.getElementById('btn-sesion');
             const display = document.getElementById('usuario-nombre');
             const bloqueInteracciones = document.getElementById('bloque-interacciones');
-
             if (user) {
                 usuarioActualId = user.id;
-                const { data: perfil, error } = await _supabase.from('perfiles').select('nombre_completo').eq('id', user.id).maybeSingle();
-                
-                if (error) {
-                    console.error("Error trayendo perfil:", error);
-                }
-
+                const { data: perfil } = await _supabase.from('perfiles').select('nombre_completo').eq('id', user.id).maybeSingle();
                 display.innerText = "Hola, " + (perfil && perfil.nombre_completo ? perfil.nombre_completo : "Usuario");
                 btn.innerText = "🚪 Salir";
-                bloqueInteracciones.style.display = "flex"; 
+                bloqueInteracciones.style.display = "flex";
             } else {
                 usuarioActualId = null;
                 display.innerText = "Invitado";
@@ -289,63 +188,45 @@
             }
         }
 
-        // 2. BUSCAR POR TÍTULO
         async function buscarArticulos() {
             const termino = document.getElementById('input-busqueda').value.trim();
-            if (!termino) {
-                cargarArticulos('Todos');
-                return;
-            }
-
+            if (!termino) { cargarArticulos('Todos'); return; }
             try {
-                const { data: articulos, error } = await _supabase
-                    .from('articulos')
-                    .select('*')
-                    .ilike('Titulo', `%${termino}%`);
-
+                const { data: articulos, error } = await _supabase.from('articulos').select('*').ilike('Titulo', `%${termino}%`);
                 if (error) throw error;
-
                 const lista = document.getElementById('articulos-lista');
                 lista.innerHTML = "";
-
                 if (articulos.length === 0) {
                     lista.innerHTML = `<div class="sin-resultados">😕 No encontramos artículos con "<b>${termino}</b>"</div>`;
                     return;
                 }
-
                 articulos.forEach(art => renderTarjeta(art, lista));
-            } catch (e) {
-                console.error("Error al buscar:", e);
-            }
+            } catch (e) { console.error("Error al buscar:", e); }
         }
 
-        // 3. CARGAR ARTÍCULOS GENERALES
         async function cargarArticulos(filtro = 'Todos') {
-            // Limpiar el buscador al usar los filtros de categoría
             document.getElementById('input-busqueda').value = '';
-
             try {
                 let consulta = _supabase.from('articulos').select('*');
-                if (filtro !== 'Todos') consulta = consulta.eq('categoria', filtro);
-                
+                if (filtro === 'Todos') {
+                    consulta = consulta.not('categoria', 'in', `(${CATEGORIAS_SERVICIOS.join(',')})`);
+                } else if (filtro === 'Todos-Servicios') {
+                    consulta = consulta.in('categoria', CATEGORIAS_SERVICIOS);
+                } else {
+                    consulta = consulta.eq('categoria', filtro);
+                }
                 const { data: articulos, error } = await consulta;
                 if (error) throw error;
-
                 const lista = document.getElementById('articulos-lista');
                 lista.innerHTML = "";
-
                 if (articulos.length === 0) {
-                    lista.innerHTML = `<div class="sin-resultados">😕 No hay artículos en esta categoría todavía.</div>`;
+                    lista.innerHTML = `<div class="sin-resultados">😕 No hay publicaciones en esta categoría todavía.</div>`;
                     return;
                 }
-
                 articulos.forEach(art => renderTarjeta(art, lista));
-            } catch (e) {
-                console.error("Error al cargar artículos:", e);
-            }
+            } catch (e) { console.error("Error al cargar:", e); }
         }
 
-        // FUNCIÓN COMPARTIDA PARA RENDERIZAR TARJETAS
         function renderTarjeta(art, lista, esMia = false) {
             const div = document.createElement('div');
             div.className = 'tarjeta';
@@ -353,15 +234,26 @@
 
             const yaTermino = art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
             const soyGanador = yaTermino && art.ganador_id === usuarioActualId;
+            const soyVendedor = esMia;
             const pagoConfirmado = art.pago_confirmado;
 
             let boton = '';
-            if (esMia) {
-                boton = `<button class="btn-oferta" style="background:#666;" disabled>Tu propia publicación</button>`;
-            } else if (soyGanador && pagoConfirmado) {
-                boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
-            } else if (soyGanador && !pagoConfirmado) {
-                boton = `<button class="btn-ganador" onclick="abrirModalPago(${art.precio_actual || art.precio_base})">🏆 ¡Felicitaciones, ganaste!</button>`;
+            if (soyVendedor) {
+                if (yaTermino && art.ganador_id) {
+                    if (pagoConfirmado) {
+                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosComprador('${art.ganador_id}')">👤 Ver datos del comprador</button>`;
+                    } else {
+                        boton = `<button class="btn-vendedor" onclick="abrirModalVendedor(${art.precio_actual || art.precio_base})">💰 Abonar comisión para ver comprador</button>`;
+                    }
+                } else {
+                    boton = `<button class="btn-oferta" style="background:#666;" disabled>Tu propia publicación</button>`;
+                }
+            } else if (soyGanador) {
+                if (pagoConfirmado) {
+                    boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
+                } else {
+                    boton = `<button class="btn-ganador">🏆 ¡Felicitaciones, ganaste! Esperá que el vendedor coordine la entrega.</button>`;
+                }
             } else if (yaTermino) {
                 boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
             } else {
@@ -371,113 +263,69 @@
             div.innerHTML = `
                 <span class="tag-cat">${art.categoria || 'Otros'}</span>
                 <img src="${art.foto_url || ''}" class="foto-art">
-                <div class="titulo">${art.Titulo}${esMia ? ' (Tuya)' : ''}</div>
+                <div class="titulo">${art.Titulo}</div>
                 <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
                 <div class="precio">$<span id="precio-${art.id}">${art.precio_actual || art.precio_base}</span></div>
                 <div class="reloj" id="reloj-${art.id}">⏳ Cargando...</div>
                 ${boton}
             `;
             lista.appendChild(div);
-            iniciarReloj(art.id, art.finaliza_en, soyGanador, art.precio_actual || art.precio_base);
+            iniciarReloj(art.id, art.finaliza_en);
         }
 
-        // INTERACCIÓN: MIS PUBLICACIONES
         async function filtrarMisPublicaciones() {
             if (!usuarioActualId) return;
             document.getElementById('input-busqueda').value = '';
             try {
                 const { data: articulos, error } = await _supabase.from('articulos').select('*').eq('perfil_id', usuarioActualId);
                 if (error) throw error;
-
                 const lista = document.getElementById('articulos-lista');
-                lista.innerHTML = articulos.length ? "" : "<div class='sin-resultados'>No publicaste ningún artículo todavía.</div>";
-
-                for (const art of articulos) {
-                    const div = document.createElement('div');
-                    div.className = 'tarjeta';
-                    div.style.border = "2px solid #43a047";
-
-                    const yaTermino = art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
-                    const tieneGanador = art.ganador_id && yaTermino;
-                    const pagoConfirmado = art.pago_confirmado;
-
-                    let botonComprador = '';
-                    if (tieneGanador && pagoConfirmado) {
-                        botonComprador = `<button class="btn-oferta" style="background:#1565c0; margin-top:8px;" onclick="verDatosComprador('${art.ganador_id}')">👤 Ver datos del comprador</button>`;
-                    } else if (tieneGanador && !pagoConfirmado) {
-                        botonComprador = `<button class="btn-oferta" style="background:#f57f17; margin-top:8px;" disabled>⏳ Esperando pago del comprador</button>`;
-                    }
-
-                    div.innerHTML = `
-                        <span class="tag-cat">${art.categoria || 'Otros'}</span>
-                        <img src="${art.foto_url || ''}" class="foto-art">
-                        <div class="titulo">${art.Titulo} (Tuya)</div>
-                        <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
-                        <div class="precio">$<span id="precio-${art.id}">${art.precio_actual || art.precio_base}</span></div>
-                        <div class="reloj" id="reloj-${art.id}">⏳ Cargando...</div>
-                        <button class="btn-oferta" style="background:#666;" disabled>Tu propia publicación</button>
-                        ${botonComprador}
-                    `;
-                    lista.appendChild(div);
-                    iniciarReloj(art.id, art.finaliza_en);
-                }
-            } catch (e) {
-                console.error(e);
-            }
+                lista.innerHTML = articulos.length ? "" : "<div class='sin-resultados'>No publicaste nada todavía.</div>";
+                articulos.forEach(art => renderTarjeta(art, lista, true));
+            } catch (e) { console.error(e); }
         }
 
-        // VER DATOS DEL COMPRADOR
         async function verDatosComprador(ganadorId) {
-            const { data: perfil } = await _supabase
-                .from('perfiles')
-                .select('nombre_completo, telefono, direccion')
-                .eq('id', ganadorId)
-                .maybeSingle();
-
+            const { data: perfil } = await _supabase.from('perfiles').select('nombre_completo, telefono, direccion').eq('id', ganadorId).maybeSingle();
             if (perfil) {
                 alert(`👤 Datos del comprador:\n\nNombre: ${perfil.nombre_completo}\nTeléfono: ${perfil.telefono}\nDirección: ${perfil.direccion}`);
             } else {
-                alert('No se pudieron obtener los datos del comprador. Verificá que el pago haya sido confirmado.');
+                alert('No se pudieron obtener los datos del comprador.');
             }
         }
 
-        // INTERACCIÓN: MIS OFERTAS
         async function filtrarMisOfertas() {
             if (!usuarioActualId) return;
             document.getElementById('input-busqueda').value = '';
-
             try {
-                // Traemos todas las ofertas del usuario
-                const { data: ofertas, error: errorOfertas } = await _supabase
-                    .from('ofertas')
-                    .select('articulo_id, monto, created_at')
-                    .eq('perfil_id', usuarioActualId)
-                    .order('created_at', { ascending: false });
-
+                const { data: ofertas, error: errorOfertas } = await _supabase.from('ofertas').select('articulo_id, monto, created_at').eq('perfil_id', usuarioActualId).order('created_at', { ascending: false });
                 if (errorOfertas) throw errorOfertas;
-
                 const lista = document.getElementById('articulos-lista');
-
                 if (!ofertas || ofertas.length === 0) {
                     lista.innerHTML = "<div class='sin-resultados'>💰 Todavía no hiciste ninguna oferta.</div>";
                     return;
                 }
-
-                // IDs únicos de artículos donde ofertó
                 const idsUnicos = [...new Set(ofertas.map(o => o.articulo_id))];
-
-                const { data: articulos, error: errorArticulos } = await _supabase
-                    .from('articulos')
-                    .select('*')
-                    .in('id', idsUnicos);
-
+                const { data: articulos, error: errorArticulos } = await _supabase.from('articulos').select('*').in('id', idsUnicos);
                 if (errorArticulos) throw errorArticulos;
-
                 lista.innerHTML = "";
-
                 articulos.forEach(art => {
-                    // Última oferta del usuario en este artículo
                     const miOferta = ofertas.find(o => o.articulo_id === art.id);
+                    const yaTermino = art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
+                    const soyGanador = yaTermino && art.ganador_id === usuarioActualId;
+                    const pagoConfirmado = art.pago_confirmado;
+
+                    let boton = '';
+                    if (soyGanador && pagoConfirmado) {
+                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
+                    } else if (soyGanador && !pagoConfirmado) {
+                        boton = `<button class="btn-ganador" style="font-size:0.85em; padding:12px;">🏆 ¡Ganaste! Esperá que el vendedor coordine la entrega.</button>`;
+                    } else if (yaTermino) {
+                        boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
+                    } else {
+                        boton = `<button class="btn-oferta" onclick="ofertar('${art.id}')">¡OFERTAR +$500!</button>`;
+                    }
+
                     const div = document.createElement('div');
                     div.className = 'tarjeta';
                     div.style.border = "2px solid #f9a825";
@@ -489,132 +337,69 @@
                         <div class="precio">$<span id="precio-${art.id}">${art.precio_actual || art.precio_base}</span></div>
                         <div style="font-size:0.8em; color:#f57f17; font-weight:bold; margin-bottom:8px;">💰 Tu última oferta: $${miOferta.monto}</div>
                         <div class="reloj" id="reloj-${art.id}">⏳ Cargando...</div>
-                        <button class="btn-oferta" onclick="ofertar('${art.id}')">¡OFERTAR +$500!</button>
+                        ${boton}
                     `;
                     lista.appendChild(div);
                     iniciarReloj(art.id, art.finaliza_en);
                 });
-
-            } catch (e) {
-                console.error("Error en Mis Ofertas:", e);
-            }
+            } catch (e) { console.error("Error en Mis Ofertas:", e); }
         }
 
-        function iniciarReloj(id, fecha, soyGanador = false, precioFinal = 0) {
+        function iniciarReloj(id, fecha) {
             const display = document.getElementById(`reloj-${id}`);
             if (!fecha || !display) return;
-
             const intervalo = setInterval(() => {
-                const ahora = new Date().getTime();
-                const fin = new Date(fecha).getTime();
-                const diff = fin - ahora;
-
+                const diff = new Date(fecha).getTime() - Date.now();
                 if (diff <= 0) {
                     display.innerText = "🛑 SUBASTA CERRADA";
                     display.style.background = "#eee";
                     display.style.color = "#666";
                     clearInterval(intervalo);
-
-                    // Si soy el ganador, cambio el botón
-                    if (soyGanador) {
-                        const tarjeta = display.closest('.tarjeta');
-                        const btnActual = tarjeta ? tarjeta.querySelector('button:last-child') : null;
-                        if (btnActual && !btnActual.classList.contains('btn-ganador')) {
-                            btnActual.outerHTML = `<button class="btn-ganador" onclick="abrirModalPago(${precioFinal})">🏆 ¡Felicitaciones, ganaste!</button>`;
-                        }
-                    }
                     return;
                 }
-
-                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-                let texto = "";
-                if (d > 0) texto += `${d}d `;
-                texto += `${h}h ${m}m ${s}s`;
-                display.innerText = "⏳ Faltan: " + texto;
+                const d = Math.floor(diff / 86400000);
+                const h = Math.floor((diff % 86400000) / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+                display.innerText = "⏳ Faltan: " + (d > 0 ? `${d}d ` : '') + `${h}h ${m}m ${s}s`;
             }, 1000);
         }
 
-        // 4. OFERTAR
         async function ofertar(id) {
             const { data: { user } } = await _supabase.auth.getUser();
-            if (!user) {
-                alert("⚠️ Tenés que ingresar para ofertar.");
-                window.location.href = 'login.html';
-                return;
-            }
-
-            // Verificamos que la subasta no haya terminado
+            if (!user) { alert("⚠️ Tenés que ingresar para ofertar."); window.location.href = 'login.html'; return; }
             const { data: art } = await _supabase.from('articulos').select('finaliza_en').eq('id', id).maybeSingle();
-            if (art && new Date(art.finaliza_en).getTime() < Date.now()) {
-                alert("🛑 Esta subasta ya terminó, no podés ofertar.");
-                return;
-            }
-
+            if (art && new Date(art.finaliza_en).getTime() < Date.now()) { alert("🛑 Esta subasta ya terminó."); return; }
             const span = document.getElementById(`precio-${id}`);
             const nuevo = parseFloat(span.innerText) + 500;
-
-            // Actualizamos el precio del artículo
             const { error } = await _supabase.from('articulos').update({ "precio_actual": nuevo }).eq('id', id);
-            if (error) {
-                alert("Error al ofertar: " + error.message);
-                return;
-            }
-
-            // Guardamos la oferta en el historial y actualizamos el ganador
-            await _supabase.from('ofertas').insert([{
-                articulo_id: id,
-                perfil_id: user.id,
-                monto: nuevo
-            }]);
-
-            // El último en ofertar queda como ganador provisional
+            if (error) { alert("Error al ofertar: " + error.message); return; }
+            await _supabase.from('ofertas').insert([{ articulo_id: id, perfil_id: user.id, monto: nuevo }]);
             await _supabase.from('articulos').update({ ganador_id: user.id }).eq('id', id);
         }
 
-        // 5. REALTIME
-        _supabase.channel('cambios').on('postgres_changes', { 
-            event: 'UPDATE', schema: 'public', table: 'articulos' 
-        }, payload => {
+        _supabase.channel('cambios').on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'articulos' }, payload => {
             const span = document.getElementById(`precio-${payload.new.id}`);
             if (span) span.innerText = payload.new.precio_actual;
         }).subscribe();
 
-
-        // MODAL DE PAGO
-        function abrirModalPago(precioFinal) {
+        // MODAL VENDEDOR
+        function abrirModalVendedor(precioFinal) {
             const comision = Math.round(precioFinal * 0.05);
-            document.getElementById('modal-monto-display').innerText = '$' + comision.toLocaleString('es-AR');
-            document.getElementById('modal-ganador').classList.add('activo');
+            document.getElementById('modal-monto-vendedor').innerText = '$' + comision.toLocaleString('es-AR');
+            document.getElementById('modal-vendedor').classList.add('activo');
+        }
+        function cerrarModalVendedor() {
+            document.getElementById('modal-vendedor').classList.remove('activo');
         }
 
-        function cerrarModal() {
-            document.getElementById('modal-ganador').classList.remove('activo');
-        }
-
-        // VER DATOS DEL VENDEDOR (solo si pago_confirmado = true)
         async function verDatosVendedor(articuloId, perfilId) {
-            // Verificamos si el pago fue confirmado
-            const { data: art } = await _supabase
-                .from('articulos')
-                .select('pago_confirmado')
-                .eq('id', articuloId)
-                .maybeSingle();
-
+            const { data: art } = await _supabase.from('articulos').select('pago_confirmado').eq('id', articuloId).maybeSingle();
             if (!art || !art.pago_confirmado) {
-                alert("⏳ Tu pago todavía no fue confirmado. Una vez verificado, los datos del vendedor estarán disponibles. Consultas: quiendamas.app@gmail.com");
+                alert("⏳ El vendedor todavía no abonó la comisión. Una vez que lo haga podrás coordinar la entrega. Consultas: quiendamas.app@gmail.com");
                 return;
             }
-
-            const { data: perfil } = await _supabase
-                .from('perfiles')
-                .select('nombre_completo, telefono, direccion')
-                .eq('id', perfilId)
-                .maybeSingle();
-
+            const { data: perfil } = await _supabase.from('perfiles').select('nombre_completo, telefono, direccion').eq('id', perfilId).maybeSingle();
             if (perfil) {
                 alert(`📋 Datos del vendedor:\n\nNombre: ${perfil.nombre_completo}\nTeléfono: ${perfil.telefono}\nDirección: ${perfil.direccion}`);
             } else {
@@ -627,5 +412,3 @@
     </script>
 </body>
 </html>
-
-    
