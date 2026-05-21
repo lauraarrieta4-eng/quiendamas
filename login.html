@@ -8,7 +8,7 @@
     <meta name="mobile-web-app-capable" content="yes">
 
     <title>Quiéndamas - Login</title>
-   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <style>
         body { 
@@ -111,7 +111,7 @@
                 
                 <div class="terminos">
                     <input type="checkbox" id="acepto_terminos" style="width: auto;"> 
-                    Acepto los <a href="terminos.html" target="_blank" style="color:#2e7d32; font-weight:bold;">Términos y Condiciones</a> de Quiéndamas.
+                    Acepto los <a href="terminos.html" target="_blank" style="color:#2e7d32; font-weight:bold;">Términos y Conditions</a> de Quiéndamas.
                 </div>
             </div>
 
@@ -139,6 +139,7 @@
     <script>
         let esRegistro = false;
 
+        // DETECTOR DE ENLACE DE RECUPERACIÓN (REVISIÓN DE TOKEN DE RECOVERY)
         window.addEventListener('DOMContentLoaded', () => {
             const URLActual = window.location.href;
             if (URLActual.includes('type=recovery') || window.location.hash.includes('type=recovery')) {
@@ -169,6 +170,7 @@
             }
         }
 
+        // 🚨 FUNCIÓN CORREGIDA CON EL SISTEMA SEGURO DE OTP PARA ENLACES
         async function recuperarContrasena() {
             const email = document.getElementById('email').value;
             const msg = document.getElementById('mensaje');
@@ -182,6 +184,7 @@
             msg.style.color = "blue";
             msg.innerText = "⏳ Solicitando enlace a Supabase...";
 
+            // Usamos signInWithOtp con la opción de redirección limpia para recuperación
             const { error } = await _supabase.auth.signInWithOtp({
                 email: email,
                 options: {
@@ -198,7 +201,7 @@
                 msg.innerHTML = `
                     <div style="text-align: center; margin-top: 15px; padding: 12px; background-color: #e3f2fd; border-radius: 8px; border: 1px solid #bbdefb;">
                         📧 <b>¡Solicitud enviada!</b><br>
-                        Si el correo está registrado, te llegará un enlace. Buscalo también en SPAM.
+                        Si el correo está registrado, te llegará un enlace para iniciar sesión y cambiar tu contraseña. Buscalo también en SPAM.
                     </div>
                 `;
             }
@@ -225,7 +228,9 @@
             } else {
                 msg.style.color = "green";
                 msg.innerText = "✅ ¡Contraseña cambiada con éxito! Entrando...";
-                setTimeout(() => { window.location.href = "vidriera.html"; }, 1500);
+                setTimeout(() => {
+                    window.location.href = "vidriera.html";
+                }, 1500);
             }
         }
 
@@ -243,14 +248,6 @@
             msg.style.color = "blue";
             msg.innerText = "⏳ Procesando...";
 
-            // Timeout de seguridad
-            const timeoutId = setTimeout(() => {
-                if (msg.innerText === "⏳ Procesando...") {
-                    msg.style.color = "red";
-                    msg.innerText = "⚠️ La conexión tardó demasiado. Verificá tu internet e intentá de nuevo.";
-                }
-            }, 15000);
-
             if (esRegistro) {
                 const nombre = document.getElementById('nombre').value;
                 const dni = document.getElementById('dni').value;
@@ -259,7 +256,6 @@
                 const acepto = document.getElementById('acepto_terminos').checked;
 
                 if (!nombre || !dni || !dir || !acepto) {
-                    clearTimeout(timeoutId);
                     msg.style.color = "red";
                     msg.innerText = "⚠️ Completá todos los datos y aceptá los términos.";
                     return;
@@ -279,8 +275,6 @@
                     }
                 });
                 
-                clearTimeout(timeoutId);
-
                 if (error) {
                     msg.style.color = "red";
                     msg.innerText = "❌ " + error.message;
@@ -293,23 +287,17 @@
                         <div style="text-align: center; margin-top: 15px; padding: 12px; background-color: #e8f5e9; border-radius: 8px; border: 1px solid #c8e6c9;">
                             <span style="font-size: 2rem;">📩</span><br>
                             <b style="color: #2e7d32; font-size: 1.1em;">¡Cuenta creada con éxito!</b><br>
-                            <p style="margin: 8px 0 0 0; color: #333; font-size: 0.95em;">Te enviamos un correo de confirmación. Revisá también la carpeta SPAM.</p>
+                            <p style="margin: 8px 0 0 0; color: #333; font-size: 0.95em;">Te enviamos un correo de confirmación.</p>
                         </div>
                     `;
+                    // Limpieza básica
                     document.getElementById('email').value = "";
                     document.getElementById('password').value = "";
-                    document.getElementById('nombre').value = "";
-                    document.getElementById('dni').value = "";
-                    document.getElementById('direccion').value = "";
-                    document.getElementById('telefono').value = "";
-                    document.getElementById('acepto_terminos').checked = false;
                 }
-
             } else {
+                // INICIO DE SESIÓN NORMAL
                 const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
                 
-                clearTimeout(timeoutId);
-
                 if (error) {
                     msg.style.color = "red";
                     msg.innerText = "❌ " + error.message;
