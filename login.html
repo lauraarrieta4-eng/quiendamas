@@ -162,7 +162,7 @@
 
                 if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
 
-                if (data.user || data.session) {
+               if (!error) {
                     msg.style.color = "green";
                     msg.innerHTML = `<div style="padding:12px;background:#e8f5e9;border-radius:8px;border:1px solid #c8e6c9;text-align:center;"><span style="font-size:2rem;">📩</span><br><b style="color:#2e7d32;">¡Cuenta creada!</b><br><p style="margin:8px 0 0;color:#333;font-size:0.95em;">Revisá tu casilla y también el SPAM para confirmar tu cuenta.</p></div>`;
                     ['email','password','nombre','dni','direccion','telefono'].forEach(id => document.getElementById(id).value = "");
