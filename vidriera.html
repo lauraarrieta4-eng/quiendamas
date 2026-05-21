@@ -207,8 +207,8 @@
             const bloqueInteracciones = document.getElementById('bloque-interacciones');
             if (user) {
                 usuarioActualId = user.id;
-                const { data: perfil } = await _supabase.from('perfiles').select('nombre_completo').eq('id', user.id).maybeSingle();
-                display.innerText = "Hola, " + (perfil && perfil.nombre_completo ? perfil.nombre_completo : "Usuario");
+                const { data: perfil } = await _supabase.from('perfiles').select('nombre_completo, apodo').eq('id', user.id).maybeSingle();
+                display.innerText = "Hola, " + (perfil && (perfil.apodo || perfil.nombre_completo) ? (perfil.apodo || perfil.nombre_completo) : "Usuario");
                 btn.innerText = "🚪 Salir";
                 bloqueInteracciones.style.display = "flex";
             } else {
@@ -297,7 +297,15 @@
             } else if (yaTermino) {
                 boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
             } else {
-                boton = `<button class="btn-oferta" onclick="ofertar('${art.id}')">¡OFERTAR +$500!</button>`;
+                boton = `
+                    <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 500)">+$500</button>
+                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 1000)">+$1.000</button>
+                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 5000)">+$5.000</button>
+                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 10000)">+$10.000</button>
+                    </div>
+                `;
+
             }
 
             const todasFotos = [art.foto_url].concat(art.fotos_extra || []).filter(Boolean);
@@ -375,7 +383,15 @@
                     } else if (yaTermino) {
                         boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
                     } else {
-                        boton = `<button class="btn-oferta" onclick="ofertar('${art.id}')">¡OFERTAR +$500!</button>`;
+                        boton = `
+                    <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 500)">+$500</button>
+                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 1000)">+$1.000</button>
+                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 5000)">+$5.000</button>
+                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 10000)">+$10.000</button>
+                    </div>
+                `;
+
                     }
 
                     const div = document.createElement('div');
@@ -417,13 +433,13 @@
             }, 1000);
         }
 
-        async function ofertar(id) {
+        async function ofertar(id, monto = 500) {
             const { data: { user } } = await _supabase.auth.getUser();
             if (!user) { alert("⚠️ Tenés que ingresar para ofertar."); window.location.href = 'login.html'; return; }
             const { data: art } = await _supabase.from('articulos').select('finaliza_en').eq('id', id).maybeSingle();
             if (art && new Date(art.finaliza_en).getTime() < Date.now()) { alert("🛑 Esta subasta ya terminó."); return; }
             const span = document.getElementById(`precio-${id}`);
-            const nuevo = parseFloat(span.innerText) + 500;
+            const nuevo = parseFloat(span.innerText) + monto;
             const { error } = await _supabase.from('articulos').update({ "precio_actual": nuevo }).eq('id', id);
             if (error) { alert("Error al ofertar: " + error.message); return; }
             await _supabase.from('ofertas').insert([{ articulo_id: id, perfil_id: user.id, monto: nuevo }]);
