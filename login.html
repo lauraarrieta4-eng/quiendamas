@@ -8,73 +8,18 @@
     <meta name="mobile-web-app-capable" content="yes">
 
     <title>Quiéndamas - Login</title>
-   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <style>
-        body { 
-            font-family: sans-serif; 
-            background-color: #f1f8e9; 
-            display: flex; 
-            justify-content: center; 
-            padding: 15px; 
-            margin: 0;
-            min-height: 100vh;
-            align-items: center; 
-        }
-        .card { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-            width: 100%; 
-            max-width: 400px; 
-            box-sizing: border-box;
-        }
+        body { font-family: sans-serif; background-color: #f1f8e9; display: flex; justify-content: center; padding: 15px; margin: 0; min-height: 100vh; align-items: center; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; box-sizing: border-box; }
         h2 { color: #2e7d32; text-align: center; margin-top: 0; }
         label { display: block; margin-top: 15px; font-weight: bold; font-size: 0.9em; color: #333; }
-        
-        .password-container {
-            position: relative;
-            width: 100%;
-        }
-        
-        input { 
-            width: 100%; 
-            padding: 12px; 
-            margin-top: 5px; 
-            border: 1px solid #ccc; 
-            border-radius: 8px; 
-            box-sizing: border-box; 
-            font-size: 16px; 
-        }
-        
-        .password-container input {
-            padding-right: 45px;
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-3px);
-            cursor: pointer;
-            font-size: 1.2rem;
-            user-select: none;
-            color: #666;
-        }
-        
-        button { 
-            background-color: #43a047; 
-            color: white; 
-            border: none; 
-            padding: 15px; 
-            width: 100%; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            margin-top: 25px; 
-            font-size: 1rem;
-        }
+        .password-container { position: relative; width: 100%; }
+        input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        .password-container input { padding-right: 45px; }
+        .toggle-password { position: absolute; right: 12px; top: 50%; transform: translateY(-3px); cursor: pointer; font-size: 1.2rem; user-select: none; color: #666; }
+        button { background-color: #43a047; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 25px; font-size: 1rem; }
         button:hover { background-color: #2e7d32; }
         .toggle { text-align: center; margin-top: 20px; font-size: 0.9em; color: #2e7d32; cursor: pointer; text-decoration: underline; font-weight: bold; }
         .recuperar-link { text-align: center; margin-top: 12px; font-size: 0.85em; color: #666; cursor: pointer; text-decoration: underline; display: block; }
@@ -91,15 +36,14 @@
             <div id="campos-comunes">
                 <label>Email:</label>
                 <input type="email" id="email" placeholder="ejemplo@correo.com">
-                
                 <label>Contraseña:</label>
                 <div class="password-container">
                     <input type="password" id="password" placeholder="******">
-                    <span class="toggle-password" onclick="alternarVisibilidadContrasena('password')">👁️</span>
+                    <span class="toggle-password" onclick="alternarPassword('password')">👁️</span>
                 </div>
             </div>
 
-            <div id="campos-registro" style="display: none;">
+            <div id="campos-registro" style="display:none;">
                 <label>Nombre Completo:</label>
                 <input type="text" id="nombre">
                 <label>DNI:</label>
@@ -108,10 +52,9 @@
                 <input type="text" id="direccion">
                 <label>Teléfono:</label>
                 <input type="text" id="telefono">
-                
                 <div class="terminos">
-                    <input type="checkbox" id="acepto_terminos" style="width: auto;"> 
-                    Acepto los <a href="terminos.html" target="_blank" style="color:#2e7d32; font-weight:bold;">Términos y Condiciones</a> de Quiéndamas.
+                    <input type="checkbox" id="acepto_terminos" style="width:auto;">
+                    Acepto los <a href="terminos.html" target="_blank" style="color:#2e7d32;font-weight:bold;">Términos y Condiciones</a> de Quiéndamas.
                 </div>
             </div>
 
@@ -120,28 +63,26 @@
             <div id="toggle-link" class="toggle" onclick="cambiarModo()">¿No tenés cuenta? Registrate aquí</div>
         </div>
 
-        <div id="contenedor-recuperacion" style="display: none;">
+        <div id="contenedor-recuperacion" style="display:none;">
             <h2>Nueva Contraseña</h2>
-            <p style="text-align: center; color: #555; font-size: 0.9em;">Escribí tu nueva clave de acceso para Quiéndamas.</p>
-            
+            <p style="text-align:center;color:#555;font-size:0.9em;">Escribí tu nueva clave de acceso.</p>
             <label>Nueva Contraseña:</label>
             <div class="password-container">
                 <input type="password" id="nueva-password" placeholder="Mínimo 6 caracteres">
-                <span class="toggle-password" onclick="alternarVisibilidadContrasena('nueva-password')">👁️</span>
+                <span class="toggle-password" onclick="alternarPassword('nueva-password')">👁️</span>
             </div>
-            
             <button onclick="guardarNuevaContrasena()">Guardar y Entrar</button>
         </div>
-        
+
         <div id="mensaje"></div>
     </div>
 
     <script>
         let esRegistro = false;
 
+        // Detectar si viene de recuperación de contraseña
         window.addEventListener('DOMContentLoaded', () => {
-            const URLActual = window.location.href;
-            if (URLActual.includes('type=recovery') || window.location.hash.includes('type=recovery')) {
+            if (window.location.href.includes('type=recovery') || window.location.hash.includes('type=recovery')) {
                 document.getElementById('contenedor-principal').style.display = 'none';
                 document.getElementById('contenedor-recuperacion').style.display = 'block';
             }
@@ -157,76 +98,35 @@
             document.getElementById('mensaje').innerText = "";
         }
 
-        function alternarVisibilidadContrasena(idInput) {
-            const inputPass = document.getElementById(idInput);
-            const iconoOjo = inputPass.nextElementSibling;
-            if (inputPass.type === "password") {
-                inputPass.type = "text";
-                iconoOjo.innerText = "🔒";
-            } else {
-                inputPass.type = "password";
-                iconoOjo.innerText = "👁️";
-            }
+        function alternarPassword(idInput) {
+            const input = document.getElementById(idInput);
+            const ojo = input.nextElementSibling;
+            input.type = input.type === "password" ? "text" : "password";
+            ojo.innerText = input.type === "password" ? "👁️" : "🔒";
         }
 
         async function recuperarContrasena() {
             const email = document.getElementById('email').value;
             const msg = document.getElementById('mensaje');
-
-            if (!email) {
-                msg.style.color = "red";
-                msg.innerText = "⚠️ Escribí primero tu Email en el casillero de arriba para enviarte el enlace.";
-                return;
-            }
-
+            if (!email) { msg.style.color = "red"; msg.innerText = "⚠️ Escribí tu email arriba primero."; return; }
             msg.style.color = "blue";
-            msg.innerText = "⏳ Solicitando enlace a Supabase...";
-
+            msg.innerText = "⏳ Enviando enlace...";
             const { error } = await _supabase.auth.signInWithOtp({
-                email: email,
-                options: {
-                    shouldCreateUser: false,
-                    emailRedirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html?type=recovery'
-                }
+                email,
+                options: { shouldCreateUser: false, emailRedirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html?type=recovery' }
             });
-
-            if (error) {
-                msg.style.color = "red";
-                msg.innerText = "❌ " + error.message;
-            } else {
-                msg.style.color = "green";
-                msg.innerHTML = `
-                    <div style="text-align: center; margin-top: 15px; padding: 12px; background-color: #e3f2fd; border-radius: 8px; border: 1px solid #bbdefb;">
-                        📧 <b>¡Solicitud enviada!</b><br>
-                        Si el correo está registrado, te llegará un enlace. Buscalo también en SPAM.
-                    </div>
-                `;
-            }
+            if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; }
+            else { msg.style.color = "green"; msg.innerHTML = `<div style="padding:12px;background:#e3f2fd;border-radius:8px;border:1px solid #bbdefb;">📧 <b>¡Enlace enviado!</b><br>Revisá tu casilla y también el SPAM.</div>`; }
         }
 
         async function guardarNuevaContrasena() {
-            const nuevaPassword = document.getElementById('nueva-password').value;
+            const pass = document.getElementById('nueva-password').value;
             const msg = document.getElementById('mensaje');
-
-            if (!nuevaPassword || nuevaPassword.length < 6) {
-                msg.style.color = "red";
-                msg.innerText = "⚠️ La contraseña debe tener al menos 6 caracteres.";
-                return;
-            }
-
-            msg.style.color = "blue";
-            msg.innerText = "⏳ Guardando nueva contraseña...";
-
-            const { error } = await _supabase.auth.updateUser({ password: nuevaPassword });
-
-            if (error) {
-                msg.style.color = "red";
-                msg.innerText = "❌ " + error.message;
-            } else {
-                msg.style.color = "green";
-                msg.innerText = "✅ ¡Contraseña cambiada con éxito! Entrando...";
-                setTimeout(() => { window.location.href = "vidriera.html"; }, 1500);
-            }
+            if (!pass || pass.length < 6) { msg.style.color = "red"; msg.innerText = "⚠️ Mínimo 6 caracteres."; return; }
+            msg.style.color = "blue"; msg.innerText = "⏳ Guardando...";
+            const { error } = await _supabase.auth.updateUser({ password: pass });
+            if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; }
+            else { msg.style.color = "green"; msg.innerText = "✅ ¡Contraseña cambiada! Entrando..."; setTimeout(() => { window.location.href = "vidriera.html"; }, 1500); }
         }
 
         async function ejecutarAccion() {
@@ -234,22 +134,10 @@
             const password = document.getElementById('password').value;
             const msg = document.getElementById('mensaje');
 
-            if (!email || !password) {
-                msg.style.color = "red";
-                msg.innerText = "⚠️ Completá email y contraseña.";
-                return;
-            }
+            if (!email || !password) { msg.style.color = "red"; msg.innerText = "⚠️ Completá email y contraseña."; return; }
 
             msg.style.color = "blue";
             msg.innerText = "⏳ Procesando...";
-
-            // Timeout de seguridad
-            const timeoutId = setTimeout(() => {
-                if (msg.innerText === "⏳ Procesando...") {
-                    msg.style.color = "red";
-                    msg.innerText = "⚠️ La conexión tardó demasiado. Verificá tu internet e intentá de nuevo.";
-                }
-            }, 15000);
 
             if (esRegistro) {
                 const nombre = document.getElementById('nombre').value;
@@ -259,83 +147,51 @@
                 const acepto = document.getElementById('acepto_terminos').checked;
 
                 if (!nombre || !dni || !dir || !acepto) {
-                    clearTimeout(timeoutId);
                     msg.style.color = "red";
                     msg.innerText = "⚠️ Completá todos los datos y aceptá los términos.";
                     return;
                 }
 
-                const { data, error } = await _supabase.auth.signUp({ 
-                    email, 
-                    password,
+                const { data, error } = await _supabase.auth.signUp({
+                    email, password,
                     options: {
-                        data: {
-                            nombre_completo: nombre,
-                            dni: dni,
-                            direccion: dir,
-                            telefono: tel
-                        },
+                        data: { nombre_completo: nombre, dni, direccion: dir, telefono: tel },
                         emailRedirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html'
                     }
                 });
-                
-                clearTimeout(timeoutId);
 
-                if (error) {
-                    msg.style.color = "red";
-                    msg.innerText = "❌ " + error.message;
-                    return;
-                }
+                if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
 
                 if (data.user) {
                     msg.style.color = "green";
-                    msg.innerHTML = `
-                        <div style="text-align: center; margin-top: 15px; padding: 12px; background-color: #e8f5e9; border-radius: 8px; border: 1px solid #c8e6c9;">
-                            <span style="font-size: 2rem;">📩</span><br>
-                            <b style="color: #2e7d32; font-size: 1.1em;">¡Cuenta creada con éxito!</b><br>
-                            <p style="margin: 8px 0 0 0; color: #333; font-size: 0.95em;">Te enviamos un correo de confirmación. Revisá también la carpeta SPAM.</p>
-                        </div>
-                    `;
-                    document.getElementById('email').value = "";
-                    document.getElementById('password').value = "";
-                    document.getElementById('nombre').value = "";
-                    document.getElementById('dni').value = "";
-                    document.getElementById('direccion').value = "";
-                    document.getElementById('telefono').value = "";
+                    msg.innerHTML = `<div style="padding:12px;background:#e8f5e9;border-radius:8px;border:1px solid #c8e6c9;text-align:center;"><span style="font-size:2rem;">📩</span><br><b style="color:#2e7d32;">¡Cuenta creada!</b><br><p style="margin:8px 0 0;color:#333;font-size:0.95em;">Revisá tu casilla y también el SPAM para confirmar tu cuenta.</p></div>`;
+                    ['email','password','nombre','dni','direccion','telefono'].forEach(id => document.getElementById(id).value = "");
                     document.getElementById('acepto_terminos').checked = false;
                 }
 
             } else {
                 const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-                
-                clearTimeout(timeoutId);
 
-                if (error) {
-                    msg.style.color = "red";
-                    msg.innerText = "❌ " + error.message;
-              } else {
-                    // Chequeamos si ya existe el perfil
-                    const { data: perfilExistente } = await _supabase
-                        .from('perfiles')
-                        .select('id')
-                        .eq('id', data.user.id)
-                        .maybeSingle();
-                    
-                    if (!perfilExistente) {
-                        const meta = data.user.user_metadata;
-                        await _supabase.from('perfiles').insert([{ 
-                            id: data.user.id, 
-                            nombre_completo: meta.nombre_completo || "Usuario",
-                            dni: meta.dni || "",
-                            direccion: meta.direccion || "",
-                            telefono: meta.telefono || ""
-                        }]);
-                    }
+                if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
 
-                    msg.style.color = "green";
-                    msg.innerText = "✅ ¡Entrando...";
-                    setTimeout(() => { window.location.href = "vidriera.html"; }, 1000);
+                // Crear perfil si no existe
+                const { data: perfilExistente } = await _supabase
+                    .from('perfiles').select('id').eq('id', data.user.id).maybeSingle();
+
+                if (!perfilExistente) {
+                    const meta = data.user.user_metadata;
+                    await _supabase.from('perfiles').insert([{
+                        id: data.user.id,
+                        nombre_completo: meta.nombre_completo || "Usuario",
+                        dni: meta.dni || "",
+                        direccion: meta.direccion || "",
+                        telefono: meta.telefono || ""
+                    }]);
                 }
+
+                msg.style.color = "green";
+                msg.innerText = "✅ ¡Entrando...";
+                setTimeout(() => { window.location.href = "vidriera.html"; }, 1000);
             }
         }
     </script>
