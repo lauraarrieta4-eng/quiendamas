@@ -313,7 +313,25 @@
                 if (error) {
                     msg.style.color = "red";
                     msg.innerText = "❌ " + error.message;
-                } else {
+              } else {
+                    // Chequeamos si ya existe el perfil
+                    const { data: perfilExistente } = await _supabase
+                        .from('perfiles')
+                        .select('id')
+                        .eq('id', data.user.id)
+                        .maybeSingle();
+                    
+                    if (!perfilExistente) {
+                        const meta = data.user.user_metadata;
+                        await _supabase.from('perfiles').insert([{ 
+                            id: data.user.id, 
+                            nombre_completo: meta.nombre_completo || "Usuario",
+                            dni: meta.dni || "",
+                            direccion: meta.direccion || "",
+                            telefono: meta.telefono || ""
+                        }]);
+                    }
+
                     msg.style.color = "green";
                     msg.innerText = "✅ ¡Entrando...";
                     setTimeout(() => { window.location.href = "vidriera.html"; }, 1000);
