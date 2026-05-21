@@ -163,7 +163,7 @@
     </div>
 
     <!-- FILTROS SERVICIOS -->
-    <div class="filtros-wrapper">
+    <div class="filtros-wrapper" id="wrapper-servicios" style="display:none;">
         <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-servicios', -200)">‹</button>
         <div class="filtros" id="filtros-servicios" style="display:none;">
         <button class="btn-filtro" onclick="cargarArticulos('Todos-Servicios')">Todos</button>
@@ -194,6 +194,7 @@
             document.getElementById('btn-servicios').classList.toggle('activo', tipo === 'servicios');
             document.getElementById('filtros-productos').style.display = tipo === 'productos' ? 'flex' : 'none';
             document.getElementById('filtros-servicios').style.display = tipo === 'servicios' ? 'flex' : 'none';
+            document.getElementById('wrapper-servicios').style.display = tipo === 'servicios' ? 'block' : 'none';
             document.getElementById('input-busqueda').value = '';
             if (tipo === 'productos') cargarArticulos('Todos');
             else cargarArticulos('Todos-Servicios');
