@@ -7,13 +7,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <title>Quiéndamas - Login</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+   <title>Quiéndamas - Login</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2.39.8/dist/umd/supabase.js"></script>
     <script>
-        // Conexión propia y forzada con S mayúscula aislada para evitar el error "not defined"
+        // Conexión propia y forzada con la librería unpkg
         const URL_PROPIO = 'https://bzznyvzzwfqqxqddjqwh.supabase.co';
         const KEY_PROPIO = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6em55dnp6d2ZxcXhxZGRqcXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMjQ2NDMsImV4cCI6MjA5MzkwMDY0M30.2WijLJ-wjL5o6d5NeVAow0VpNOpyxMYzX6Q69bd0o0I';
-        const _supabase = Supabase.createClient(URL_PROPIO, KEY_PROPIO);
+        const _supabase = supabase.createClient(URL_PROPIO, KEY_PROPIO);
     </script>
     <style>
         body { 
