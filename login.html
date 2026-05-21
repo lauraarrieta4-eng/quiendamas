@@ -7,14 +7,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
 
-   <title>Quiéndamas - Login</title>
-    <script src="https://unpkg.com/@supabase/supabase-js@2.39.8/dist/umd/supabase.js"></script>
-    <script>
-        // Conexión propia y forzada con la librería unpkg
-        const URL_PROPIO = 'https://bzznyvzzwfqqxqddjqwh.supabase.co';
-        const KEY_PROPIO = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6em55dnp6d2ZxcXhxZGRqcXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMjQ2NDMsImV4cCI6MjA5MzkwMDY0M30.2WijLJ-wjL5o6d5NeVAow0VpNOpyxMYzX6Q69bd0o0I';
-        const _supabase = supabase.createClient(URL_PROPIO, KEY_PROPIO);
-    </script>
+    <title>Quiéndamas - Login</title>
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
     <style>
         body { 
             font-family: sans-serif; 
@@ -92,6 +87,7 @@
     <div class="card">
         <div id="contenedor-principal">
             <h2 id="titulo">Ingresar</h2>
+            
             <div id="campos-comunes">
                 <label>Email:</label>
                 <input type="email" id="email" placeholder="ejemplo@correo.com">
@@ -143,7 +139,6 @@
     <script>
         let esRegistro = false;
 
-        // DETECTOR DE ENLACE DE RECUPERACIÓN (REVISIÓN DE TOKEN DE RECOVERY)
         window.addEventListener('DOMContentLoaded', () => {
             const URLActual = window.location.href;
             if (URLActual.includes('type=recovery') || window.location.hash.includes('type=recovery')) {
@@ -203,7 +198,7 @@
                 msg.innerHTML = `
                     <div style="text-align: center; margin-top: 15px; padding: 12px; background-color: #e3f2fd; border-radius: 8px; border: 1px solid #bbdefb;">
                         📧 <b>¡Solicitud enviada!</b><br>
-                        Si el correo está registrado, te llegará un enlace para iniciar sesión y cambiar tu contraseña. Buscalo también en SPAM.
+                        Si el correo está registrado, te llegará un enlace. Buscalo también en SPAM.
                     </div>
                 `;
             }
@@ -230,9 +225,7 @@
             } else {
                 msg.style.color = "green";
                 msg.innerText = "✅ ¡Contraseña cambiada con éxito! Entrando...";
-                setTimeout(() => {
-                    window.location.href = "vidriera.html";
-                }, 1500);
+                setTimeout(() => { window.location.href = "vidriera.html"; }, 1500);
             }
         }
 
@@ -250,6 +243,14 @@
             msg.style.color = "blue";
             msg.innerText = "⏳ Procesando...";
 
+            // Timeout de seguridad
+            const timeoutId = setTimeout(() => {
+                if (msg.innerText === "⏳ Procesando...") {
+                    msg.style.color = "red";
+                    msg.innerText = "⚠️ La conexión tardó demasiado. Verificá tu internet e intentá de nuevo.";
+                }
+            }, 15000);
+
             if (esRegistro) {
                 const nombre = document.getElementById('nombre').value;
                 const dni = document.getElementById('dni').value;
@@ -258,6 +259,7 @@
                 const acepto = document.getElementById('acepto_terminos').checked;
 
                 if (!nombre || !dni || !dir || !acepto) {
+                    clearTimeout(timeoutId);
                     msg.style.color = "red";
                     msg.innerText = "⚠️ Completá todos los datos y aceptá los términos.";
                     return;
@@ -277,6 +279,8 @@
                     }
                 });
                 
+                clearTimeout(timeoutId);
+
                 if (error) {
                     msg.style.color = "red";
                     msg.innerText = "❌ " + error.message;
@@ -289,15 +293,23 @@
                         <div style="text-align: center; margin-top: 15px; padding: 12px; background-color: #e8f5e9; border-radius: 8px; border: 1px solid #c8e6c9;">
                             <span style="font-size: 2rem;">📩</span><br>
                             <b style="color: #2e7d32; font-size: 1.1em;">¡Cuenta creada con éxito!</b><br>
-                            <p style="margin: 8px 0 0 0; color: #333; font-size: 0.95em;">Te enviamos un correo de confirmación.</p>
+                            <p style="margin: 8px 0 0 0; color: #333; font-size: 0.95em;">Te enviamos un correo de confirmación. Revisá también la carpeta SPAM.</p>
                         </div>
                     `;
                     document.getElementById('email').value = "";
                     document.getElementById('password').value = "";
+                    document.getElementById('nombre').value = "";
+                    document.getElementById('dni').value = "";
+                    document.getElementById('direccion').value = "";
+                    document.getElementById('telefono').value = "";
+                    document.getElementById('acepto_terminos').checked = false;
                 }
+
             } else {
                 const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
                 
+                clearTimeout(timeoutId);
+
                 if (error) {
                     msg.style.color = "red";
                     msg.innerText = "❌ " + error.message;
