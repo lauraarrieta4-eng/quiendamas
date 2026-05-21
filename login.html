@@ -160,7 +160,7 @@
                     }
                 });
 
-                if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
+              if (data.user)  { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
 
                if (!error) {
                     msg.style.color = "green";
