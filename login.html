@@ -87,7 +87,6 @@
     <div class="card">
         <div id="contenedor-principal">
             <h2 id="titulo">Ingresar</h2>
-            
             <div id="campos-comunes">
                 <label>Email:</label>
                 <input type="email" id="email" placeholder="ejemplo@correo.com">
@@ -111,7 +110,7 @@
                 
                 <div class="terminos">
                     <input type="checkbox" id="acepto_terminos" style="width: auto;"> 
-                    Acepto los <a href="terminos.html" target="_blank" style="color:#2e7d32; font-weight:bold;">Términos y Conditions</a> de Quiéndamas.
+                    Acepto los <a href="terminos.html" target="_blank" style="color:#2e7d32; font-weight:bold;">Términos y Condiciones</a> de Quiéndamas.
                 </div>
             </div>
 
@@ -170,7 +169,6 @@
             }
         }
 
-        // 🚨 FUNCIÓN CORREGIDA CON EL SISTEMA SEGURO DE OTP PARA ENLACES
         async function recuperarContrasena() {
             const email = document.getElementById('email').value;
             const msg = document.getElementById('mensaje');
@@ -184,7 +182,6 @@
             msg.style.color = "blue";
             msg.innerText = "⏳ Solicitando enlace a Supabase...";
 
-            // Usamos signInWithOtp con la opción de redirección limpia para recuperación
             const { error } = await _supabase.auth.signInWithOtp({
                 email: email,
                 options: {
@@ -290,12 +287,10 @@
                             <p style="margin: 8px 0 0 0; color: #333; font-size: 0.95em;">Te enviamos un correo de confirmación.</p>
                         </div>
                     `;
-                    // Limpieza básica
                     document.getElementById('email').value = "";
                     document.getElementById('password').value = "";
                 }
             } else {
-                // INICIO DE SESIÓN NORMAL
                 const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
                 
                 if (error) {
