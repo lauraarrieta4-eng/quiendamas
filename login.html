@@ -26,6 +26,7 @@
         .recuperar-link:hover { color: #2e7d32; }
         .terminos { margin-top: 15px; font-size: 0.8em; color: #444; background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px solid #eee; }
         #mensaje { margin-top: 15px; text-align: center; font-size: 0.9em; font-weight: bold; line-height: 1.4; }
+        .hint { font-size: 0.75em; color: #888; margin-top: 3px; }
     </style>
 </head>
 <body>
@@ -44,14 +45,22 @@
             </div>
 
             <div id="campos-registro" style="display:none;">
-                <label>Nombre Completo:</label>
-                <input type="text" id="nombre">
-                <label>DNI:</label>
-                <input type="text" id="dni">
-                <label>Dirección (para envíos):</label>
-                <input type="text" id="direccion">
-                <label>Teléfono:</label>
-                <input type="text" id="telefono">
+                <label>Nombre Completo: *</label>
+                <input type="text" id="nombre" placeholder="Como figura en tu DNI">
+                
+                <label>Apodo / Nombre de usuario: *</label>
+                <input type="text" id="apodo" placeholder="Ej: juanito99 (visible en tus publicaciones)">
+                <p class="hint">Solo letras, números y guiones bajos. Sin espacios.</p>
+
+                <label>DNI: *</label>
+                <input type="text" id="dni" placeholder="Sin puntos ni espacios">
+                
+                <label>Dirección (para envíos): *</label>
+                <input type="text" id="direccion" placeholder="Calle, número, ciudad">
+                
+                <label>Teléfono: *</label>
+                <input type="text" id="telefono" placeholder="Ej: 2944123456">
+                
                 <div class="terminos">
                     <input type="checkbox" id="acepto_terminos" style="width:auto;">
                     Acepto los <a href="terminos.html" target="_blank" style="color:#2e7d32;font-weight:bold;">Términos y Condiciones</a> de Quiéndamas.
@@ -80,7 +89,6 @@
     <script>
         let esRegistro = false;
 
-        // Detectar si viene de recuperación de contraseña
         window.addEventListener('DOMContentLoaded', () => {
             if (window.location.href.includes('type=recovery') || window.location.hash.includes('type=recovery')) {
                 document.getElementById('contenedor-principal').style.display = 'none';
@@ -140,49 +148,89 @@
             msg.innerText = "⏳ Procesando...";
 
             if (esRegistro) {
-                const nombre = document.getElementById('nombre').value;
-                const dni = document.getElementById('dni').value;
-                const dir = document.getElementById('direccion').value;
-                const tel = document.getElementById('telefono').value;
+                const nombre = document.getElementById('nombre').value.trim();
+                const apodo = document.getElementById('apodo').value.trim();
+                const dni = document.getElementById('dni').value.trim();
+                const dir = document.getElementById('direccion').value.trim();
+                const tel = document.getElementById('telefono').value.trim();
                 const acepto = document.getElementById('acepto_terminos').checked;
 
-                if (!nombre || !dni || !dir || !acepto) {
+                // Validaciones
+                if (!nombre || !apodo || !dni || !dir || !tel || !acepto) {
                     msg.style.color = "red";
-                    msg.innerText = "⚠️ Completá todos los datos y aceptá los términos.";
+                    msg.innerText = "⚠️ Todos los campos son obligatorios y debés aceptar los términos.";
+                    return;
+                }
+
+                // Validar formato del apodo
+                if (!/^[a-zA-Z0-9_]+$/.test(apodo)) {
+                    msg.style.color = "red";
+                    msg.innerText = "⚠️ El apodo solo puede tener letras, números y guiones bajos. Sin espacios.";
+                    return;
+                }
+
+                // Verificar que el apodo no esté en uso
+                const { data: apodoExistente } = await _supabase
+                    .from('perfiles')
+                    .select('id')
+                    .eq('apodo', apodo)
+                    .maybeSingle();
+
+                if (apodoExistente) {
+                    msg.style.color = "red";
+                    msg.innerText = "❌ Ese apodo ya está en uso. Elegí otro.";
                     return;
                 }
 
                 const { data, error } = await _supabase.auth.signUp({
                     email, password,
                     options: {
-                        data: { nombre_completo: nombre, dni, direccion: dir, telefono: tel },
+                        data: { nombre_completo: nombre, apodo, dni, direccion: dir, telefono: tel },
                         emailRedirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html'
                     }
                 });
 
-              if (data.user)  { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
+                if (error) {
+                    msg.style.color = "red";
+                    msg.innerText = "❌ " + error.message;
+                    return;
+                }
 
-               if (!error) {
+                if (data.user) {
                     msg.style.color = "green";
-                    msg.innerHTML = `<div style="padding:12px;background:#e8f5e9;border-radius:8px;border:1px solid #c8e6c9;text-align:center;"><span style="font-size:2rem;">📩</span><br><b style="color:#2e7d32;">¡Cuenta creada!</b><br><p style="margin:8px 0 0;color:#333;font-size:0.95em;">Revisá tu casilla y también el SPAM para confirmar tu cuenta.</p></div>`;
-                    ['email','password','nombre','dni','direccion','telefono'].forEach(id => document.getElementById(id).value = "");
+                    msg.innerHTML = `
+                        <div style="text-align:center;margin-top:15px;padding:12px;background-color:#e8f5e9;border-radius:8px;border:1px solid #c8e6c9;">
+                            <span style="font-size:2rem;">📩</span><br>
+                            <b style="color:#2e7d32;font-size:1.1em;">¡Cuenta creada con éxito!</b><br>
+                            <p style="margin:8px 0 0 0;color:#333;font-size:0.95em;">Te enviamos un correo de confirmación. Revisá también el SPAM.</p>
+                        </div>
+                    `;
+                    ['email','password','nombre','apodo','dni','direccion','telefono'].forEach(id => document.getElementById(id).value = "");
                     document.getElementById('acepto_terminos').checked = false;
                 }
 
             } else {
                 const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
 
-                if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
+                if (error) {
+                    msg.style.color = "red";
+                    msg.innerText = "❌ " + error.message;
+                    return;
+                }
 
                 // Crear perfil si no existe
                 const { data: perfilExistente } = await _supabase
-                    .from('perfiles').select('id').eq('id', data.user.id).maybeSingle();
+                    .from('perfiles')
+                    .select('id')
+                    .eq('id', data.user.id)
+                    .maybeSingle();
 
                 if (!perfilExistente) {
                     const meta = data.user.user_metadata;
                     await _supabase.from('perfiles').insert([{
                         id: data.user.id,
                         nombre_completo: meta.nombre_completo || "Usuario",
+                        apodo: meta.apodo || meta.nombre_completo || "Usuario",
                         dni: meta.dni || "",
                         direccion: meta.direccion || "",
                         telefono: meta.telefono || ""
@@ -190,7 +238,7 @@
                 }
 
                 msg.style.color = "green";
-                msg.innerText = "✅ ¡Entrando...";
+                msg.innerText = "✅ ¡Hola de nuevo! Entrando...";
                 setTimeout(() => { window.location.href = "vidriera.html"; }, 1000);
             }
         }
