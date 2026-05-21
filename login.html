@@ -7,10 +7,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <title>Quiéndamas - Login</title>
+   <title>Quiéndamas - Login</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
-    <style>
+    <script>
+        // Forzamos la conexión limpia con la S mayúscula solo para esta pantalla
+        const URL_PROPIO = 'https://bzznyvzzwfqqxqddjqwh.supabase.co';
+        const KEY_PROPIO = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6em55dnp6d2ZxcXhxZGRqcXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMjQ2NDMsImV4cCI6MjA5MzkwMDY0M30.2WijLJ-wjL5o6d5NeVAow0VpNOpyxMYzX6Q69bd0o0I';
+        const _supabase = Supabase.createClient(URL_PROPIO, KEY_PROPIO);
+    </script>
         body { 
             font-family: sans-serif; 
             background-color: #f1f8e9; 
