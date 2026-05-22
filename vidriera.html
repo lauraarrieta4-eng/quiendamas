@@ -69,8 +69,9 @@
         .carrusel-contador { color: white; font-size: 0.95em; font-weight: bold; min-width: 50px; text-align: center; }
         .carrusel-cerrar { position: absolute; top: 15px; right: 18px; background: rgba(255,255,255,0.15); color: white; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 1.2em; cursor: pointer; }
         .foto-art { cursor: pointer; }
+        .apodo-art { font-size: 0.78em; color: #888; margin-top: 3px; margin-bottom: 5px; }
         .foto-art:hover { opacity: 0.9; }
-        .badge-fotos { position: absolute; bottom: 215px; left: 20px; background: rgba(0,0,0,0.55); color: white; font-size: 0.72em; padding: 3px 8px; border-radius: 10px; pointer-events: none; }
+        .badge-fotos { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.55); color: white; font-size: 0.72em; padding: 3px 8px; border-radius: 10px; pointer-events: none; }
 
         .btn-ganador { background: linear-gradient(135deg, #f9a825, #f57f17); color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; }
     </style>
@@ -318,12 +319,18 @@
                 <img src="${art.foto_url || ''}" class="foto-art" data-fotos-id="${artId}" style="cursor:pointer;">
                 ${badgeFotos}
                 <div class="titulo">${art.Titulo}</div>
+                <div class="apodo-art" id="apodo-${art.id}">👤 Cargando...</div>
                 <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
                 <div class="precio">$<span id="precio-${art.id}">${art.precio_actual || art.precio_base}</span></div>
                 <div class="reloj" id="reloj-${art.id}">⏳ Cargando...</div>
                 ${boton}
             `;
             lista.appendChild(div);
+            // Cargar apodo del vendedor
+            _supabase.from('perfiles').select('apodo, nombre_completo').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
+                const apodoEl = document.getElementById('apodo-' + art.id);
+                if (apodoEl && perfil) apodoEl.innerText = '👤 ' + (perfil.apodo || perfil.nombre_completo || 'Usuario');
+            });
             // Guardar fotos en cache y asignar click
             fotosCache[art.id] = todasFotos;
             const imgEl = div.querySelector('.foto-art');
