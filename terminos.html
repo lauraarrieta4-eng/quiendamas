@@ -8,221 +8,57 @@
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap');
 
         :root {
-            --verde: #2e7d32;
-            --verde-claro: #43a047;
-            --verde-fondo: #f1f8e9;
-            --verde-medio: #e8f5e9;
-            --texto: #1a1a1a;
-            --texto-suave: #555;
+            --rosa: #E04891;
+            --lila: #E1B7ED;
+            --rosa-claro: #F5E1E2;
+            --verde-suave: #D1E389;
+            --verde-lima: #B9DE51;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans 3', sans-serif; background: var(--rosa-claro); color: #222; line-height: 1.7; }
 
-        body {
-            font-family: 'Source Sans 3', sans-serif;
-            background-color: var(--verde-fondo);
-            color: var(--texto);
-            line-height: 1.7;
-        }
-
-        /* HEADER */
         .header {
-            background: var(--verde);
+            background: var(--rosa);
             color: white;
-            padding: 30px 20px;
+            padding: 35px 20px;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50px; right: -50px;
-            width: 200px; height: 200px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 50%;
-        }
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -30px; left: -30px;
-            width: 150px; height: 150px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 50%;
-        }
-        .header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2em;
-            margin-bottom: 5px;
-            position: relative;
-            z-index: 1;
-        }
-        .header p {
-            font-size: 0.9em;
-            opacity: 0.85;
-            position: relative;
-            z-index: 1;
-        }
+        .header::before { content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.07); border-radius: 50%; }
+        .header::after { content: ''; position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.07); border-radius: 50%; }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 2em; margin-bottom: 5px; position: relative; z-index: 1; }
+        .header p { font-size: 0.9em; opacity: 0.9; position: relative; z-index: 1; }
 
-        /* NAVEGACIÓN */
-        .nav-btn {
-            display: inline-block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            background: white;
-            color: var(--verde);
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9em;
-            text-decoration: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .nav-center { text-align: center; }
+        .nav-center { text-align: center; margin: 20px 0; }
+        .nav-btn { display: inline-block; padding: 10px 22px; background: white; color: var(--rosa); border-radius: 25px; font-weight: 700; font-size: 0.9em; text-decoration: none; box-shadow: 0 3px 12px rgba(224,72,145,0.2); border: 2px solid var(--rosa); }
 
-        /* CONTENIDO */
-        .contenido {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+        .contenido { max-width: 800px; margin: 0 auto; padding: 20px; }
 
-        /* SECCIONES */
-        .seccion {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            border-left: 4px solid var(--verde-claro);
-        }
-
-        .seccion h2 {
-            font-family: 'Playfair Display', serif;
-            color: var(--verde);
-            font-size: 1.4em;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .seccion h3 {
-            color: var(--verde);
-            font-size: 1.05em;
-            margin: 20px 0 8px;
-            font-weight: 600;
-        }
-
-        .seccion p {
-            color: var(--texto-suave);
-            margin-bottom: 12px;
-            font-size: 0.95em;
-        }
-
-        .seccion ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .seccion ul li {
-            color: var(--texto-suave);
-            padding: 6px 0 6px 25px;
-            position: relative;
-            font-size: 0.95em;
-            border-bottom: 1px solid #f5f5f5;
-        }
+        .seccion { background: white; border-radius: 16px; padding: 28px; margin-bottom: 18px; box-shadow: 0 3px 14px rgba(0,0,0,0.06); border-left: 5px solid var(--verde-lima); }
+        .seccion h2 { font-family: 'Playfair Display', serif; color: var(--rosa); font-size: 1.35em; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+        .seccion h3 { color: var(--rosa); font-size: 1.02em; margin: 18px 0 7px; font-weight: 700; }
+        .seccion p { color: #555; margin-bottom: 12px; font-size: 0.95em; }
+        .seccion ul { list-style: none; padding: 0; }
+        .seccion ul li { color: #555; padding: 6px 0 6px 26px; position: relative; font-size: 0.95em; border-bottom: 1px solid #f5f5f5; }
         .seccion ul li:last-child { border-bottom: none; }
+        .seccion ul li::before { content: '✓'; position: absolute; left: 0; color: var(--rosa); font-weight: bold; }
+        .seccion ul.prohibidos li::before { content: '✗'; color: #e53935; }
 
-        .seccion ul li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: var(--verde-claro);
-            font-weight: bold;
-        }
-
-        .seccion ul.prohibidos li::before {
-            content: '✗';
-            color: #e53935;
-        }
-
-        /* PASOS */
-        .pasos {
-            counter-reset: paso;
-            list-style: none;
-            padding: 0;
-        }
-        .pasos li {
-            counter-increment: paso;
-            padding: 12px 12px 12px 55px;
-            position: relative;
-            border-bottom: 1px solid #f0f0f0;
-            color: var(--texto-suave);
-            font-size: 0.95em;
-        }
+        .pasos { counter-reset: paso; list-style: none; padding: 0; }
+        .pasos li { counter-increment: paso; padding: 12px 12px 12px 55px; position: relative; border-bottom: 1px solid #f0f0f0; color: #555; font-size: 0.95em; }
         .pasos li:last-child { border-bottom: none; }
-        .pasos li::before {
-            content: counter(paso);
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 30px;
-            height: 30px;
-            background: var(--verde);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
+        .pasos li::before { content: counter(paso); position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; background: var(--rosa); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9em; }
 
-        /* HIGHLIGHT BOX */
-        .highlight {
-            background: var(--verde-medio);
-            border-radius: 10px;
-            padding: 15px 20px;
-            margin: 15px 0;
-            font-size: 0.9em;
-            color: var(--verde);
-            font-weight: 600;
-        }
+        .highlight { background: var(--verde-suave); border-radius: 10px; padding: 14px 18px; margin: 14px 0; font-size: 0.9em; color: #333; font-weight: 600; border-left: 4px solid var(--verde-lima); }
 
-        /* CONTACTO */
-        .contacto-box {
-            background: var(--verde);
-            color: white;
-            border-radius: 16px;
-            padding: 30px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .contacto-box h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4em;
-            margin-bottom: 10px;
-        }
+        .contacto-box { background: var(--rosa); color: white; border-radius: 16px; padding: 30px; text-align: center; margin-bottom: 30px; }
+        .contacto-box h2 { font-family: 'Playfair Display', serif; font-size: 1.4em; margin-bottom: 10px; }
         .contacto-box p { opacity: 0.9; margin-bottom: 15px; font-size: 0.95em; }
-        .contacto-box a {
-            display: inline-block;
-            background: white;
-            color: var(--verde);
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-weight: 700;
-            text-decoration: none;
-            font-size: 1em;
-        }
+        .contacto-box a { display: inline-block; background: white; color: var(--rosa); padding: 12px 25px; border-radius: 25px; font-weight: 700; text-decoration: none; font-size: 1em; }
 
-        /* FOOTER */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #999;
-            font-size: 0.8em;
-        }
+        .footer { text-align: center; padding: 20px; color: #aaa; font-size: 0.8em; }
     </style>
 </head>
 <body>
@@ -233,21 +69,20 @@
     </div>
 
     <div class="nav-center">
-        <a href="login.html" class="nav-btn">← Volver a la vidriera</a>
+        <a href="login.html" class="nav-btn">← Volver al inicio</a>
     </div>
 
     <div class="contenido">
 
-        <!-- CÓMO FUNCIONA -->
         <div class="seccion">
             <h2>🏷️ ¿Cómo funciona Quiéndamas?</h2>
             <p>Quiéndamas es una plataforma de subastas online donde cualquier persona puede publicar artículos y servicios para que otros usuarios oferten por ellos. Quien más oferte al cierre de la subasta, gana.</p>
 
             <h3>Para comprar:</h3>
             <ol class="pasos">
-                <li>Registrate gratuitamente con tu nombre, DNI, dirección y teléfono.</li>
+                <li>Registrate gratuitamente con tu nombre, apodo, DNI, dirección y teléfono.</li>
                 <li>Explorá los artículos y servicios disponibles en la vidriera.</li>
-                <li>Ofertá en los que te interesen. Cada oferta sube $500 el precio actual.</li>
+                <li>Ofertá en los que te interesen eligiendo el monto de tu oferta.</li>
                 <li>Si sos el mayor ofertante cuando cierra la subasta, ¡ganás!</li>
                 <li>Una vez que el vendedor abona la comisión del 5%, recibís sus datos para coordinar la entrega.</li>
             </ol>
@@ -255,10 +90,10 @@
             <h3>Para vender:</h3>
             <ol class="pasos">
                 <li>Iniciá sesión y tocá el botón "Publicar".</li>
-                <li>Completá los datos del artículo o servicio: título, descripción, precio base, categoría, foto y fecha de cierre.</li>
+                <li>Completá los datos del artículo o servicio: título, descripción, precio base, categoría, fotos y fecha de cierre.</li>
                 <li>Tu publicación aparece en la vidriera y los usuarios comienzan a ofertar.</li>
                 <li>Al cierre, abonás la comisión del 5% sobre el precio final a la plataforma.</li>
-                <li>Confirmado tu pago, los datos del comprador se liberan para que puedas contactarlo y coordinar la entrega.</li>
+                <li>Confirmado tu pago, los datos del comprador se liberan para coordinar la entrega.</li>
             </ol>
 
             <div class="highlight">
@@ -266,26 +101,30 @@
             </div>
         </div>
 
-        <!-- COMISIONES -->
         <div class="seccion">
             <h2>💰 Comisiones y pagos</h2>
             <p>Publicar y ofertar en Quiéndamas es <strong>completamente gratuito</strong>. La comisión se cobra únicamente al vendedor cuyo artículo o servicio fue adjudicado.</p>
             <ul>
                 <li>Comisión: 5% del precio final de la subasta, a cargo del vendedor.</li>
                 <li>El monto exacto se calcula y muestra automáticamente al finalizar la subasta.</li>
-                <li>El pago se realiza por transferencia bancaria a la cuenta de Quiéndamas.</li>
-                <li>Una vez confirmado el pago, se liberan los datos de contacto del comprador para coordinar la entrega.</li>
-                <li>El comprador recibe los datos del vendedor una vez que la plataforma confirma el pago de la comisión.</li>
+                <li>El pago se realiza por transferencia bancaria a la cuenta indicada en la plataforma.</li>
+                <li>Una vez confirmado el pago, se liberan los datos de contacto del comprador.</li>
+                <li>El comprador recibe los datos del vendedor una vez confirmado el pago.</li>
                 <li>La comisión no es reembolsable una vez que los datos fueron entregados.</li>
             </ul>
-
-            <div class="highlight">
-                📌 Datos para la transferencia:<br>
-                Titular: Laura Fernanda Arrieta — CBU: 3840200500000011572611 — Alias: qdm.uala
-            </div>
         </div>
 
-        <!-- RESPONSABILIDADES -->
+        <div class="seccion">
+            <h2>📝 Reglas de publicación</h2>
+            <p>Para mantener la confianza y seguridad de la plataforma, todas las publicaciones deben cumplir estas reglas:</p>
+            <ul>
+                <li>La información del artículo o servicio debe ser veraz y completa.</li>
+                <li><strong>Está prohibido incluir datos de contacto</strong> (teléfono, email, Instagram, WhatsApp, etc.) en el título o descripción de las publicaciones. Los datos se intercambian únicamente a través de la plataforma una vez confirmado el pago.</li>
+                <li>Las fotos deben corresponder al artículo o servicio real ofrecido.</li>
+                <li>El precio base debe ser razonable y acorde al artículo o servicio.</li>
+            </ul>
+        </div>
+
         <div class="seccion">
             <h2>🤝 Responsabilidades</h2>
             <p>Quiéndamas actúa como plataforma intermediaria entre compradores y vendedores. No somos parte de la transacción comercial entre usuarios.</p>
@@ -301,7 +140,6 @@
             <h3>El comprador es responsable de:</h3>
             <ul>
                 <li>Verificar las condiciones del artículo antes de ofertar.</li>
-                <li>Abonar la comisión del 5% si resulta ganador.</li>
                 <li>Coordinar la recepción del artículo o servicio con el vendedor.</li>
             </ul>
 
@@ -314,7 +152,6 @@
             </ul>
         </div>
 
-        <!-- ARTÍCULOS PERMITIDOS Y PROHIBIDOS -->
         <div class="seccion">
             <h2>📦 Artículos y servicios permitidos</h2>
             <p>Podés publicar prácticamente cualquier artículo o servicio legal. Algunas categorías disponibles:</p>
@@ -326,7 +163,7 @@
                 <li>Construcción, herramientas y materiales.</li>
                 <li>Antigüedades y coleccionables.</li>
                 <li>Vivero y jardín.</li>
-                <li>Servicios: belleza, peluquería, reparaciones del hogar, plomería, electricidad, tecnología, clases, diseño y servicios profesionales.</li>
+                <li>Servicios: belleza, peluquería, reparaciones, plomería, electricidad, tecnología, clases, diseño y servicios profesionales.</li>
             </ul>
 
             <h3>Está prohibido publicar:</h3>
@@ -340,14 +177,11 @@
                 <li>Artículos falsificados o que violen derechos de propiedad intelectual.</li>
                 <li>Cualquier artículo cuya venta esté prohibida por la legislación argentina.</li>
             </ul>
-
-            <p style="margin-top:15px;">Quiéndamas se reserva el derecho de eliminar publicaciones que no cumplan estas condiciones y suspender las cuentas de los usuarios que las infrinjan.</p>
         </div>
 
-        <!-- REGISTRO Y PRIVACIDAD -->
         <div class="seccion">
             <h2>🔒 Registro y privacidad</h2>
-            <p>Para usar la plataforma es obligatorio registrarse con datos reales. Los datos personales (nombre, DNI, dirección y teléfono) son necesarios para facilitar las transacciones entre usuarios.</p>
+            <p>Para usar la plataforma es obligatorio registrarse con datos reales. Los datos personales son necesarios para facilitar las transacciones entre usuarios.</p>
             <ul>
                 <li>Los datos personales solo se comparten entre comprador y vendedor tras confirmar el pago de la comisión.</li>
                 <li>No compartimos tus datos con terceros con fines comerciales.</li>
@@ -356,20 +190,18 @@
             </ul>
         </div>
 
-        <!-- CONDICIONES GENERALES -->
         <div class="seccion">
             <h2>📋 Condiciones generales de uso</h2>
             <ul>
                 <li>El uso de la plataforma implica la aceptación de estos términos y condiciones.</li>
                 <li>Quiéndamas se reserva el derecho de modificar estos términos con previo aviso.</li>
-                <li>Las subastas son vinculantes: si ganás, tenés la obligación de abonar la comisión.</li>
+                <li>Las subastas son vinculantes: si ganás, tenés la obligación de coordinar la entrega.</li>
                 <li>Quiéndamas puede suspender cuentas que incumplan las normas de uso.</li>
-                <li>Cualquier disputa entre usuarios debe resolverse entre las partes. Quiéndamas puede mediar pero no tiene obligación legal de hacerlo.</li>
+                <li>Cualquier disputa entre usuarios debe resolverse entre las partes.</li>
                 <li>La plataforma opera para toda la República Argentina.</li>
             </ul>
         </div>
 
-        <!-- CONTACTO -->
         <div class="contacto-box">
             <h2>📬 ¿Tenés dudas o consultas?</h2>
             <p>Estamos para ayudarte. Escribinos y te respondemos a la brevedad.</p>
