@@ -11,37 +11,45 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <style>
-        body { font-family: sans-serif; background-color: #f1f8e9; display: flex; justify-content: center; padding: 10px; margin: 0; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 450px; box-sizing: border-box; }
-        h1 { color: #2e7d32; text-align: center; margin-top: 10px; }
+        :root {
+            --rosa: #E04891;
+            --lila: #E1B7ED;
+            --rosa-claro: #F5E1E2;
+            --verde-suave: #D1E389;
+            --verde-lima: #B9DE51;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--rosa-claro); display: flex; justify-content: center; padding: 15px; margin: 0; min-height: 100vh; align-items: flex-start; }
+        .card { background: white; padding: 22px; border-radius: 16px; box-shadow: 0 6px 24px rgba(224,72,145,0.15); width: 100%; max-width: 450px; border-top: 5px solid var(--verde-lima); }
+        h1 { color: var(--rosa); text-align: center; margin-top: 5px; font-size: 1.6em; }
         label { display: block; margin-top: 15px; font-weight: bold; color: #333; font-size: 0.9em; }
-        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { background-color: #43a047; color: white; border: none; padding: 16px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 25px; font-size: 1.1em; }
-        button:hover { background-color: #2e7d32; }
-        .btn-volver { background-color: #666; margin-top: 12px; padding: 12px; font-size: 0.9em; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid var(--lila); border-radius: 10px; box-sizing: border-box; font-size: 16px; outline: none; transition: border 0.2s; }
+        input:focus, select:focus, textarea:focus { border-color: var(--rosa); box-shadow: 0 0 0 2px rgba(224,72,145,0.1); }
+        button { background: var(--rosa); color: white; border: none; padding: 16px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 20px; font-size: 1.1em; transition: opacity 0.2s; }
+        button:hover { opacity: 0.88; }
+        .btn-volver { background: var(--verde-suave); color: #333; margin-top: 10px; padding: 12px; font-size: 0.9em; }
         #mensaje { margin-top: 15px; text-align: center; font-weight: bold; font-size: 0.9em; }
 
         /* SELECTOR TIPO */
-        .selector-tipo { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-tipo { flex: 1; padding: 10px; border: 2px solid #2e7d32; border-radius: 20px; background: white; color: #2e7d32; font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; margin-top: 0; }
-        .btn-tipo.activo { background: #2e7d32; color: white; }
+        .selector-tipo { display: flex; gap: 10px; margin-top: 12px; }
+        .btn-tipo { flex: 1; padding: 10px; border: 2px solid var(--rosa); border-radius: 20px; background: white; color: var(--rosa); font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; margin-top: 0; transition: all 0.2s; }
+        .btn-tipo.activo { background: var(--rosa); color: white; }
 
         /* FOTOS */
         .fotos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
-        .foto-slot { border: 2px dashed #ccc; border-radius: 8px; height: 90px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; background: #fafafa; }
-        .foto-slot:hover { border-color: #43a047; background: #f1f8e9; }
-        .foto-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
-        .foto-slot .btn-borrar { position: absolute; top: 3px; right: 3px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 0.75em; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-top: 0; padding: 0; width: 22px; }
-        .foto-slot .icono-agregar { font-size: 1.8em; color: #aaa; }
-        .foto-hint { font-size: 0.78em; color: #888; margin-top: 5px; }
+        .foto-slot { border: 2px dashed var(--lila); border-radius: 10px; height: 90px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; background: var(--rosa-claro); transition: border 0.2s; }
+        .foto-slot:hover { border-color: var(--rosa); background: #fce4ec; }
+        .foto-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+        .foto-slot .btn-borrar { position: absolute; top: 3px; right: 3px; background: rgba(224,72,145,0.8); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 0.75em; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-top: 0; padding: 0; }
+        .foto-slot .icono-agregar { font-size: 1.8em; color: #ccc; }
+        .foto-hint { font-size: 0.78em; color: #999; margin-top: 5px; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h1>🌿 Quiéndamas</h1>
-        <p style="text-align: center; font-size: 0.9em; color: #666;">Cargá los datos de tu subasta</p>
+        <h1>🎙️ Quiéndamas</h1>
+        <p style="text-align:center;font-size:0.9em;color:#888;margin-top:0;">Cargá los datos de tu subasta</p>
 
-        <!-- SELECTOR PRODUCTO / SERVICIO -->
         <label>¿Qué vas a subastar?</label>
         <div class="selector-tipo">
             <button type="button" class="btn-tipo activo" id="btn-producto" onclick="cambiarTipo('producto')">🛍️ Producto</button>
@@ -55,9 +63,8 @@
         <input type="number" id="precio_base" placeholder="0.00">
 
         <label>Descripción:</label>
-        <textarea id="descripcion" rows="3" placeholder="Detalles, estado, condiciones, etc..."></textarea>
+        <textarea id="descripcion" rows="3" placeholder="Detalles, estado, condiciones... ⚠️ No incluyas datos de contacto."></textarea>
 
-        <!-- CATEGORÍAS PRODUCTOS -->
         <div id="cats-producto">
             <label>Categoría:</label>
             <select id="categoria-producto">
@@ -79,7 +86,6 @@
             </select>
         </div>
 
-        <!-- CATEGORÍAS SERVICIOS -->
         <div id="cats-servicio" style="display:none;">
             <label>Categoría de servicio:</label>
             <select id="categoria-servicio">
@@ -95,11 +101,8 @@
             </select>
         </div>
 
-        <!-- FOTOS (hasta 5) -->
         <label>Fotos (hasta 5):</label>
-        <div class="fotos-grid" id="fotos-grid">
-            <!-- Los slots se generan con JS -->
-        </div>
+        <div class="fotos-grid" id="fotos-grid"></div>
         <p class="foto-hint">La primera foto es la principal. Tocá cada cuadro para agregar una imagen.</p>
         <input type="file" id="input-foto-hidden" accept="image/*" style="display:none;" onchange="agregarFoto(this)">
 
@@ -123,7 +126,6 @@
         }
         protegerPagina();
 
-        // TIPO PRODUCTO / SERVICIO
         let tipoActual = 'producto';
         function cambiarTipo(tipo) {
             tipoActual = tipo;
@@ -133,7 +135,6 @@
             document.getElementById('cats-servicio').style.display = tipo === 'servicio' ? 'block' : 'none';
         }
 
-        // FOTOS
         const MAX_FOTOS = 5;
         let fotosArchivos = [];
         let slotActual = null;
@@ -146,10 +147,7 @@
                 slot.className = 'foto-slot';
                 if (fotosArchivos[i]) {
                     const url = URL.createObjectURL(fotosArchivos[i]);
-                    slot.innerHTML = `
-                        <img src="${url}" alt="foto ${i+1}">
-                        <button class="btn-borrar" onclick="borrarFoto(${i})">✕</button>
-                    `;
+                    slot.innerHTML = `<img src="${url}" alt="foto ${i+1}"><button class="btn-borrar" onclick="borrarFoto(${i})">✕</button>`;
                 } else {
                     slot.innerHTML = `<span class="icono-agregar">📷</span>`;
                     slot.onclick = () => { slotActual = i; document.getElementById('input-foto-hidden').click(); };
@@ -174,7 +172,6 @@
 
         renderFotosGrid();
 
-        // PUBLICAR
         async function subastar() {
             const { data: { user } } = await _supabase.auth.getUser();
             const titulo = document.getElementById('titulo').value;
@@ -185,7 +182,6 @@
                 ? document.getElementById('categoria-producto').value
                 : document.getElementById('categoria-servicio').value;
             const msgDiv = document.getElementById('mensaje');
-
             const fotosValidas = fotosArchivos.filter(Boolean);
 
             if (!titulo || !precio || !fecha || fotosValidas.length === 0) {
@@ -198,7 +194,6 @@
             msgDiv.innerText = "⏳ Subiendo fotos y publicando...";
 
             try {
-                // Subir todas las fotos
                 const urlsFotos = [];
                 for (let i = 0; i < fotosValidas.length; i++) {
                     const archivo = fotosValidas[i];
@@ -232,7 +227,6 @@
             } catch (err) {
                 msgDiv.style.color = "red";
                 msgDiv.innerText = "❌ Error: " + err.message;
-                console.error(err);
             }
         }
     </script>
