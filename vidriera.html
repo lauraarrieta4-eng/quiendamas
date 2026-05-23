@@ -89,6 +89,8 @@
         .reloj { font-size: 0.85em; font-weight: bold; color: #555; background: var(--verde-suave); padding: 8px; border-radius: 8px; text-align: center; margin-bottom: 10px; }
         .btn-oferta { background: var(--verde-lima); color: #333; border: none; padding: 12px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.95rem; transition: background 0.2s; }
         .btn-oferta:hover { background: var(--rosa); color: white; }
+        .btn-compartir { background: white; border: 2px solid var(--lila); color: #6a0050; padding: 8px; border-radius: 10px; cursor: pointer; font-size: 0.8em; font-weight: bold; width: 100%; margin-top: 6px; transition: all 0.2s; }
+        .btn-compartir:hover { background: var(--lila); }
         .sin-resultados { text-align: center; width: 100%; color: #999; padding: 30px; font-size: 1em; }
         .badge-fotos { position: absolute; top: 10px; left: 10px; background: var(--rosa); color: white; font-size: 0.72em; padding: 3px 8px; border-radius: 10px; pointer-events: none; }
 
@@ -170,7 +172,7 @@
     </div>
 
     <div class="logo-contenedor" style="text-align: center; margin-top: 5px;">
-        <img src="logo.svg" alt="Logo Quiéndamas">
+        <img src="logo.jpg" alt="Logo Quiéndamas">
     </div>
 
     <div class="barra-busqueda">
@@ -237,9 +239,14 @@
             tipoActual = tipo;
             document.getElementById('btn-productos').classList.toggle('activo', tipo === 'productos');
             document.getElementById('btn-servicios').classList.toggle('activo', tipo === 'servicios');
+            // Productos wrapper
             document.getElementById('filtros-productos').style.display = tipo === 'productos' ? 'flex' : 'none';
+            const wrapperProd = document.getElementById('filtros-productos').closest('.filtros-wrapper');
+            if (wrapperProd) wrapperProd.style.display = tipo === 'productos' ? 'block' : 'none';
+            // Servicios wrapper
+            const wrapperServ = document.getElementById('wrapper-servicios');
+            if (wrapperServ) wrapperServ.style.display = tipo === 'servicios' ? 'block' : 'none';
             document.getElementById('filtros-servicios').style.display = tipo === 'servicios' ? 'flex' : 'none';
-            document.getElementById('wrapper-servicios').style.display = tipo === 'servicios' ? 'block' : 'none';
             document.getElementById('input-busqueda').value = '';
             if (tipo === 'productos') cargarArticulos('Todos');
             else cargarArticulos('Todos-Servicios');
@@ -368,6 +375,7 @@
                 <div class="precio">$<span id="precio-${art.id}">${art.precio_actual || art.precio_base}</span></div>
                 <div class="reloj" id="reloj-${art.id}">⏳ Cargando...</div>
                 ${boton}
+                <button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 Compartir</button>
             `;
             lista.appendChild(div);
             // Cargar apodo del vendedor
@@ -573,6 +581,22 @@
         document.getElementById('modal-carrusel').addEventListener('click', function(e) {
             if (e.target === this) cerrarCarrusel();
         });
+
+        // COMPARTIR
+        function compartir(titulo, id) {
+            const url = window.location.href.split('#')[0] + '#articulo-' + id;
+            if (navigator.share) {
+                navigator.share({
+                    title: '¡Mirá esta subasta en Quiéndamas!',
+                    text: titulo,
+                    url: url
+                });
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('🔗 ¡Link copiado! Podés pegarlo donde quieras.');
+                });
+            }
+        }
 
         revisarSesion();
         cargarArticulos();
