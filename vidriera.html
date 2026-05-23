@@ -495,7 +495,11 @@
         async function ofertar(id, monto = 500) {
             const { data: { user } } = await _supabase.auth.getUser();
             if (!user) { alert("⚠️ Tenés que ingresar para ofertar."); window.location.href = 'login.html'; return; }
-            const { data: art } = await _supabase.from('articulos').select('finaliza_en').eq('id', id).maybeSingle();
+             const { data: art } = await _supabase.from('articulos').select('finaliza_en, perfil_id').eq('id', id).maybeSingle();
+            if (art && art.perfil_id === user.id) {
+                alert("⚠️ No podés ofertar en tu propia publicación.");
+                return;
+            }
             if (art && new Date(art.finaliza_en).getTime() < Date.now()) { alert("🛑 Esta subasta ya terminó."); return; }
             const span = document.getElementById(`precio-${id}`);
             const nuevo = parseFloat(span.innerText) + monto;
