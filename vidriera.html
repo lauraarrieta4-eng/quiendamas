@@ -36,6 +36,7 @@
             background: var(--rosa);
             padding: 10px 14px; margin-bottom: 10px; border-radius: 14px;
             box-shadow: 0 4px 14px rgba(224,72,145,0.3);
+            position: relative;
         }
         .barra-usuario span { color: white !important; font-weight: bold; font-size: 0.95em; }
 
@@ -93,7 +94,7 @@
         .badge-fotos { position: absolute; top: 10px; left: 10px; background: var(--rosa); color: white; font-size: 0.72em; padding: 3px 8px; border-radius: 10px; pointer-events: none; }
 
         .logo-contenedor { text-align: center; margin: 8px 0 14px; }
-        .logo-contenedor img { width: 110px; border-radius: 16px; box-shadow: 0 4px 20px rgba(224,72,145,0.3); border: 4px solid var(--lila); }
+        .logo-contenedor img { width: 180px; border-radius: 50%; box-shadow: 0 4px 20px rgba(224,72,145,0.3); border: 4px solid var(--lila); }
 
         /* MODALES */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 1000; justify-content: center; align-items: center; }
@@ -153,7 +154,10 @@
 
     <div class="barra-usuario">
         <div>
-            <span id="usuario-nombre" style="font-weight: bold; color: #2e7d32; font-size: 0.9em;">Cargando...</span>
+            <span id="usuario-nombre" style="font-weight: bold; color: white; font-size: 0.9em;">Cargando...</span>
+        </div>
+        <div style="position:absolute; left:50%; transform:translateX(-50%);">
+            <span style="color:white; font-weight:900; font-size:1.1em; letter-spacing:1px;">🌿 quiendamas.verde</span>
         </div>
         <div style="display: flex; gap: 5px;">
             <button onclick="window.location.href='index.html'" class="btn-filtro" style="background:white;color:var(--rosa);border:2px solid white;padding:6px 14px;">➕ Publicar</button>
