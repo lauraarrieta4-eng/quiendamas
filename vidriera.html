@@ -22,6 +22,7 @@
 
         * { box-sizing: border-box; }
 
+        /* FONDO: secciones alternadas con los 5 colores */
         body {
             font-family: 'Segoe UI', sans-serif;
             background: var(--rosa-claro);
@@ -31,43 +32,55 @@
             min-height: 100vh;
         }
 
+        /* BARRA NOMBRE → rosa fuerte, solo el título */
+        .barra-nombre {
+            text-align: center;
+            background: var(--rosa);
+            padding: 8px 14px;
+            border-radius: 14px;
+            margin-bottom: 6px;
+            box-shadow: 0 4px 14px rgba(224,72,145,0.3);
+            font-size: 1.15em;
+            font-weight: 900;
+            color: white;
+            letter-spacing: 1px;
+        }
+        /* BARRA USUARIO → lila, usuario + botones */
         .barra-usuario {
             display: flex; justify-content: space-between; align-items: center;
-            background: var(--rosa);
-            padding: 10px 14px; margin-bottom: 10px; border-radius: 14px;
-            box-shadow: 0 4px 14px rgba(224,72,145,0.3);
-            position: relative;
+            background: var(--lila);
+            padding: 8px 14px; margin-bottom: 10px; border-radius: 14px;
         }
-        .barra-usuario span { color: white !important; font-weight: bold; font-size: 0.95em; }
+        .barra-usuario span { color: #6a0050 !important; font-weight: bold; font-size: 0.9em; }
 
+        /* BOTONES BARRA USUARIO */
         .btn-filtro { background: white; border: 2px solid var(--rosa); color: var(--rosa); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85em; white-space: nowrap; transition: all 0.2s; }
         .btn-filtro:hover { background: var(--rosa); color: white; }
 
+        /* INTERACCIONES → lila */
         .barra-interacciones { display: flex; justify-content: center; gap: 10px; margin-bottom: 12px; padding: 8px; background: var(--lila); border-radius: 12px; }
         .btn-interaccion { background: white; border: none; color: #6a0050; padding: 8px 14px; border-radius: 10px; font-weight: bold; font-size: 0.85em; cursor: pointer; flex: 1; max-width: 150px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.08); transition: all 0.2s; }
         .btn-interaccion:hover { background: var(--rosa); color: white; }
 
+        /* BUSCADOR → verde suave */
         .barra-busqueda { display: flex; gap: 8px; margin-bottom: 12px; background: var(--verde-suave); padding: 8px 10px; border-radius: 25px; }
         .barra-busqueda input { flex: 1; padding: 9px 16px; border: none; border-radius: 20px; font-size: 0.95em; outline: none; background: white; }
         .barra-busqueda input:focus { box-shadow: 0 0 0 2px var(--rosa); }
         .barra-busqueda button { background: var(--rosa); color: white; border: none; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 0.9em; cursor: pointer; }
 
+        /* SELECTOR TIPO */
         .selector-tipo { display: flex; gap: 10px; margin-bottom: 10px; justify-content: center; }
         .btn-tipo { flex: 1; max-width: 180px; padding: 10px; border: 2px solid var(--rosa); border-radius: 25px; background: white; color: var(--rosa); font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; transition: all 0.2s; }
         .btn-tipo.activo { background: var(--rosa); color: white; border-color: transparent; box-shadow: 0 3px 10px rgba(224,72,145,0.35); }
 
-        /* FILTROS */
+        /* FILTROS → fondo verde lima suave */
         .filtros { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 8px; padding: 8px 42px; margin-bottom: 5px; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; background: var(--verde-lima); border-radius: 12px; }
         .filtros::-webkit-scrollbar { display: none; }
         .btn-filtro.cat { background: white; border: none; color: #333; padding: 7px 14px; border-radius: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
-        .btn-filtro.cat:hover, .btn-filtro.cat.activo { background: var(--rosa); color: white; }
+        .btn-filtro.cat:hover { background: var(--rosa); color: white; }
 
-        /* FILTROS SUBCATEGORÍA */
-        .filtros.sub { background: var(--verde-suave); border-radius: 12px; padding: 6px 42px; }
-        .btn-filtro.subcat { background: white; border: none; color: #555; padding: 5px 12px; border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-size: 0.82em; font-weight: bold; }
-        .btn-filtro.subcat:hover, .btn-filtro.subcat.activo { background: var(--rosa); color: white; }
-
-        .filtros-wrapper { position: relative; margin-bottom: 5px; }
+        /* FLECHAS FILTROS */
+        .filtros-wrapper { position: relative; margin-bottom: 12px; }
         .filtros-arrow { display: none; position: absolute; top: 50%; transform: translateY(-50%); background: var(--rosa); color: white; border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 1.2em; cursor: pointer; z-index: 10; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(224,72,145,0.4); transition: transform 0.15s; }
         .filtros-arrow:hover { transform: translateY(-50%) scale(1.12); }
         .filtros-arrow.izq { left: 2px; }
@@ -78,7 +91,7 @@
         .contenedor { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; justify-items: center; }
         .tarjeta { background: white; border-radius: 16px; padding: 15px; width: 90%; max-width: 320px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; border-top: 4px solid var(--verde-lima); transition: transform 0.2s, box-shadow 0.2s; }
         .tarjeta:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.13); }
-        .tag-cat { position: absolute; top: 10px; right: 10px; background: var(--lila); font-size: 0.7em; padding: 3px 10px; border-radius: 12px; color: #6a0050; font-weight: bold; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tag-cat { position: absolute; top: 10px; right: 10px; background: var(--lila); font-size: 0.7em; padding: 3px 10px; border-radius: 12px; color: #6a0050; font-weight: bold; }
         .foto-art { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; cursor: pointer; }
         .foto-art:hover { opacity: 0.92; }
         .titulo { font-size: 1.1em; font-weight: bold; color: #222; }
@@ -93,8 +106,9 @@
         .sin-resultados { text-align: center; width: 100%; color: #999; padding: 30px; font-size: 1em; }
         .badge-fotos { position: absolute; top: 10px; left: 10px; background: var(--rosa); color: white; font-size: 0.72em; padding: 3px 8px; border-radius: 10px; pointer-events: none; }
 
+        /* LOGO */
         .logo-contenedor { text-align: center; margin: 8px 0 14px; }
-        .logo-contenedor img { width: 110px; border-radius: 16px; box-shadow: 0 4px 20px rgba(224,72,145,0.3); border: 4px solid var(--lila); }
+        .logo-contenedor img { width: 180px; border-radius: 50%; box-shadow: 0 4px 20px rgba(224,72,145,0.3); border: 4px solid var(--lila); }
 
         /* MODALES */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 1000; justify-content: center; align-items: center; }
@@ -109,6 +123,7 @@
         .btn-vendedor { background: var(--rosa); color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1rem; }
         .btn-ganador { background: linear-gradient(135deg, #f9a825, #f57f17); color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1rem; }
 
+        /* CARRUSEL */
         .modal-carrusel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 2000; justify-content: center; align-items: center; flex-direction: column; }
         .modal-carrusel.activo { display: flex; }
         .carrusel-img { max-width: 95vw; max-height: 75vh; border-radius: 14px; object-fit: contain; }
@@ -141,6 +156,7 @@
         </div>
     </div>
 
+
     <!-- CARRUSEL DE FOTOS -->
     <div class="modal-carrusel" id="modal-carrusel">
         <button class="carrusel-cerrar" onclick="cerrarCarrusel()">✕</button>
@@ -152,17 +168,16 @@
         </div>
     </div>
 
+    <!-- BARRA NOMBRE -->
+    <div class="barra-nombre">🌿 quiendamas.verde</div>
+
+    <!-- BARRA USUARIO -->
     <div class="barra-usuario">
-        <div>
-            <span id="usuario-nombre" style="font-weight: bold; color: white; font-size: 0.9em;">Cargando...</span>
+        <span id="usuario-nombre">Cargando...</span>
+        <div style="display:flex; gap:6px;">
+            <button id="btn-sesion" onclick="gestionarSesion()" class="btn-filtro" style="background:var(--rosa);color:white;border:2px solid var(--rosa);padding:6px 12px;">🔑 Ingresar</button>
+            <button onclick="window.location.href='index.html'" class="btn-filtro" style="padding:6px 12px;">➕ Publicar</button>
         </div>
-        <div style="position:absolute; left:50%; transform:translateX(-50%);">
-            <span style="color:white; font-weight:900; font-size:1.1em; letter-spacing:1px;">🌿 quiendamas.verde</span>
-        </div>
-       <div style="display: flex; flex-direction: column; gap: 5px;">
-    <button id="btn-sesion" onclick="gestionarSesion()" class="btn-filtro" style="background:transparent;color:white;border:2px solid white;padding:6px 14px;">🔑 Ingresar</button>
-    <button onclick="window.location.href='index.html'" class="btn-filtro" style="background:white;color:var(--rosa);border:2px solid white;padding:6px 14px;">➕ Publicar</button>
-</div>
     </div>
 
     <div class="barra-interacciones" id="bloque-interacciones" style="display: none;">
@@ -171,7 +186,7 @@
     </div>
 
     <div class="logo-contenedor" style="text-align: center; margin-top: 5px;">
-        <img src="logo.jpg" alt="Logo Quiéndamas">
+        <img src="logo.svg" alt="Logo Quiéndamas">
     </div>
 
     <div class="barra-busqueda">
@@ -185,42 +200,44 @@
         <button class="btn-tipo" id="btn-servicios" onclick="cambiarTipo('servicios')">🛠️ Servicios</button>
     </div>
 
-    <!-- FILTROS PRODUCTOS — categorías principales -->
-    <div class="filtros-wrapper" id="wrapper-productos">
+    <!-- FILTROS PRODUCTOS -->
+    <div class="filtros-wrapper">
         <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-productos', -200)">‹</button>
         <div class="filtros" id="filtros-productos">
-            <button class="btn-filtro cat activo" id="cat-btn-Todos" onclick="filtrarCategoria('Todos')">🌱 Todas</button>
-            <button class="btn-filtro cat" id="cat-btn-Plantas" onclick="filtrarCategoria('Plantas')">🌿 Plantas</button>
-            <button class="btn-filtro cat" id="cat-btn-Semillas" onclick="filtrarCategoria('Semillas')">🌱 Semillas</button>
-            <button class="btn-filtro cat" id="cat-btn-Fertilizantes" onclick="filtrarCategoria('Fertilizantes')">🧪 Fertilizantes</button>
-            <button class="btn-filtro cat" id="cat-btn-Macetas" onclick="filtrarCategoria('Macetas')">🪴 Macetas</button>
-            <button class="btn-filtro cat" id="cat-btn-Herramientas" onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</button>
-            <button class="btn-filtro cat" id="cat-btn-Riego" onclick="filtrarCategoria('Riego')">💧 Riego</button>
-            <button class="btn-filtro cat" id="cat-btn-Decoracion" onclick="filtrarCategoria('Decoracion')">✨ Decoración</button>
-        </div>
-        <button class="filtros-arrow der" onclick="scrollFiltros('filtros-productos', 200)">›</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Todos')">Todos</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Autos')">🚗 Autos</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Motos')">🏍️ Motos</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Computacion')">💻 Computación</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Celulares')">📱 Celulares</button>
+        <button class="btn-filtro" onclick="cargarArticulos('AudioVideo')">📺 Audio</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Electro')">🔌 Electro</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Moda')">👗 Moda</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Joyas')">⌚ Joyas</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Belleza')">💄 Belleza</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Construccion')">🏗️ Const.</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Antiguedades')">🏺 Antigüedades</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Vivero')">🌿 Vivero</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Hogar')">🏠 Hogar</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Otros')">📦 Otros</button>
     </div>
-
-    <!-- FILTROS SUBCATEGORÍAS (aparece cuando se selecciona una categoría con subcats) -->
-    <div class="filtros-wrapper" id="wrapper-subcats" style="display:none; margin-bottom:8px;">
-        <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-subcats', -200)">‹</button>
-        <div class="filtros sub" id="filtros-subcats"></div>
-        <button class="filtros-arrow der" onclick="scrollFiltros('filtros-subcats', 200)">›</button>
+        <button class="filtros-arrow der" onclick="scrollFiltros('filtros-productos', 200)">›</button>
     </div>
 
     <!-- FILTROS SERVICIOS -->
     <div class="filtros-wrapper" id="wrapper-servicios" style="display:none;">
         <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-servicios', -200)">‹</button>
         <div class="filtros" id="filtros-servicios" style="display:none;">
-            <button class="btn-filtro" onclick="cargarArticulos('Todos-Servicios')">🌱 Todos</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Serv-Mantenimiento')">🌿 Mantenimiento</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Serv-CorteCesped')">🌾 Corte de césped</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Serv-CorteCerco')">✂️ Corte de cerco</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Serv-Diseno')">🎨 Diseño de jardines</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Serv-Cursos')">📚 Cursos</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Serv-Asesoramiento')">💬 Asesoramiento</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Serv-Talleres')">🏡 Talleres</button>
-        </div>
+        <button class="btn-filtro" onclick="cargarArticulos('Todos-Servicios')">Todos</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Belleza-Estetica')">💅 Belleza y estética</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Peluqueria')">✂️ Peluquería</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Hogar-Reparaciones')">🏠 Hogar y reparaciones</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Plomeria-Electricidad')">🔧 Plomería y electricidad</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Tecnologia-Soporte')">💻 Tecnología</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Clases-Tutorias')">📚 Clases y tutorías</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Diseno-Creatividad')">🎨 Diseño</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Servicios-Profesionales')">⚖️ Profesionales</button>
+        <button class="btn-filtro" onclick="cargarArticulos('Otros-Servicios')">📦 Otros servicios</button>
+    </div>
         <button class="filtros-arrow der" onclick="scrollFiltros('filtros-servicios', 200)">›</button>
     </div>
 
@@ -229,190 +246,26 @@
     <script>
         let usuarioActualId = null;
         let tipoActual = 'productos';
-        let categoriaActual = 'Todos';
 
-        const CATEGORIAS_SERVICIOS = ['Serv-Mantenimiento','Serv-CorteCesped','Serv-CorteCerco','Serv-Diseno','Serv-Cursos','Serv-Asesoramiento','Serv-Talleres'];
-
-        // Mapa: categoría principal → todos sus valores posibles en la BD
-        const VALORES_CAT = {
-            'Plantas':       ['Plantas-Aromaticas','Plantas-Arbustos','Plantas-Frutales','Plantas-Herbaceas','Plantas-Bulbosas','Plantas-Trepadoras','Plantas-Cubresuelos','Plantas-Nativas','Plantas-Interior','Plantas-Huerta','Plantas-Suculentas','Plantas-Raras','Plantas-Exterior'],
-            'Fertilizantes': ['Fertilizantes-Organicos','Fertilizantes-Inorganicos'],
-            'Macetas':       ['Macetas-Barro','Macetas-Plastico','Macetas-Ceramica'],
-            'Herramientas':  ['Herramientas-Mano','Herramientas-Maquinaria','Herramientas-Electricos'],
-            'Riego':         ['Riego-Goteo','Riego-Aspersores','Riego-Mangueras','Riego-Automatizacion','Riego-Bombas'],
-            'Semillas':      ['Semillas'],
-            'Decoracion':    ['Decoracion'],
-        };
-
-        // Subcategorías para mostrar en la barra de sub-filtros
-        const SUBCATS_FILTRO = {
-            'Plantas': [
-                { value: 'Plantas-Aromaticas',   label: '🌸 Aromáticas' },
-                { value: 'Plantas-Arbustos',     label: '🌿 Arbustos' },
-                { value: 'Plantas-Frutales',     label: '🍎 Frutales' },
-                { value: 'Plantas-Herbaceas',    label: '🌾 Herbáceas' },
-                { value: 'Plantas-Bulbosas',     label: '🌷 Bulbosas' },
-                { value: 'Plantas-Trepadoras',   label: '🌱 Trepadoras' },
-                { value: 'Plantas-Cubresuelos',  label: '🍀 Cubresuelos' },
-                { value: 'Plantas-Nativas',      label: '🌳 Nativas' },
-                { value: 'Plantas-Interior',     label: '🏠 Interior' },
-                { value: 'Plantas-Huerta',       label: '🥕 Huerta' },
-                { value: 'Plantas-Suculentas',   label: '🌵 Suculentas' },
-                { value: 'Plantas-Raras',        label: '⭐ Raras' },
-            ],
-            'Fertilizantes': [
-                { value: 'Fertilizantes-Organicos',   label: '🌿 Orgánicos' },
-                { value: 'Fertilizantes-Inorganicos', label: '🧪 Inorgánicos' },
-            ],
-            'Macetas': [
-                { value: 'Macetas-Barro',    label: '🪴 Barro' },
-                { value: 'Macetas-Plastico', label: '🪣 Plástico' },
-                { value: 'Macetas-Ceramica', label: '🏺 Cerámica' },
-            ],
-            'Herramientas': [
-                { value: 'Herramientas-Mano',       label: '🤲 Mano' },
-                { value: 'Herramientas-Maquinaria', label: '⚙️ Maquinaria' },
-                { value: 'Herramientas-Electricos', label: '🔋 Eléctricos' },
-            ],
-            'Riego': [
-                { value: 'Riego-Goteo',          label: '💧 Goteo' },
-                { value: 'Riego-Aspersores',     label: '💦 Aspersores' },
-                { value: 'Riego-Mangueras',      label: '🚿 Mangueras' },
-                { value: 'Riego-Automatizacion', label: '⏱️ Automatización' },
-                { value: 'Riego-Bombas',         label: '🔧 Bombas' },
-            ],
-        };
-
-        // Labels amigables para el tag en la tarjeta
-        const LABEL_CAT = {
-            'Plantas-Aromaticas':        'Aromáticas',
-            'Plantas-Arbustos':          'Arbustos',
-            'Plantas-Frutales':          'Frutales',
-            'Plantas-Herbaceas':         'Herbáceas',
-            'Plantas-Bulbosas':          'Bulbosas',
-            'Plantas-Trepadoras':        'Trepadoras',
-            'Plantas-Cubresuelos':       'Cubresuelos',
-            'Plantas-Nativas':           'Nativas',
-            'Plantas-Interior':          'Interior',
-            'Plantas-Huerta':            'Huerta',
-            'Plantas-Suculentas':        'Suculentas',
-            'Plantas-Raras':             'Raras',
-            'Plantas-Exterior':          'Exterior',
-            'Fertilizantes-Organicos':   'Fertiliz. Org.',
-            'Fertilizantes-Inorganicos': 'Fertiliz. Inorg.',
-            'Macetas-Barro':             'Macetas barro',
-            'Macetas-Plastico':          'Macetas plástico',
-            'Macetas-Ceramica':          'Macetas cerámica',
-            'Herramientas-Mano':         'Herram. mano',
-            'Herramientas-Maquinaria':   'Maquinaria',
-            'Herramientas-Electricos':   'Herram. eléct.',
-            'Riego-Goteo':               'Goteo',
-            'Riego-Aspersores':          'Aspersores',
-            'Riego-Mangueras':           'Mangueras',
-            'Riego-Automatizacion':      'Automatización',
-            'Riego-Bombas':              'Bombas',
-            'Semillas':                  'Semillas',
-            'Decoracion':                'Decoración',
-            'Serv-Mantenimiento':        'Mantenimiento',
-            'Serv-CorteCesped':          'Corte de césped',
-            'Serv-CorteCerco':           'Corte de cerco',
-            'Serv-Diseno':               'Diseño jardines',
-            'Serv-Cursos':               'Cursos',
-            'Serv-Asesoramiento':        'Asesoramiento',
-            'Serv-Talleres':             'Talleres',
-        };
-
-        function labelCat(cat) {
-            return LABEL_CAT[cat] || cat || 'General';
-        }
-
-        // ── FILTRO CATEGORÍA ──────────────────────────────────────────────
-        function filtrarCategoria(cat) {
-            categoriaActual = cat;
-
-            // Marcar botón activo
-            document.querySelectorAll('#filtros-productos .btn-filtro.cat').forEach(b => b.classList.remove('activo'));
-            const btn = document.getElementById('cat-btn-' + cat);
-            if (btn) btn.classList.add('activo');
-
-            // Mostrar / ocultar sub-filtros
-            const wrapperSub = document.getElementById('wrapper-subcats');
-            const filtrosSub = document.getElementById('filtros-subcats');
-
-            if (SUBCATS_FILTRO[cat]) {
-                filtrosSub.innerHTML =
-                    `<button class="btn-filtro subcat activo" onclick="cargarArticulos('${cat}', this)">Todas</button>` +
-                    SUBCATS_FILTRO[cat].map(s =>
-                        `<button class="btn-filtro subcat" onclick="cargarArticulos('${s.value}', this)">${s.label}</button>`
-                    ).join('');
-                wrapperSub.style.display = 'block';
-            } else {
-                wrapperSub.style.display = 'none';
-                filtrosSub.innerHTML = '';
-            }
-
-            cargarArticulos(cat);
-        }
+        const CATEGORIAS_SERVICIOS = ['Belleza-Estetica','Peluqueria','Hogar-Reparaciones','Plomeria-Electricidad','Tecnologia-Soporte','Clases-Tutorias','Diseno-Creatividad','Servicios-Profesionales','Otros-Servicios'];
 
         function cambiarTipo(tipo) {
             tipoActual = tipo;
             document.getElementById('btn-productos').classList.toggle('activo', tipo === 'productos');
             document.getElementById('btn-servicios').classList.toggle('activo', tipo === 'servicios');
-
-            const wrapperProd = document.getElementById('wrapper-productos');
-            const wrapperSub  = document.getElementById('wrapper-subcats');
+            // Productos wrapper
+            document.getElementById('filtros-productos').style.display = tipo === 'productos' ? 'flex' : 'none';
+            const wrapperProd = document.getElementById('filtros-productos').closest('.filtros-wrapper');
+            if (wrapperProd) wrapperProd.style.display = tipo === 'productos' ? 'block' : 'none';
+            // Servicios wrapper
             const wrapperServ = document.getElementById('wrapper-servicios');
-
-            wrapperProd.style.display = tipo === 'productos' ? 'block' : 'none';
-            wrapperSub.style.display  = 'none';
-            wrapperServ.style.display = tipo === 'servicios' ? 'block' : 'none';
+            if (wrapperServ) wrapperServ.style.display = tipo === 'servicios' ? 'block' : 'none';
             document.getElementById('filtros-servicios').style.display = tipo === 'servicios' ? 'flex' : 'none';
             document.getElementById('input-busqueda').value = '';
-
-            if (tipo === 'productos') filtrarCategoria('Todos');
+            if (tipo === 'productos') cargarArticulos('Todos');
             else cargarArticulos('Todos-Servicios');
         }
 
-        // ── CARGAR ARTÍCULOS ──────────────────────────────────────────────
-        async function cargarArticulos(filtro = 'Todos', btnEl = null) {
-            document.getElementById('input-busqueda').value = '';
-
-            // Marcar sub-botón activo si viene de subcats
-            if (btnEl) {
-                document.querySelectorAll('#filtros-subcats .btn-filtro.subcat').forEach(b => b.classList.remove('activo'));
-                btnEl.classList.add('activo');
-            }
-
-            try {
-                let consulta = _supabase.from('articulos').select('*');
-
-                if (filtro === 'Todos') {
-                    // Todos los productos (excluye servicios)
-                    consulta = consulta.not('categoria', 'in', `(${CATEGORIAS_SERVICIOS.join(',')})`);
-                } else if (filtro === 'Todos-Servicios') {
-                    consulta = consulta.in('categoria', CATEGORIAS_SERVICIOS);
-                } else if (VALORES_CAT[filtro]) {
-                    // Categoría principal con múltiples valores
-                    consulta = consulta.in('categoria', VALORES_CAT[filtro]);
-                } else {
-                    // Valor específico (subcategoría)
-                    consulta = consulta.eq('categoria', filtro);
-                }
-
-                const { data: articulos, error } = await consulta;
-                if (error) throw error;
-
-                const lista = document.getElementById('articulos-lista');
-                lista.innerHTML = '';
-                if (articulos.length === 0) {
-                    lista.innerHTML = `<div class="sin-resultados">😕 No hay publicaciones en esta categoría todavía.</div>`;
-                    return;
-                }
-                articulos.forEach(art => renderTarjeta(art, lista));
-            } catch (e) { console.error("Error al cargar:", e); }
-        }
-
-        // ── SESIÓN ────────────────────────────────────────────────────────
         async function revisarSesion() {
             const { data: { user } } = await _supabase.auth.getUser();
             const btn = document.getElementById('btn-sesion');
@@ -441,7 +294,6 @@
             }
         }
 
-        // ── BÚSQUEDA ──────────────────────────────────────────────────────
         async function buscarArticulos() {
             const termino = document.getElementById('input-busqueda').value.trim();
             if (!termino) { cargarArticulos('Todos'); return; }
@@ -449,7 +301,7 @@
                 const { data: articulos, error } = await _supabase.from('articulos').select('*').ilike('Titulo', `%${termino}%`);
                 if (error) throw error;
                 const lista = document.getElementById('articulos-lista');
-                lista.innerHTML = '';
+                lista.innerHTML = "";
                 if (articulos.length === 0) {
                     lista.innerHTML = `<div class="sin-resultados">😕 No encontramos artículos con "<b>${termino}</b>"</div>`;
                     return;
@@ -458,7 +310,29 @@
             } catch (e) { console.error("Error al buscar:", e); }
         }
 
-        // ── RENDER TARJETA ────────────────────────────────────────────────
+        async function cargarArticulos(filtro = 'Todos') {
+            document.getElementById('input-busqueda').value = '';
+            try {
+                let consulta = _supabase.from('articulos').select('*');
+                if (filtro === 'Todos') {
+                    consulta = consulta.not('categoria', 'in', `(${CATEGORIAS_SERVICIOS.join(',')})`);
+                } else if (filtro === 'Todos-Servicios') {
+                    consulta = consulta.in('categoria', CATEGORIAS_SERVICIOS);
+                } else {
+                    consulta = consulta.eq('categoria', filtro);
+                }
+                const { data: articulos, error } = await consulta;
+                if (error) throw error;
+                const lista = document.getElementById('articulos-lista');
+                lista.innerHTML = "";
+                if (articulos.length === 0) {
+                    lista.innerHTML = `<div class="sin-resultados">😕 No hay publicaciones en esta categoría todavía.</div>`;
+                    return;
+                }
+                articulos.forEach(art => renderTarjeta(art, lista));
+            } catch (e) { console.error("Error al cargar:", e); }
+        }
+
         function renderTarjeta(art, lista, esMia = false) {
             const div = document.createElement('div');
             div.className = 'tarjeta';
@@ -497,14 +371,16 @@
                         <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 10000)">+$10.000</button>
                     </div>
                 `;
+
             }
 
             const todasFotos = [art.foto_url].concat(art.fotos_extra || []).filter(Boolean);
             const badgeFotos = todasFotos.length > 1 ? `<span class="badge-fotos">📷 ${todasFotos.length}</span>` : '';
+            // Guardamos las fotos en un atributo data para evitar problemas con comillas en onclick
             const artId = art.id;
 
             div.innerHTML = `
-                <span class="tag-cat">${labelCat(art.categoria)}</span>
+                <span class="tag-cat">${art.categoria || 'Otros'}</span>
                 <img src="${art.foto_url || ''}" class="foto-art" data-fotos-id="${artId}" style="cursor:pointer;">
                 ${badgeFotos}
                 <div class="titulo">${art.Titulo}</div>
@@ -516,12 +392,12 @@
                 <button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 Compartir</button>
             `;
             lista.appendChild(div);
-
+            // Cargar apodo del vendedor
             _supabase.from('perfiles').select('apodo, nombre_completo').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
                 const apodoEl = document.getElementById('apodo-' + art.id);
                 if (apodoEl && perfil) apodoEl.innerText = '👤 ' + (perfil.apodo || perfil.nombre_completo || 'Usuario');
             });
-
+            // Guardar fotos en cache y asignar click
             fotosCache[art.id] = todasFotos;
             const imgEl = div.querySelector('.foto-art');
             if (imgEl) {
@@ -530,7 +406,6 @@
             iniciarReloj(art.id, art.finaliza_en);
         }
 
-        // ── MIS PUBLICACIONES ─────────────────────────────────────────────
         async function filtrarMisPublicaciones() {
             if (!usuarioActualId) return;
             document.getElementById('input-busqueda').value = '';
@@ -552,7 +427,6 @@
             }
         }
 
-        // ── MIS OFERTAS ───────────────────────────────────────────────────
         async function filtrarMisOfertas() {
             if (!usuarioActualId) return;
             document.getElementById('input-busqueda').value = '';
@@ -590,13 +464,14 @@
                         <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 10000)">+$10.000</button>
                     </div>
                 `;
+
                     }
 
                     const div = document.createElement('div');
                     div.className = 'tarjeta';
                     div.style.border = "2px solid var(--lila)";
                     div.innerHTML = `
-                        <span class="tag-cat">${labelCat(art.categoria)}</span>
+                        <span class="tag-cat">${art.categoria || 'Otros'}</span>
                         <img src="${art.foto_url || ''}" class="foto-art">
                         <div class="titulo">${art.Titulo}</div>
                         <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
@@ -611,7 +486,6 @@
             } catch (e) { console.error("Error en Mis Ofertas:", e); }
         }
 
-        // ── RELOJ ─────────────────────────────────────────────────────────
         function iniciarReloj(id, fecha) {
             const display = document.getElementById(`reloj-${id}`);
             if (!fecha || !display) return;
@@ -632,12 +506,14 @@
             }, 1000);
         }
 
-        // ── OFERTAR ───────────────────────────────────────────────────────
         async function ofertar(id, monto = 500) {
             const { data: { user } } = await _supabase.auth.getUser();
             if (!user) { alert("⚠️ Tenés que ingresar para ofertar."); window.location.href = 'login.html'; return; }
-            const { data: art } = await _supabase.from('articulos').select('finaliza_en, perfil_id').eq('id', id).maybeSingle();
-            if (art && art.perfil_id === user.id) { alert("⚠️ No podés ofertar en tu propia publicación."); return; }
+             const { data: art } = await _supabase.from('articulos').select('finaliza_en, perfil_id').eq('id', id).maybeSingle();
+            if (art && art.perfil_id === user.id) {
+                alert("⚠️ No podés ofertar en tu propia publicación.");
+                return;
+            }
             if (art && new Date(art.finaliza_en).getTime() < Date.now()) { alert("🛑 Esta subasta ya terminó."); return; }
             const span = document.getElementById(`precio-${id}`);
             const nuevo = parseFloat(span.innerText) + monto;
@@ -652,7 +528,7 @@
             if (span) span.innerText = payload.new.precio_actual;
         }).subscribe();
 
-        // ── MODAL VENDEDOR ────────────────────────────────────────────────
+        // MODAL VENDEDOR
         function abrirModalVendedor(precioFinal) {
             const comision = Math.round(precioFinal * 0.05);
             document.getElementById('modal-monto-vendedor').innerText = '$' + comision.toLocaleString('es-AR');
@@ -676,12 +552,14 @@
             }
         }
 
-        // ── SCROLL FILTROS ────────────────────────────────────────────────
+
+
+        // SCROLL CATEGORÍAS CON FLECHAS Y RUEDA DEL MOUSE
         function scrollFiltros(id, px) {
             document.getElementById(id).scrollBy({ left: px, behavior: 'smooth' });
         }
 
-        ['filtros-productos', 'filtros-servicios', 'filtros-subcats'].forEach(id => {
+        ['filtros-productos', 'filtros-servicios'].forEach(id => {
             const el = document.getElementById(id);
             if (el) {
                 el.addEventListener('wheel', function(e) {
@@ -691,10 +569,10 @@
             }
         });
 
-        // ── CARRUSEL ──────────────────────────────────────────────────────
+        // CARRUSEL
         let carruselFotos = [];
         let carruselIndex = 0;
-        let fotosCache = {};
+        let fotosCache = {}; // guardamos fotos por id de articulo
 
         function abrirCarrusel(fotos, index) {
             carruselFotos = fotos;
@@ -702,26 +580,35 @@
             actualizarCarrusel();
             document.getElementById('modal-carrusel').classList.add('activo');
         }
+
         function cerrarCarrusel() {
             document.getElementById('modal-carrusel').classList.remove('activo');
         }
+
         function cambiarFoto(dir) {
             carruselIndex = (carruselIndex + dir + carruselFotos.length) % carruselFotos.length;
             actualizarCarrusel();
         }
+
         function actualizarCarrusel() {
             document.getElementById('carrusel-img').src = carruselFotos[carruselIndex];
             document.getElementById('carrusel-contador').innerText = `${carruselIndex + 1} / ${carruselFotos.length}`;
         }
+
+        // Cerrar carrusel con click fuera
         document.getElementById('modal-carrusel').addEventListener('click', function(e) {
             if (e.target === this) cerrarCarrusel();
         });
 
-        // ── COMPARTIR ─────────────────────────────────────────────────────
+        // COMPARTIR
         function compartir(titulo, id) {
             const url = window.location.href.split('#')[0] + '#articulo-' + id;
             if (navigator.share) {
-                navigator.share({ title: '¡Mirá esta subasta en Quiéndamas!', text: titulo, url: url });
+                navigator.share({
+                    title: '¡Mirá esta subasta en Quiéndamas!',
+                    text: titulo,
+                    url: url
+                });
             } else {
                 navigator.clipboard.writeText(url).then(() => {
                     alert('🔗 ¡Link copiado! Podés pegarlo donde quieras.');
@@ -730,7 +617,7 @@
         }
 
         revisarSesion();
-        cargarArticulos('Todos');
+        cargarArticulos();
     </script>
 </body>
 </html>
