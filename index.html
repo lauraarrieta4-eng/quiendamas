@@ -30,12 +30,10 @@
         .btn-volver { background: var(--verde-suave); color: #333; margin-top: 10px; padding: 12px; font-size: 0.9em; }
         #mensaje { margin-top: 15px; text-align: center; font-weight: bold; font-size: 0.9em; }
 
-        /* SELECTOR TIPO */
         .selector-tipo { display: flex; gap: 10px; margin-top: 12px; }
         .btn-tipo { flex: 1; padding: 10px; border: 2px solid var(--rosa); border-radius: 20px; background: white; color: var(--rosa); font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; margin-top: 0; transition: all 0.2s; }
         .btn-tipo.activo { background: var(--rosa); color: white; }
 
-        /* FOTOS */
         .fotos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
         .foto-slot { border: 2px dashed var(--lila); border-radius: 10px; height: 90px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; background: var(--rosa-claro); transition: border 0.2s; }
         .foto-slot:hover { border-color: var(--rosa); background: #fce4ec; }
@@ -43,6 +41,8 @@
         .foto-slot .btn-borrar { position: absolute; top: 3px; right: 3px; background: rgba(224,72,145,0.8); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 0.75em; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-top: 0; padding: 0; }
         .foto-slot .icono-agregar { font-size: 1.8em; color: #ccc; }
         .foto-hint { font-size: 0.78em; color: #999; margin-top: 5px; }
+
+        .subcat-label { font-size: 0.82em; color: #888; margin-top: 3px; font-weight: normal; }
     </style>
 </head>
 <body>
@@ -57,7 +57,7 @@
         </div>
 
         <label>Título:</label>
-        <input type="text" id="titulo" placeholder="Ej: Honda Wave 110 / Corte de cabello">
+        <input type="text" id="titulo" placeholder="Ej: Monstera deliciosa / Cortacésped a nafta">
 
         <label>Precio Base ($):</label>
         <input type="number" id="precio_base" placeholder="0.00">
@@ -65,39 +65,41 @@
         <label>Descripción:</label>
         <textarea id="descripcion" rows="3" placeholder="Detalles, estado, condiciones... ⚠️ No incluyas datos de contacto."></textarea>
 
+        <!-- CATEGORÍAS PRODUCTOS -->
         <div id="cats-producto">
             <label>Categoría:</label>
-            <select id="categoria-producto">
-                <option value="Autos">🚗 Autos</option>
-                <option value="Motos">🏍️ Motos</option>
-                <option value="Computacion">💻 Computación</option>
-                <option value="Celulares">📱 Celulares</option>
-                <option value="AudioVideo">📺 Audio y Video</option>
-                <option value="Electro">🔌 Electrodomésticos</option>
-                <option value="Moda">👗 Moda y Accesorios</option>
-                <option value="Joyas">⌚ Joyas y Relojes</option>
-                <option value="Belleza">💄 Belleza y Salud</option>
-                <option value="Construccion">🏗️ Construcción</option>
-                <option value="Antiguedades">🏺 Antigüedades</option>
-                <option value="Vivero">🌿 Vivero y Jardín</option>
-                <option value="Hogar">🏠 Hogar y Muebles</option>
-                <option value="Herramientas">🛠️ Herramientas</option>
-                <option value="Otros">📦 Otros</option>
+            <select id="cat-principal" onchange="actualizarSubcat()">
+                <option value="Plantas">🌿 Plantas</option>
+                <option value="Semillas">🌱 Semillas</option>
+                <option value="Fertilizantes">🧪 Fertilizantes</option>
+                <option value="Macetas">🪴 Macetas</option>
+                <option value="Herramientas">🛠️ Herramientas y máquinas</option>
+                <option value="Riego">💧 Materiales de riego</option>
+                <option value="Decoracion">✨ Decoración</option>
             </select>
+
+            <div id="subcat-wrapper" style="display:none; margin-top:2px;">
+                <label>Subcategoría: <span class="subcat-label" id="subcat-hint"></span></label>
+                <select id="cat-sub" onchange="actualizarSubcat2()"></select>
+            </div>
+
+            <div id="subcat2-wrapper" style="display:none; margin-top:2px;">
+                <label>Tipo de planta exterior:</label>
+                <select id="cat-sub2"></select>
+            </div>
         </div>
 
+        <!-- CATEGORÍAS SERVICIOS -->
         <div id="cats-servicio" style="display:none;">
             <label>Categoría de servicio:</label>
             <select id="categoria-servicio">
-                <option value="Belleza-Estetica">💅 Belleza y estética</option>
-                <option value="Peluqueria">✂️ Peluquería</option>
-                <option value="Hogar-Reparaciones">🏠 Hogar y reparaciones</option>
-                <option value="Plomeria-Electricidad">🔧 Plomería y electricidad</option>
-                <option value="Tecnologia-Soporte">💻 Tecnología y soporte</option>
-                <option value="Clases-Tutorias">📚 Clases y tutorías</option>
-                <option value="Diseno-Creatividad">🎨 Diseño y creatividad</option>
-                <option value="Servicios-Profesionales">⚖️ Servicios profesionales</option>
-                <option value="Otros-Servicios">📦 Otros servicios</option>
+                <option value="Serv-Mantenimiento">🌿 Mantenimiento de jardines</option>
+                <option value="Serv-CorteCesped">🌾 Corte de césped</option>
+                <option value="Serv-CorteCerco">✂️ Corte de cerco / seto</option>
+                <option value="Serv-Diseno">🎨 Diseño de jardines</option>
+                <option value="Serv-Cursos">📚 Cursos</option>
+                <option value="Serv-Asesoramiento">💬 Asesoramiento</option>
+                <option value="Serv-Talleres">🏡 Talleres</option>
             </select>
         </div>
 
@@ -126,6 +128,110 @@
         }
         protegerPagina();
 
+        // ── MAPA DE SUBCATEGORÍAS ──────────────────────────────────────────
+        const SUBCATS = {
+            'Plantas': [
+                { value: 'Plantas-Exterior',   label: '🌳 De exterior' },
+                { value: 'Plantas-Interior',   label: '🏠 De interior' },
+                { value: 'Plantas-Huerta',     label: '🥕 Huerta' },
+                { value: 'Plantas-Suculentas', label: '🌵 Suculentas y cactus' },
+                { value: 'Plantas-Raras',      label: '⭐ Raras / colección' },
+            ],
+            'Fertilizantes': [
+                { value: 'Fertilizantes-Organicos',   label: '🌿 Orgánicos' },
+                { value: 'Fertilizantes-Inorganicos', label: '🧪 Inorgánicos' },
+            ],
+            'Macetas': [
+                { value: 'Macetas-Barro',    label: '🪴 De barro' },
+                { value: 'Macetas-Plastico', label: '🪣 De plástico' },
+                { value: 'Macetas-Ceramica', label: '🏺 De cerámica' },
+            ],
+            'Herramientas': [
+                { value: 'Herramientas-Mano',       label: '🤲 Herramientas de mano' },
+                { value: 'Herramientas-Maquinaria', label: '⚙️ Maquinaria' },
+                { value: 'Herramientas-Electricos', label: '🔋 Equipos eléctricos / batería' },
+            ],
+            'Riego': [
+                { value: 'Riego-Goteo',          label: '💧 Sistemas de goteo' },
+                { value: 'Riego-Aspersores',     label: '💦 Aspersores y difusores' },
+                { value: 'Riego-Mangueras',      label: '🚿 Mangueras y accesorios' },
+                { value: 'Riego-Automatizacion', label: '⏱️ Automatización' },
+                { value: 'Riego-Bombas',         label: '🔧 Bombas' },
+            ],
+        };
+
+        // Subcategorías de nivel 3 (solo plantas exterior)
+        const SUBCATS2 = {
+            'Plantas-Exterior': [
+                { value: 'Plantas-Aromaticas',   label: '🌸 Aromáticas' },
+                { value: 'Plantas-Arbustos',     label: '🌿 Arbustos' },
+                { value: 'Plantas-Frutales',     label: '🍎 Frutales' },
+                { value: 'Plantas-Herbaceas',    label: '🌾 Herbáceas' },
+                { value: 'Plantas-Bulbosas',     label: '🌷 Bulbosas' },
+                { value: 'Plantas-Trepadoras',   label: '🌱 Trepadoras' },
+                { value: 'Plantas-Cubresuelos',  label: '🍀 Cubresuelos' },
+                { value: 'Plantas-Nativas',      label: '🌳 Nativas' },
+            ],
+        };
+
+        function actualizarSubcat() {
+            const principal = document.getElementById('cat-principal').value;
+            const subcatWrapper = document.getElementById('subcat-wrapper');
+            const subcat2Wrapper = document.getElementById('subcat2-wrapper');
+            const catSub = document.getElementById('cat-sub');
+            const catSub2 = document.getElementById('cat-sub2');
+            const hint = document.getElementById('subcat-hint');
+
+            subcat2Wrapper.style.display = 'none';
+            catSub2.innerHTML = '';
+
+            if (SUBCATS[principal]) {
+                catSub.innerHTML = SUBCATS[principal].map(s => `<option value="${s.value}">${s.label}</option>`).join('');
+                hint.innerText = '';
+                subcatWrapper.style.display = 'block';
+                actualizarSubcat2();
+            } else {
+                subcatWrapper.style.display = 'none';
+                catSub.innerHTML = '';
+            }
+        }
+
+        function actualizarSubcat2() {
+            const subVal = document.getElementById('cat-sub').value;
+            const subcat2Wrapper = document.getElementById('subcat2-wrapper');
+            const catSub2 = document.getElementById('cat-sub2');
+
+            if (SUBCATS2[subVal]) {
+                catSub2.innerHTML = SUBCATS2[subVal].map(s => `<option value="${s.value}">${s.label}</option>`).join('');
+                subcat2Wrapper.style.display = 'block';
+            } else {
+                subcat2Wrapper.style.display = 'none';
+                catSub2.innerHTML = '';
+            }
+        }
+
+        function getCategoriaFinal() {
+            const tipo = tipoActual;
+            if (tipo === 'servicio') return document.getElementById('categoria-servicio').value;
+
+            const principal = document.getElementById('cat-principal').value;
+            const subcatWrapper = document.getElementById('subcat-wrapper');
+            const subcat2Wrapper = document.getElementById('subcat2-wrapper');
+
+            if (subcatWrapper.style.display !== 'none') {
+                const subVal = document.getElementById('cat-sub').value;
+                if (subcat2Wrapper.style.display !== 'none') {
+                    return document.getElementById('cat-sub2').value;
+                }
+                return subVal;
+            }
+            return principal;
+        }
+
+        // Inicializar subcats al cargar
+        actualizarSubcat();
+
+        // ── TIPO PRODUCTO / SERVICIO ──────────────────────────────────────
         let tipoActual = 'producto';
         function cambiarTipo(tipo) {
             tipoActual = tipo;
@@ -135,6 +241,7 @@
             document.getElementById('cats-servicio').style.display = tipo === 'servicio' ? 'block' : 'none';
         }
 
+        // ── FOTOS ─────────────────────────────────────────────────────────
         const MAX_FOTOS = 5;
         let fotosArchivos = [];
         let slotActual = null;
@@ -172,15 +279,14 @@
 
         renderFotosGrid();
 
+        // ── PUBLICAR ──────────────────────────────────────────────────────
         async function subastar() {
             const { data: { user } } = await _supabase.auth.getUser();
             const titulo = document.getElementById('titulo').value;
             const precio = document.getElementById('precio_base').value;
             const desc = document.getElementById('descripcion').value;
             const fecha = document.getElementById('fecha_cierre').value;
-            const cat = tipoActual === 'producto'
-                ? document.getElementById('categoria-producto').value
-                : document.getElementById('categoria-servicio').value;
+            const cat = getCategoriaFinal();
             const msgDiv = document.getElementById('mensaje');
             const fotosValidas = fotosArchivos.filter(Boolean);
 
