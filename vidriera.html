@@ -6,7 +6,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
-    
     <title>Vidriera Quiéndamas</title>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
@@ -18,92 +17,18 @@
             --verde-suave:#D1E389;
             --verde-lima: #B9DE51;
         }
-
         * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--rosa-claro); padding: 10px; margin: 0; -webkit-tap-highlight-color: transparent; min-height: 100vh; }
 
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: var(--rosa-claro);
-            padding: 10px;
-            margin: 0;
-            -webkit-tap-highlight-color: transparent;
-            min-height: 100vh;
-        }
-
-        /* --- NUEVA BARRA SUPERIOR UNIFICADA --- */
-        .barra-superior {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #43a047; /* Verde principal elegante */
-            padding: 10px 15px;
-            border-radius: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 15px rgba(67, 160, 71, 0.35);
-            color: white;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .barra-superior-izq {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .barra-superior-izq img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%; /* Logo redondo */
-            object-fit: cover;
-            border: 2px solid white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-            background: white;
-        }
-
-        .barra-superior-izq h1 {
-            margin: 0;
-            font-size: 1.25em;
-            font-weight: 900;
-            letter-spacing: 0.5px;
-            color: white;
-        }
-
-        .barra-superior-der {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .barra-superior-der span {
-            font-size: 0.85em;
-            font-weight: bold;
-            color: #e8f5e9; /* Verde muy clarito para el nombre */
-        }
-
-        .btn-top {
-            background: white;
-            color: var(--rosa);
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.85em;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.2s, background 0.2s;
-        }
-
-        .btn-top.primario {
-            background: var(--rosa);
-            color: white;
-        }
-
-        .btn-top:hover {
-            transform: scale(1.05);
-        }
-
+        .barra-superior { display: flex; align-items: center; justify-content: space-between; background: #43a047; padding: 10px 15px; border-radius: 16px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(67,160,71,0.35); color: white; flex-wrap: wrap; gap: 10px; }
+        .barra-superior-izq { display: flex; align-items: center; gap: 12px; }
+        .barra-superior-izq img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.15); background: white; }
+        .barra-superior-izq h1 { margin: 0; font-size: 1.25em; font-weight: 900; letter-spacing: 0.5px; color: white; }
+        .barra-superior-der { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .barra-superior-der span { font-size: 0.85em; font-weight: bold; color: #e8f5e9; }
+        .btn-top { background: white; color: var(--rosa); border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85em; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s, background 0.2s; }
+        .btn-top.primario { background: var(--rosa); color: white; }
+        .btn-top:hover { transform: scale(1.05); }
         @media (max-width: 480px) {
             .barra-superior { padding: 10px; }
             .barra-superior-izq h1 { font-size: 1.1em; }
@@ -112,7 +37,6 @@
             .barra-superior-der span { width: 100%; text-align: right; margin-bottom: 2px; }
             .barra-superior-der { justify-content: flex-end; }
         }
-        /* --- FIN BARRA UNIFICADA --- */
 
         .btn-filtro { background: white; border: 2px solid var(--rosa); color: var(--rosa); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85em; white-space: nowrap; transition: all 0.2s; }
         .btn-filtro:hover { background: var(--rosa); color: white; }
@@ -150,6 +74,12 @@
         .tarjeta { background: white; border-radius: 16px; padding: 15px; width: 90%; max-width: 320px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; border-top: 4px solid var(--verde-lima); transition: transform 0.2s, box-shadow 0.2s; }
         .tarjeta:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.13); }
         .tag-cat { position: absolute; top: 10px; right: 10px; background: var(--lila); font-size: 0.7em; padding: 3px 10px; border-radius: 12px; color: #6a0050; font-weight: bold; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        /* Badge para tipo de publicación */
+        .tag-tipo { position: absolute; top: 34px; right: 10px; font-size: 0.65em; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
+        .tag-tipo.subasta { background: #fff3e0; color: #e65100; }
+        .tag-tipo.venta { background: #e8f5e9; color: #2e7d32; }
+        .tag-tipo.vendido { background: #eeeeee; color: #757575; }
+
         .foto-art { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; cursor: pointer; }
         .foto-art:hover { opacity: 0.92; }
         .titulo { font-size: 1.1em; font-weight: bold; color: #222; }
@@ -159,6 +89,8 @@
         .reloj { font-size: 0.85em; font-weight: bold; color: #555; background: var(--verde-suave); padding: 8px; border-radius: 8px; text-align: center; margin-bottom: 10px; }
         .btn-oferta { background: var(--verde-lima); color: #333; border: none; padding: 12px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.95rem; transition: background 0.2s; }
         .btn-oferta:hover { background: var(--rosa); color: white; }
+        .btn-comprar { background: linear-gradient(135deg, #43a047, #2e7d32); color: white; border: none; padding: 13px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: all 0.2s; box-shadow: 0 3px 10px rgba(67,160,71,0.3); }
+        .btn-comprar:hover { background: linear-gradient(135deg, #2e7d32, #1b5e20); transform: scale(1.02); }
         .btn-compartir { background: white; border: 2px solid var(--lila); color: #6a0050; padding: 8px; border-radius: 10px; cursor: pointer; font-size: 0.8em; font-weight: bold; width: 100%; margin-top: 6px; transition: all 0.2s; }
         .btn-compartir:hover { background: var(--lila); }
         .sin-resultados { text-align: center; width: 100%; color: #999; padding: 30px; font-size: 1em; }
@@ -220,9 +152,8 @@
     <div class="barra-superior">
         <div class="barra-superior-izq">
             <img src="logo.jpg" alt="Logo Quiéndamas">
-            <h1>🌿 quiendamas</h1>
+            <h1>🛍️ quiendamas</h1>
         </div>
-        
         <div class="barra-superior-der">
             <span id="usuario-nombre">Cargando...</span>
             <div style="display:flex; gap:8px;">
@@ -247,17 +178,26 @@
         <button class="btn-tipo" id="btn-servicios" onclick="cambiarTipo('servicios')">🛠️ Servicios</button>
     </div>
 
+    <!-- FILTROS PRODUCTOS -->
     <div class="filtros-wrapper" id="wrapper-productos">
         <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-productos', -200)">‹</button>
         <div class="filtros" id="filtros-productos">
-            <button class="btn-filtro cat activo" id="cat-btn-Todos" onclick="filtrarCategoria('Todos')">🌱 Todas</button>
-            <button class="btn-filtro cat" id="cat-btn-Plantas" onclick="filtrarCategoria('Plantas')">🌿 Plantas</button>
-            <button class="btn-filtro cat" id="cat-btn-Semillas" onclick="filtrarCategoria('Semillas')">🌱 Semillas</button>
-            <button class="btn-filtro cat" id="cat-btn-Fertilizantes" onclick="filtrarCategoria('Fertilizantes')">🧪 Fertilizantes</button>
-            <button class="btn-filtro cat" id="cat-btn-Macetas" onclick="filtrarCategoria('Macetas')">🪴 Macetas</button>
+            <button class="btn-filtro cat activo" id="cat-btn-Todos" onclick="filtrarCategoria('Todos')">📦 Todos</button>
+            <button class="btn-filtro cat" id="cat-btn-Autos" onclick="filtrarCategoria('Autos')">🚗 Autos</button>
+            <button class="btn-filtro cat" id="cat-btn-Motos" onclick="filtrarCategoria('Motos')">🏍️ Motos</button>
+            <button class="btn-filtro cat" id="cat-btn-Computacion" onclick="filtrarCategoria('Computacion')">💻 Computación</button>
+            <button class="btn-filtro cat" id="cat-btn-Celulares" onclick="filtrarCategoria('Celulares')">📱 Celulares</button>
+            <button class="btn-filtro cat" id="cat-btn-AudioVideo" onclick="filtrarCategoria('AudioVideo')">📺 Audio y Video</button>
+            <button class="btn-filtro cat" id="cat-btn-Electro" onclick="filtrarCategoria('Electro')">🔌 Electrodomésticos</button>
+            <button class="btn-filtro cat" id="cat-btn-Moda" onclick="filtrarCategoria('Moda')">👗 Moda</button>
+            <button class="btn-filtro cat" id="cat-btn-Joyas" onclick="filtrarCategoria('Joyas')">⌚ Joyas</button>
+            <button class="btn-filtro cat" id="cat-btn-Belleza" onclick="filtrarCategoria('Belleza')">💄 Belleza</button>
+            <button class="btn-filtro cat" id="cat-btn-Construccion" onclick="filtrarCategoria('Construccion')">🏗️ Construcción</button>
+            <button class="btn-filtro cat" id="cat-btn-Antiguedades" onclick="filtrarCategoria('Antiguedades')">🏺 Antigüedades</button>
+            <button class="btn-filtro cat" id="cat-btn-Vivero" onclick="filtrarCategoria('Vivero')">🌿 Vivero</button>
+            <button class="btn-filtro cat" id="cat-btn-Hogar" onclick="filtrarCategoria('Hogar')">🏠 Hogar</button>
             <button class="btn-filtro cat" id="cat-btn-Herramientas" onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</button>
-            <button class="btn-filtro cat" id="cat-btn-Riego" onclick="filtrarCategoria('Riego')">💧 Riego</button>
-            <button class="btn-filtro cat" id="cat-btn-Decoracion" onclick="filtrarCategoria('Decoracion')">✨ Decoración</button>
+            <button class="btn-filtro cat" id="cat-btn-Otros" onclick="filtrarCategoria('Otros')">📦 Otros</button>
         </div>
         <button class="filtros-arrow der" onclick="scrollFiltros('filtros-productos', 200)">›</button>
     </div>
@@ -268,17 +208,20 @@
         <button class="filtros-arrow der" onclick="scrollFiltros('filtros-subcats', 200)">›</button>
     </div>
 
+    <!-- FILTROS SERVICIOS -->
     <div class="filtros-wrapper" id="wrapper-servicios" style="display:none;">
         <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-servicios', -200)">‹</button>
         <div class="filtros" id="filtros-servicios" style="display:none;">
-            <button class="btn-filtro" onclick="cargarArticulos('Todos-Servicios')">🌱 Todos</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Serv-Mantenimiento')">🌿 Mantenimiento</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Serv-CorteCesped')">🌾 Corte de césped</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Serv-CorteCerco')">✂️ Corte de cerco</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Serv-Diseno')">🎨 Diseño de jardines</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Serv-Cursos')">📚 Cursos</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Serv-Asesoramiento')">💬 Asesoramiento</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Serv-Talleres')">🏡 Talleres</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Todos-Servicios')">🌟 Todos</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Belleza-Estetica')">💅 Belleza y estética</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Peluqueria')">✂️ Peluquería</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Hogar-Reparaciones')">🏠 Hogar y reparaciones</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Plomeria-Electricidad')">🔧 Plomería y electricidad</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Tecnologia-Soporte')">💻 Tecnología</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Clases-Tutorias')">📚 Clases y tutorías</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Diseno-Creatividad')">🎨 Diseño</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Servicios-Profesionales')">⚖️ Profesionales</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Otros-Servicios')">📦 Otros</button>
         </div>
         <button class="filtros-arrow der" onclick="scrollFiltros('filtros-servicios', 200)">›</button>
     </div>
@@ -290,20 +233,24 @@
         let tipoActual = 'productos';
         let categoriaActual = 'Todos';
 
-        const CATEGORIAS_SERVICIOS = ['Serv-Mantenimiento','Serv-CorteCesped','Serv-CorteCerco','Serv-Diseno','Serv-Cursos','Serv-Asesoramiento','Serv-Talleres'];
+        const CATEGORIAS_SERVICIOS = ['Belleza-Estetica','Peluqueria','Hogar-Reparaciones','Plomeria-Electricidad','Tecnologia-Soporte','Clases-Tutorias','Diseno-Creatividad','Servicios-Profesionales','Otros-Servicios'];
 
+        // Vivero agrupa todas las subcategorías heredadas + el valor simple 'Vivero'
         const VALORES_CAT = {
-            'Plantas':       ['Plantas-Aromaticas','Plantas-Arbustos','Plantas-Frutales','Plantas-Herbaceas','Plantas-Bulbosas','Plantas-Trepadoras','Plantas-Cubresuelos','Plantas-Nativas','Plantas-Interior','Plantas-Huerta','Plantas-Suculentas','Plantas-Raras','Plantas-Exterior'],
-            'Fertilizantes': ['Fertilizantes-Organicos','Fertilizantes-Inorganicos'],
-            'Macetas':       ['Macetas-Barro','Macetas-Plastico','Macetas-Ceramica'],
-            'Herramientas':  ['Herramientas-Mano','Herramientas-Maquinaria','Herramientas-Electricos'],
-            'Riego':         ['Riego-Goteo','Riego-Aspersores','Riego-Mangueras','Riego-Automatizacion','Riego-Bombas'],
-            'Semillas':      ['Semillas'],
-            'Decoracion':    ['Decoracion'],
+            'Vivero': [
+                'Vivero',
+                'Plantas-Aromaticas','Plantas-Arbustos','Plantas-Frutales','Plantas-Herbaceas',
+                'Plantas-Bulbosas','Plantas-Trepadoras','Plantas-Cubresuelos','Plantas-Nativas',
+                'Plantas-Interior','Plantas-Huerta','Plantas-Suculentas','Plantas-Raras','Plantas-Exterior',
+                'Semillas','Fertilizantes-Organicos','Fertilizantes-Inorganicos',
+                'Macetas-Barro','Macetas-Plastico','Macetas-Ceramica',
+                'Riego-Goteo','Riego-Aspersores','Riego-Mangueras','Riego-Automatizacion','Riego-Bombas',
+                'Decoracion'
+            ],
         };
 
         const SUBCATS_FILTRO = {
-            'Plantas': [
+            'Vivero': [
                 { value: 'Plantas-Aromaticas',   label: '🌸 Aromáticas' },
                 { value: 'Plantas-Arbustos',     label: '🌿 Arbustos' },
                 { value: 'Plantas-Frutales',     label: '🍎 Frutales' },
@@ -316,66 +263,45 @@
                 { value: 'Plantas-Huerta',       label: '🥕 Huerta' },
                 { value: 'Plantas-Suculentas',   label: '🌵 Suculentas' },
                 { value: 'Plantas-Raras',        label: '⭐ Raras' },
-            ],
-            'Fertilizantes': [
-                { value: 'Fertilizantes-Organicos',   label: '🌿 Orgánicos' },
-                { value: 'Fertilizantes-Inorganicos', label: '🧪 Inorgánicos' },
-            ],
-            'Macetas': [
-                { value: 'Macetas-Barro',    label: '🪴 Barro' },
-                { value: 'Macetas-Plastico', label: '🪣 Plástico' },
-                { value: 'Macetas-Ceramica', label: '🏺 Cerámica' },
-            ],
-            'Herramientas': [
-                { value: 'Herramientas-Mano',       label: '🤲 Mano' },
-                { value: 'Herramientas-Maquinaria', label: '⚙️ Maquinaria' },
-                { value: 'Herramientas-Electricos', label: '🔋 Eléctricos' },
-            ],
-            'Riego': [
+                { value: 'Semillas',             label: '🌱 Semillas' },
+                { value: 'Fertilizantes-Organicos', label: '🌿 Fertiliz. Org.' },
+                { value: 'Fertilizantes-Inorganicos', label: '🧪 Fertiliz. Inorg.' },
+                { value: 'Macetas-Barro',        label: '🪴 Macetas barro' },
+                { value: 'Macetas-Plastico',     label: '🪣 Macetas plástico' },
+                { value: 'Macetas-Ceramica',     label: '🏺 Macetas cerámica' },
                 { value: 'Riego-Goteo',          label: '💧 Goteo' },
                 { value: 'Riego-Aspersores',     label: '💦 Aspersores' },
                 { value: 'Riego-Mangueras',      label: '🚿 Mangueras' },
                 { value: 'Riego-Automatizacion', label: '⏱️ Automatización' },
                 { value: 'Riego-Bombas',         label: '🔧 Bombas' },
+                { value: 'Decoracion',           label: '✨ Decoración' },
             ],
         };
 
         const LABEL_CAT = {
-            'Plantas-Aromaticas':        'Aromáticas',
-            'Plantas-Arbustos':          'Arbustos',
-            'Plantas-Frutales':          'Frutales',
-            'Plantas-Herbaceas':         'Herbáceas',
-            'Plantas-Bulbosas':          'Bulbosas',
-            'Plantas-Trepadoras':        'Trepadoras',
-            'Plantas-Cubresuelos':       'Cubresuelos',
-            'Plantas-Nativas':           'Nativas',
-            'Plantas-Interior':          'Interior',
-            'Plantas-Huerta':            'Huerta',
-            'Plantas-Suculentas':        'Suculentas',
-            'Plantas-Raras':             'Raras',
-            'Plantas-Exterior':          'Exterior',
-            'Fertilizantes-Organicos':   'Fertiliz. Org.',
-            'Fertilizantes-Inorganicos': 'Fertiliz. Inorg.',
-            'Macetas-Barro':             'Macetas barro',
-            'Macetas-Plastico':          'Macetas plástico',
-            'Macetas-Ceramica':          'Macetas cerámica',
-            'Herramientas-Mano':         'Herram. mano',
-            'Herramientas-Maquinaria':   'Maquinaria',
-            'Herramientas-Electricos':   'Herram. eléct.',
-            'Riego-Goteo':               'Goteo',
-            'Riego-Aspersores':          'Aspersores',
-            'Riego-Mangueras':           'Mangueras',
-            'Riego-Automatizacion':      'Automatización',
-            'Riego-Bombas':              'Bombas',
-            'Semillas':                  'Semillas',
-            'Decoracion':                'Decoración',
-            'Serv-Mantenimiento':        'Mantenimiento',
-            'Serv-CorteCesped':          'Corte de césped',
-            'Serv-CorteCerco':           'Corte de cerco',
-            'Serv-Diseno':               'Diseño jardines',
-            'Serv-Cursos':               'Cursos',
-            'Serv-Asesoramiento':        'Asesoramiento',
-            'Serv-Talleres':             'Talleres',
+            'Autos': 'Autos', 'Motos': 'Motos', 'Computacion': 'Computación',
+            'Celulares': 'Celulares', 'AudioVideo': 'Audio y Video', 'Electro': 'Electrodomésticos',
+            'Moda': 'Moda', 'Joyas': 'Joyas', 'Belleza': 'Belleza', 'Construccion': 'Construcción',
+            'Antiguedades': 'Antigüedades', 'Vivero': 'Vivero', 'Hogar': 'Hogar',
+            'Herramientas': 'Herramientas', 'Otros': 'Otros',
+            'Plantas-Aromaticas': 'Aromáticas', 'Plantas-Arbustos': 'Arbustos',
+            'Plantas-Frutales': 'Frutales', 'Plantas-Herbaceas': 'Herbáceas',
+            'Plantas-Bulbosas': 'Bulbosas', 'Plantas-Trepadoras': 'Trepadoras',
+            'Plantas-Cubresuelos': 'Cubresuelos', 'Plantas-Nativas': 'Nativas',
+            'Plantas-Interior': 'Interior', 'Plantas-Huerta': 'Huerta',
+            'Plantas-Suculentas': 'Suculentas', 'Plantas-Raras': 'Raras',
+            'Plantas-Exterior': 'Exterior',
+            'Fertilizantes-Organicos': 'Fertiliz. Org.', 'Fertilizantes-Inorganicos': 'Fertiliz. Inorg.',
+            'Macetas-Barro': 'Macetas barro', 'Macetas-Plastico': 'Macetas plástico',
+            'Macetas-Ceramica': 'Macetas cerámica',
+            'Riego-Goteo': 'Goteo', 'Riego-Aspersores': 'Aspersores',
+            'Riego-Mangueras': 'Mangueras', 'Riego-Automatizacion': 'Automatización',
+            'Riego-Bombas': 'Bombas', 'Semillas': 'Semillas', 'Decoracion': 'Decoración',
+            'Belleza-Estetica': 'Belleza y estética', 'Peluqueria': 'Peluquería',
+            'Hogar-Reparaciones': 'Hogar y reparaciones', 'Plomeria-Electricidad': 'Plomería y electricidad',
+            'Tecnologia-Soporte': 'Tecnología', 'Clases-Tutorias': 'Clases y tutorías',
+            'Diseno-Creatividad': 'Diseño', 'Servicios-Profesionales': 'Profesionales',
+            'Otros-Servicios': 'Otros servicios',
         };
 
         function labelCat(cat) {
@@ -496,67 +422,137 @@
             const div = document.createElement('div');
             div.className = 'tarjeta';
             if (esMia) div.style.border = "2px solid var(--rosa)";
-            const yaTermino = art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
-            const soyGanador = yaTermino && art.ganador_id === usuarioActualId;
+
+            // Determinar si es venta directa o subasta
+            const esVentaDirecta = art.tipo_venta === 'venta';
+            const yaTermino = !esVentaDirecta && art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
+            const soyGanador = !esVentaDirecta && yaTermino && art.ganador_id === usuarioActualId;
+            const soyComprador = esVentaDirecta && art.comprador_id === usuarioActualId;
+            const articuloVendido = esVentaDirecta && !!art.comprador_id;
             const soyVendedor = esMia;
             const pagoConfirmado = art.pago_confirmado;
+
             let boton = '';
-            if (soyVendedor) {
-                if (yaTermino && art.ganador_id) {
-                    if (pagoConfirmado) {
-                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosComprador('${art.ganador_id}')">👤 Ver datos del comprador</button>`;
+            let badgeTipo = '';
+            let relojHtml = '';
+
+            if (esVentaDirecta) {
+                // Badge verde para venta directa
+                if (articuloVendido) {
+                    badgeTipo = `<span class="tag-tipo vendido">✅ Vendido</span>`;
+                } else {
+                    badgeTipo = `<span class="tag-tipo venta">💲 Venta directa</span>`;
+                }
+
+                if (soyVendedor) {
+                    if (articuloVendido) {
+                        if (pagoConfirmado) {
+                            boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosComprador('${art.comprador_id}')">👤 Ver datos del comprador</button>`;
+                        } else {
+                            boton = `<button class="btn-vendedor" onclick="abrirModalVendedor(${art.precio_base})">💰 Abonar comisión para ver comprador</button>`;
+                        }
                     } else {
-                        boton = `<button class="btn-vendedor" onclick="abrirModalVendedor(${art.precio_actual || art.precio_base})">💰 Abonar comisión para ver comprador</button>`;
+                        boton = `<button class="btn-oferta" style="background:#666;" disabled>Tu propia publicación</button>`;
                     }
+                } else if (soyComprador) {
+                    if (pagoConfirmado) {
+                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
+                    } else {
+                        boton = `<button class="btn-ganador">🛒 ¡Compraste este artículo! Esperá que el vendedor coordine la entrega.</button>`;
+                    }
+                } else if (articuloVendido) {
+                    boton = `<button class="btn-oferta" style="background:#999;" disabled>😕 Ya fue vendido</button>`;
                 } else {
-                    boton = `<button class="btn-oferta" style="background:#666;" disabled>Tu propia publicación</button>`;
+                    boton = `<button class="btn-comprar" onclick="comprarAhora('${art.id}')">🛒 Comprar ahora — $${(art.precio_base || 0).toLocaleString('es-AR')}</button>`;
                 }
-            } else if (soyGanador) {
-                if (pagoConfirmado) {
-                    boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
-                } else {
-                    boton = `<button class="btn-ganador">🏆 ¡Felicitaciones, ganaste! Esperá que el vendedor coordine la entrega.</button>`;
-                }
-            } else if (yaTermino) {
-                boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
             } else {
-                boton = `
-                    <div style="display:flex;gap:5px;flex-wrap:wrap;">
-                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 500)">+$500</button>
-                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 1000)">+$1.000</button>
-                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 5000)">+$5.000</button>
-                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 10000)">+$10.000</button>
-                    </div>
-                `;
+                // Es SUBASTA — lógica original
+                badgeTipo = `<span class="tag-tipo subasta">🔨 Subasta</span>`;
+                relojHtml = `<div class="reloj" id="reloj-${art.id}">⏳ Cargando...</div>`;
+
+                if (soyVendedor) {
+                    if (yaTermino && art.ganador_id) {
+                        if (pagoConfirmado) {
+                            boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosComprador('${art.ganador_id}')">👤 Ver datos del comprador</button>`;
+                        } else {
+                            boton = `<button class="btn-vendedor" onclick="abrirModalVendedor(${art.precio_actual || art.precio_base})">💰 Abonar comisión para ver comprador</button>`;
+                        }
+                    } else {
+                        boton = `<button class="btn-oferta" style="background:#666;" disabled>Tu propia publicación</button>`;
+                    }
+                } else if (soyGanador) {
+                    if (pagoConfirmado) {
+                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
+                    } else {
+                        boton = `<button class="btn-ganador">🏆 ¡Felicitaciones, ganaste! Esperá que el vendedor coordine la entrega.</button>`;
+                    }
+                } else if (yaTermino) {
+                    boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
+                } else {
+                    boton = `
+                        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                            <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 500)">+$500</button>
+                            <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 1000)">+$1.000</button>
+                            <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 5000)">+$5.000</button>
+                            <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 10000)">+$10.000</button>
+                        </div>
+                    `;
+                }
             }
+
             const todasFotos = [art.foto_url].concat(art.fotos_extra || []).filter(Boolean);
             const badgeFotos = todasFotos.length > 1 ? `<span class="badge-fotos">📷 ${todasFotos.length}</span>` : '';
-            const artId = art.id;
+            const precioDisplay = esVentaDirecta
+                ? `<div class="precio">$<span id="precio-${art.id}">${art.precio_base || 0}</span></div>`
+                : `<div class="precio">$<span id="precio-${art.id}">${art.precio_actual || art.precio_base}</span></div>`;
+
             div.innerHTML = `
                 <span class="tag-cat">${labelCat(art.categoria)}</span>
-                <img src="${art.foto_url || ''}" class="foto-art" data-fotos-id="${artId}" style="cursor:pointer;">
+                ${badgeTipo}
+                <img src="${art.foto_url || ''}" class="foto-art" data-fotos-id="${art.id}" style="cursor:pointer;">
                 ${badgeFotos}
                 <div class="titulo">${art.Titulo}</div>
                 <div class="apodo-art" id="apodo-${art.id}">👤 Cargando...</div>
                 <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
-                <div class="precio">$<span id="precio-${art.id}">${art.precio_actual || art.precio_base}</span></div>
-                <div class="reloj" id="reloj-${art.id}">⏳ Cargando...</div>
+                ${precioDisplay}
+                ${relojHtml}
                 ${boton}
                 <button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 Compartir</button>
             `;
             lista.appendChild(div);
+
             _supabase.from('perfiles').select('apodo, nombre_completo').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
                 const apodoEl = document.getElementById('apodo-' + art.id);
                 if (apodoEl && perfil) apodoEl.innerText = '👤 ' + (perfil.apodo || perfil.nombre_completo || 'Usuario');
             });
+
             fotosCache[art.id] = todasFotos;
             const imgEl = div.querySelector('.foto-art');
             if (imgEl) {
                 imgEl.addEventListener('click', () => abrirCarrusel(fotosCache[art.id], 0));
             }
-            iniciarReloj(art.id, art.finaliza_en);
+
+            if (!esVentaDirecta) iniciarReloj(art.id, art.finaliza_en);
         }
 
+        // ── COMPRAR AHORA (venta directa) ──────────────────────────
+        async function comprarAhora(id) {
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (!user) { alert("⚠️ Tenés que ingresar para comprar."); window.location.href = 'login.html'; return; }
+            const { data: art } = await _supabase.from('articulos').select('perfil_id, comprador_id, Titulo, precio_base').eq('id', id).maybeSingle();
+            if (!art) { alert("No se encontró el artículo."); return; }
+            if (art.perfil_id === user.id) { alert("⚠️ No podés comprar tu propia publicación."); return; }
+            if (art.comprador_id) { alert("😕 Este artículo ya fue vendido."); cargarArticulos(categoriaActual); return; }
+            const precio = (art.precio_base || 0).toLocaleString('es-AR');
+            const confirmar = confirm(`¿Confirmás la compra de "${art.Titulo}" por $${precio}?\n\nEl vendedor coordinará la entrega con vos.`);
+            if (!confirmar) return;
+            const { error } = await _supabase.from('articulos').update({ comprador_id: user.id, ganador_id: user.id }).eq('id', id);
+            if (error) { alert("Error al procesar la compra: " + error.message); return; }
+            alert("🎉 ¡Compra confirmada! El vendedor coordinará la entrega en breve.");
+            cargarArticulos(categoriaActual);
+        }
+
+        // ── MIS PUBLICACIONES ───────────────────────────────────────
         async function filtrarMisPublicaciones() {
             if (!usuarioActualId) return;
             document.getElementById('input-busqueda').value = '';
@@ -578,6 +574,7 @@
             }
         }
 
+        // ── MIS OFERTAS ─────────────────────────────────────────────
         async function filtrarMisOfertas() {
             if (!usuarioActualId) return;
             document.getElementById('input-busqueda').value = '';
@@ -607,13 +604,12 @@
                         boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
                     } else {
                         boton = `
-                    <div style="display:flex;gap:5px;flex-wrap:wrap;">
-                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 500)">+$500</button>
-                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 1000)">+$1.000</button>
-                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 5000)">+$5.000</button>
-                        <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 10000)">+$10.000</button>
-                    </div>
-                `;
+                            <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                                <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 500)">+$500</button>
+                                <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 1000)">+$1.000</button>
+                                <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 5000)">+$5.000</button>
+                                <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 10000)">+$10.000</button>
+                            </div>`;
                     }
                     const div = document.createElement('div');
                     div.className = 'tarjeta';
@@ -661,7 +657,7 @@
             if (art && art.perfil_id === user.id) { alert("⚠️ No podés ofertar en tu propia publicación."); return; }
             if (art && new Date(art.finaliza_en).getTime() < Date.now()) { alert("🛑 Esta subasta ya terminó."); return; }
             const span = document.getElementById(`precio-${id}`);
-            const nuevo = parseFloat(span.innerText) + monto;
+            const nuevo = parseFloat(span.innerText.replace(/\./g,'').replace(',','.')) + monto;
             const { error } = await _supabase.from('articulos').update({ "precio_actual": nuevo }).eq('id', id);
             if (error) { alert("Error al ofertar: " + error.message); return; }
             await _supabase.from('ofertas').insert([{ articulo_id: id, perfil_id: user.id, monto: nuevo }]);
@@ -734,17 +730,6 @@
         document.getElementById('modal-carrusel').addEventListener('click', function(e) {
             if (e.target === this) cerrarCarrusel();
         });
-
-        function compartir(titulo, id) {
-            const url = window.location.href.split('#')[0] + '#articulo-' + id;
-            if (navigator.share) {
-                navigator.share({ title: '¡Mirá esta subasta en Quiéndamas!', text: titulo, url: url });
-            } else {
-                navigator.clipboard.writeText(url).then(() => {
-                    alert('🔗 ¡Link copiado! Podés pegarlo donde quieras.');
-                });
-            }
-        }
 
         revisarSesion();
         cargarArticulos('Todos');
