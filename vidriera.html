@@ -578,7 +578,8 @@
         async function comprarAhora(id) {
             const { data: { user } } = await _supabase.auth.getUser();
             if (!user) { alert("⚠️ Tenés que ingresar para comprar."); window.location.href = 'login.html'; return; }
-            const { data: art } = await _supabase.from('articulos').select('perfil_id, comprador_id, Titulo, precio_base').eq('id', id).maybeSingle();
+            const { data: art, error: artError } = await _supabase.from('articulos').select('*').eq('id', id).maybeSingle();
+            if (artError) { alert("Error al buscar el artículo: " + artError.message); return; }
             if (!art) { alert("No se encontró el artículo."); return; }
             if (art.perfil_id === user.id) { alert("⚠️ No podés comprar tu propia publicación."); return; }
             if (art.comprador_id) { alert("😕 Este artículo ya fue vendido."); cargarArticulos(categoriaActual); return; }
