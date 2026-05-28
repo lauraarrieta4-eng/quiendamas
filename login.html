@@ -6,6 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
+
     <title>Quiéndamas - Login</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
@@ -37,14 +38,14 @@
         #mensaje { margin-top: 15px; text-align: center; font-size: 0.9em; font-weight: bold; line-height: 1.4; }
         .hint { font-size: 0.75em; color: #999; margin-top: 3px; }
 
-        .logo-login { text-align: center; margin-bottom: 10px; }
+        /* ── SOLO ESTO CAMBIÓ: logo redondo con nombre ── */
+        .logo-login { text-align: center; margin-bottom: 15px; }
         .logo-login img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--verde-lima); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
-        .logo-login .app-name { margin-top: 6px; font-weight: 900; font-size: 1.2em; color: #43a047; letter-spacing: 0.5px; }
+        .logo-login .app-name { margin-top: 7px; font-weight: 900; font-size: 1.15em; color: #43a047; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
     <div class="card">
-
         <div class="logo-login">
             <img src="logo.jpg" alt="Logo Quiéndamas" onerror="this.style.display='none'">
             <div class="app-name">🛍️ quiendamas</div>
@@ -52,7 +53,7 @@
 
         <div id="contenedor-principal">
             <h2 id="titulo">Ingresar</h2>
-
+            
             <div id="campos-comunes">
                 <label>Email:</label>
                 <input type="email" id="email" placeholder="ejemplo@correo.com">
@@ -156,6 +157,7 @@
             const msg = document.getElementById('mensaje');
 
             if (!email || !password) { msg.style.color = "red"; msg.innerText = "⚠️ Completá email y contraseña."; return; }
+
             msg.style.color = "blue";
             msg.innerText = "⏳ Procesando...";
 
@@ -172,17 +174,22 @@
                     msg.innerText = "⚠️ Todos los campos son obligatorios y debés aceptar los términos.";
                     return;
                 }
+
                 if (!/^[a-zA-Z0-9_]+$/.test(apodo)) {
                     msg.style.color = "red";
                     msg.innerText = "⚠️ El apodo solo puede tener letras, números y guiones bajos. Sin espacios.";
                     return;
                 }
-                const { data: apodoExistente } = await _supabase.from('perfiles').select('id').eq('apodo', apodo).maybeSingle();
+
+                const { data: apodoExistente } = await _supabase
+                    .from('perfiles').select('id').eq('apodo', apodo).maybeSingle();
+
                 if (apodoExistente) {
                     msg.style.color = "red";
                     msg.innerText = "❌ Ese apodo ya está en uso. Elegí otro.";
                     return;
                 }
+
                 const { data, error } = await _supabase.auth.signUp({
                     email, password,
                     options: {
@@ -190,17 +197,24 @@
                         emailRedirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html'
                     }
                 });
+
                 if (data.user) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
+
                 if (!error) {
                     msg.style.color = "green";
                     msg.innerHTML = `<div style="padding:12px;background:#e8f5e9;border-radius:8px;border:1px solid #c8e6c9;text-align:center;"><span style="font-size:2rem;">📩</span><br><b style="color:#2e7d32;">¡Cuenta creada!</b><br><p style="margin:8px 0 0;color:#333;font-size:0.95em;">Revisá tu casilla y también el SPAM para confirmar tu cuenta.</p></div>`;
                     ['email','password','nombre','apodo','dni','direccion','telefono'].forEach(id => document.getElementById(id).value = "");
                     document.getElementById('acepto_terminos').checked = false;
                 }
+
             } else {
                 const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+
                 if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
-                const { data: perfilExistente } = await _supabase.from('perfiles').select('id').eq('id', data.user.id).maybeSingle();
+
+                const { data: perfilExistente } = await _supabase
+                    .from('perfiles').select('id').eq('id', data.user.id).maybeSingle();
+
                 if (!perfilExistente) {
                     const meta = data.user.user_metadata;
                     await _supabase.from('perfiles').insert([{
@@ -212,6 +226,7 @@
                         telefono: meta.telefono || ""
                     }]);
                 }
+
                 msg.style.color = "green";
                 msg.innerText = "✅ ¡Entrando...";
                 setTimeout(() => { window.location.href = "vidriera.html"; }, 1000);
