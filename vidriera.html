@@ -120,10 +120,11 @@
 </head>
 <body>
 
+    <!-- Modal vendedor: subasta -->
     <div class="modal-overlay" id="modal-vendedor">
         <div class="modal-box">
             <div style="font-size:3em;">💰</div>
-            <h2>¡Tu artículo fue vendido!</h2>
+            <h2>¡Tu subasta fue ganada!</h2>
             <p style="color:#555; font-size:0.95em;">Para ver los datos del comprador y coordinar la entrega, abonás la comisión del <b>5% del precio final</b>:</p>
             <div class="modal-monto" id="modal-monto-vendedor">$0</div>
             <div class="modal-datos">
@@ -136,6 +137,40 @@
                 📌 Una vez realizada la transferencia, verificamos el pago y liberamos los datos del comprador en un plazo de hasta 24hs hábiles. Consultas: <b>quiendamas.app@gmail.com</b>
             </div>
             <button class="btn-cerrar-modal" onclick="cerrarModalVendedor()">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal vendedor: venta directa -->
+    <div class="modal-overlay" id="modal-vendedor-venta">
+        <div class="modal-box">
+            <div style="font-size:3em;">🛒</div>
+            <h2 style="color:#43a047;">¡Compraron tu producto!</h2>
+            <p style="color:#555; font-size:0.95em;">Hay un comprador esperándote. Para ver sus datos y coordinar la entrega, abonás la comisión del <b>5% del precio de venta</b>:</p>
+            <div class="modal-monto" id="modal-monto-venta" style="color:#43a047;">$0</div>
+            <div class="modal-datos">
+                <b>Titular:</b> Laura Fernanda Arrieta<br>
+                <b>CBU:</b> 3840200500000011572611<br>
+                <b>Alias:</b> qdm.uala<br>
+                <b>Billetera:</b> Ualá
+            </div>
+            <div class="modal-aviso">
+                📌 Una vez realizada la transferencia, verificamos el pago y te enviamos los datos del comprador en hasta 24hs hábiles. Consultas: <b>quiendamas.app@gmail.com</b>
+            </div>
+            <button class="btn-cerrar-modal" onclick="cerrarModalVentaDirecta()">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal comprador: confirmación compra exitosa -->
+    <div class="modal-overlay" id="modal-compra-ok">
+        <div class="modal-box" style="border-top-color: #43a047;">
+            <div style="font-size:3em;">🎉</div>
+            <h2 style="color:#43a047;">¡Compra confirmada!</h2>
+            <div style="background:#e8f5e9; border-radius:12px; padding:15px; margin:15px 0; font-size:0.92em; color:#333; line-height:1.7; text-align:left;">
+                ✅ Reservaste este artículo con éxito.<br>
+                ⏳ El vendedor recibirá una notificación y, una vez que abone la comisión de la plataforma, <b>se pondrá en contacto con vos</b> para coordinar la entrega.<br>
+                📧 Si tenés dudas escribinos a <b>quiendamas.app@gmail.com</b>
+            </div>
+            <button style="background:#43a047; margin-top:5px;" onclick="cerrarModalCompraOk()">¡Entendido!</button>
         </div>
     </div>
 
@@ -449,7 +484,7 @@
                         if (pagoConfirmado) {
                             boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosComprador('${art.comprador_id}')">👤 Ver datos del comprador</button>`;
                         } else {
-                            boton = `<button class="btn-vendedor" onclick="abrirModalVendedor(${art.precio_base})">💰 Abonar comisión para ver comprador</button>`;
+                            boton = `<button class="btn-comprar" onclick="abrirModalVentaDirecta(${art.precio_base || 0})">🛒 ¡Compraron tu producto! Aboná la comisión</button>`;
                         }
                     } else {
                         boton = `<button class="btn-oferta" style="background:#666;" disabled>Tu propia publicación</button>`;
@@ -458,7 +493,11 @@
                     if (pagoConfirmado) {
                         boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
                     } else {
-                        boton = `<button class="btn-ganador">🛒 ¡Compraste este artículo! Esperá que el vendedor coordine la entrega.</button>`;
+                        boton = `
+                            <div style="background:#e8f5e9; border-radius:10px; padding:12px; font-size:0.82em; color:#2e7d32; text-align:center; line-height:1.5;">
+                                ✅ <b>¡Compra confirmada!</b><br>
+                                Cuando el vendedor abone la comisión se pondrá en contacto con vos para coordinar la entrega.
+                            </div>`;
                     }
                 } else if (articuloVendido) {
                     boton = `<button class="btn-oferta" style="background:#999;" disabled>😕 Ya fue vendido</button>`;
@@ -543,13 +582,32 @@
             if (!art) { alert("No se encontró el artículo."); return; }
             if (art.perfil_id === user.id) { alert("⚠️ No podés comprar tu propia publicación."); return; }
             if (art.comprador_id) { alert("😕 Este artículo ya fue vendido."); cargarArticulos(categoriaActual); return; }
+
+            // Modal de confirmación
             const precio = (art.precio_base || 0).toLocaleString('es-AR');
-            const confirmar = confirm(`¿Confirmás la compra de "${art.Titulo}" por $${precio}?\n\nEl vendedor coordinará la entrega con vos.`);
+            const confirmar = confirm(`¿Confirmás la compra de "${art.Titulo}" por $${precio}?`);
             if (!confirmar) return;
+
             const { error } = await _supabase.from('articulos').update({ comprador_id: user.id, ganador_id: user.id }).eq('id', id);
             if (error) { alert("Error al procesar la compra: " + error.message); return; }
-            alert("🎉 ¡Compra confirmada! El vendedor coordinará la entrega en breve.");
+
+            // Mostrar modal de éxito para el comprador
+            document.getElementById('modal-compra-ok').classList.add('activo');
             cargarArticulos(categoriaActual);
+        }
+
+        function cerrarModalCompraOk() {
+            document.getElementById('modal-compra-ok').classList.remove('activo');
+        }
+
+        function abrirModalVentaDirecta(precioFinal) {
+            const comision = Math.round(precioFinal * 0.05);
+            document.getElementById('modal-monto-venta').innerText = '$' + comision.toLocaleString('es-AR');
+            document.getElementById('modal-vendedor-venta').classList.add('activo');
+        }
+
+        function cerrarModalVentaDirecta() {
+            document.getElementById('modal-vendedor-venta').classList.remove('activo');
         }
 
         // ── MIS PUBLICACIONES ───────────────────────────────────────
