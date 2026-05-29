@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Términos y Condiciones — quiendamas.verde</title>
+    <title>Términos y Condiciones — Quiéndamas</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap');
 
@@ -52,6 +52,17 @@
         .pasos li::before { content: counter(paso); position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; background: var(--rosa); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9em; }
 
         .highlight { background: var(--verde-suave); border-radius: 10px; padding: 14px 18px; margin: 14px 0; font-size: 0.9em; color: #333; font-weight: 600; border-left: 4px solid var(--verde-lima); }
+        .highlight-verde { background: #e8f5e9; border-radius: 10px; padding: 14px 18px; margin: 14px 0; font-size: 0.9em; color: #2e7d32; font-weight: 600; border-left: 4px solid #43a047; }
+
+        .modalidad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+        .modalidad-card { border-radius: 12px; padding: 16px; }
+        .modalidad-card.subasta { background: #fff3e0; border: 2px solid #ffb74d; }
+        .modalidad-card.venta { background: #e8f5e9; border: 2px solid #66bb6a; }
+        .modalidad-card h4 { font-size: 1em; margin-bottom: 8px; }
+        .modalidad-card.subasta h4 { color: #e65100; }
+        .modalidad-card.venta h4 { color: #2e7d32; }
+        .modalidad-card p { font-size: 0.85em; color: #555; margin: 0; }
+        @media (max-width: 500px) { .modalidad-grid { grid-template-columns: 1fr; } }
 
         .contacto-box { background: var(--rosa); color: white; border-radius: 16px; padding: 30px; text-align: center; margin-bottom: 30px; }
         .contacto-box h2 { font-family: 'Playfair Display', serif; font-size: 1.4em; margin-bottom: 10px; }
@@ -65,48 +76,68 @@
 
     <div class="header">
         <h1>⚖️ Términos y Condiciones</h1>
-        <p>quiendamas.verde — Plataforma de subastas de plantas, jardín y paisajismo</p>
+        <p>Quiéndamas — Plataforma de compraventa y subastas en Bariloche y zona</p>
     </div>
 
     <div class="nav-center">
-        <a href="login.html" class="nav-btn">← Volver al inicio</a>
+        <a href="javascript:history.back()" class="nav-btn">← Volver al inicio</a>
     </div>
 
     <div class="contenido">
 
         <div class="seccion">
             <h2>🏷️ ¿Cómo funciona Quiéndamas?</h2>
-            <p>Quiéndamas es una plataforma de subastas online donde cualquier persona puede publicar artículos y servicios para que otros usuarios oferten por ellos. Quien más oferte al cierre de la subasta, gana.</p>
+            <p>Quiéndamas es una plataforma local de compraventa donde podés publicar artículos y servicios en dos modalidades:</p>
 
-            <h3>Para comprar:</h3>
+            <div class="modalidad-grid">
+                <div class="modalidad-card subasta">
+                    <h4>🔨 Subasta</h4>
+                    <p>Los usuarios ofertan por el artículo. Quien más oferte al cierre de la subasta, gana.</p>
+                </div>
+                <div class="modalidad-card venta">
+                    <h4>💲 Venta directa</h4>
+                    <p>El artículo tiene precio fijo. El primero en confirmar la compra se lo lleva.</p>
+                </div>
+            </div>
+
+            <h3>Para comprar (subasta):</h3>
             <ol class="pasos">
                 <li>Registrate gratuitamente con tu nombre, apodo, DNI, dirección y teléfono.</li>
-                <li>Explorá los artículos y servicios disponibles en la vidriera.</li>
+                <li>Explorá los artículos disponibles en la vidriera.</li>
                 <li>Ofertá en los que te interesen eligiendo el monto de tu oferta.</li>
                 <li>Si sos el mayor ofertante cuando cierra la subasta, ¡ganás!</li>
                 <li>Una vez que el vendedor abona la comisión del 5%, recibís sus datos para coordinar la entrega.</li>
             </ol>
 
+            <h3>Para comprar (venta directa):</h3>
+            <ol class="pasos">
+                <li>Registrate o ingresá a tu cuenta.</li>
+                <li>Encontrá el artículo que querés y tocá "Comprar ahora".</li>
+                <li>Confirmá la compra al precio indicado.</li>
+                <li>Una vez que el vendedor abona la comisión, se pone en contacto con vos para coordinar la entrega.</li>
+            </ol>
+
             <h3>Para vender:</h3>
             <ol class="pasos">
                 <li>Iniciá sesión y tocá el botón "Publicar".</li>
-                <li>Completá los datos del artículo o servicio: título, descripción, precio base, categoría, fotos y fecha de cierre.</li>
-                <li>Tu publicación aparece en la vidriera y los usuarios comienzan a ofertar.</li>
-                <li>Al cierre, abonás la comisión del 5% sobre el precio final a la plataforma.</li>
+                <li>Elegí la modalidad: subasta o venta directa.</li>
+                <li>Completá los datos: título, descripción, precio, categoría y fotos.</li>
+                <li>Tu publicación aparece en la vidriera.</li>
+                <li>Cuando se vende o adjudica, abonás la comisión del 5% sobre el precio final.</li>
                 <li>Confirmado tu pago, los datos del comprador se liberan para coordinar la entrega.</li>
             </ol>
 
             <div class="highlight">
-                💡 La publicación y las ofertas son gratuitas. Se cobra una comisión del 5% al vendedor sobre el precio final de la subasta adjudicada.
+                💡 La publicación y las ofertas son gratuitas. Se cobra una comisión del 5% al vendedor sobre el precio final, tanto en subastas como en ventas directas.
             </div>
         </div>
 
         <div class="seccion">
             <h2>💰 Comisiones y pagos</h2>
-            <p>Publicar y ofertar en Quiéndamas es <strong>completamente gratuito</strong>. La comisión se cobra únicamente al vendedor cuyo artículo o servicio fue adjudicado.</p>
+            <p>Publicar, ofertar y comprar en Quiéndamas es <strong>completamente gratuito</strong>. La comisión se cobra únicamente al vendedor cuyo artículo fue vendido o adjudicado.</p>
             <ul>
-                <li>Comisión: 5% del precio final de la subasta, a cargo del vendedor.</li>
-                <li>El monto exacto se calcula y muestra automáticamente al finalizar la subasta.</li>
+                <li>Comisión: 5% del precio final, a cargo del vendedor.</li>
+                <li>El monto exacto se muestra automáticamente al finalizar la venta.</li>
                 <li>El pago se realiza por transferencia bancaria a la cuenta indicada en la plataforma.</li>
                 <li>Una vez confirmado el pago, se liberan los datos de contacto del comprador.</li>
                 <li>El comprador recibe los datos del vendedor una vez confirmado el pago.</li>
@@ -119,9 +150,11 @@
             <p>Para mantener la confianza y seguridad de la plataforma, todas las publicaciones deben cumplir estas reglas:</p>
             <ul>
                 <li>La información del artículo o servicio debe ser veraz y completa.</li>
-                <li><strong>Está prohibido incluir datos de contacto</strong> (teléfono, email, Instagram, WhatsApp, etc.) en el título o descripción de las publicaciones. Los datos se intercambian únicamente a través de la plataforma una vez confirmado el pago.</li>
+                <li><strong>Está prohibido incluir datos de contacto</strong> (teléfono, email, Instagram, WhatsApp, etc.) en el título o descripción. Los datos se intercambian únicamente a través de la plataforma una vez confirmado el pago.</li>
                 <li>Las fotos deben corresponder al artículo o servicio real ofrecido.</li>
-                <li>El precio base debe ser razonable y acorde al artículo o servicio.</li>
+                <li>El precio debe ser razonable y acorde al artículo o servicio.</li>
+                <li>En venta directa, el precio es fijo y no puede modificarse una vez publicado.</li>
+                <li>En subasta, el precio base es el mínimo aceptado y no puede bajarse una vez iniciadas las ofertas.</li>
             </ul>
         </div>
 
@@ -132,14 +165,15 @@
             <h3>El vendedor es responsable de:</h3>
             <ul>
                 <li>Publicar información veraz y completa sobre el artículo o servicio.</li>
-                <li>Respetar el precio final acordado en la subasta.</li>
+                <li>Respetar el precio acordado (fijo en venta directa, precio final en subasta).</li>
                 <li>Cumplir con la entrega del artículo o la prestación del servicio.</li>
                 <li>Coordinar la logística de entrega directamente con el comprador.</li>
             </ul>
 
             <h3>El comprador es responsable de:</h3>
             <ul>
-                <li>Verificar las condiciones del artículo antes de ofertar.</li>
+                <li>Verificar las condiciones del artículo antes de ofertar o comprar.</li>
+                <li>En venta directa: confirmar la compra solo si tiene intención real de concretarla.</li>
                 <li>Coordinar la recepción del artículo o servicio con el vendedor.</li>
             </ul>
 
@@ -147,46 +181,55 @@
             <ul>
                 <li>El estado, calidad o autenticidad de los artículos publicados.</li>
                 <li>Incumplimientos entre compradores y vendedores.</li>
-                <li>La logística o costos de envío entre las partes.</li>
+                <li>La logística o costos de envío o encuentro entre las partes.</li>
                 <li>Disputas posteriores a la entrega de datos de contacto.</li>
             </ul>
         </div>
 
         <div class="seccion">
             <h2>📦 Artículos y servicios permitidos</h2>
-            <p>quiendamas.verde está especializada en el mundo vegetal, el jardín y el paisajismo. Las categorías disponibles son:</p>
+            <p>Quiéndamas es una plataforma local abierta a todo tipo de artículos y servicios. Las categorías disponibles son:</p>
 
-            <h3>🌿 Productos</h3>
+            <h3>🛍️ Productos</h3>
             <ul>
-                <li><strong>Plantas:</strong> de exterior (aromáticas, arbustos, frutales, herbáceas, bulbosas, trepadoras, cubresuelos, nativas), de interior, huerta, suculentas y cactus, raras y de colección.</li>
-                <li><strong>Semillas:</strong> todo tipo de semillas para jardín y huerta.</li>
-                <li><strong>Fertilizantes:</strong> orgánicos e inorgánicos.</li>
-                <li><strong>Macetas:</strong> de barro, plástico y cerámica.</li>
-                <li><strong>Herramientas y máquinas:</strong> herramientas de mano, maquinaria (cortacésped, motosierra, bordeadora, desmalezadora, sopladora) y equipos eléctricos / a batería.</li>
-                <li><strong>Materiales de riego:</strong> sistemas de goteo, aspersores y difusores, mangueras y accesorios, automatización, bombas.</li>
-                <li><strong>Decoración:</strong> elementos decorativos para jardines y espacios verdes.</li>
+                <li><strong>Autos:</strong> vehículos, repuestos y accesorios.</li>
+                <li><strong>Motos:</strong> motos, repuestos y accesorios.</li>
+                <li><strong>Computación:</strong> computadoras, notebooks, periféricos y accesorios.</li>
+                <li><strong>Celulares:</strong> teléfonos, tablets y accesorios.</li>
+                <li><strong>Audio y Video:</strong> televisores, equipos de sonido, home theater.</li>
+                <li><strong>Electrodomésticos:</strong> heladeras, lavarropas, cocinas y similares.</li>
+                <li><strong>Moda y Accesorios:</strong> ropa, calzado, carteras, accesorios.</li>
+                <li><strong>Joyas y Relojes:</strong> joyas, bijouterie y relojes.</li>
+                <li><strong>Belleza y Salud:</strong> cosméticos, perfumes, equipos de salud.</li>
+                <li><strong>Construcción:</strong> materiales, herramientas de obra, sanitarios.</li>
+                <li><strong>Antigüedades:</strong> objetos vintage, coleccionables, antigüedades.</li>
+                <li><strong>Vivero y Jardín:</strong> plantas, semillas, macetas, herramientas de jardín, riego, fertilizantes y decoración.</li>
+                <li><strong>Hogar y Muebles:</strong> muebles, decoración, iluminación, textiles.</li>
+                <li><strong>Herramientas:</strong> herramientas manuales, eléctricas y maquinaria.</li>
+                <li><strong>Otros:</strong> cualquier artículo no clasificado en las categorías anteriores.</li>
             </ul>
 
             <h3>🛠️ Servicios</h3>
             <ul>
-                <li>Mantenimiento general de jardines.</li>
-                <li>Corte de césped.</li>
-                <li>Corte de cerco / seto.</li>
-                <li>Diseño de jardines y paisajismo.</li>
-                <li>Cursos de jardinería y plantas.</li>
-                <li>Asesoramiento profesional.</li>
-                <li>Talleres de plantas y jardín.</li>
+                <li>Belleza y estética.</li>
+                <li>Peluquería.</li>
+                <li>Hogar y reparaciones.</li>
+                <li>Plomería y electricidad.</li>
+                <li>Tecnología y soporte.</li>
+                <li>Clases y tutorías.</li>
+                <li>Diseño y creatividad.</li>
+                <li>Servicios profesionales.</li>
+                <li>Otros servicios.</li>
             </ul>
 
             <h3>Está prohibido publicar:</h3>
             <ul class="prohibidos">
-                <li>Animales vivos o productos derivados de especies protegidas o en peligro de extinción.</li>
-                <li>Plantas o semillas cuya comercialización esté prohibida por la legislación argentina (especies protegidas, invasoras declaradas, etc.).</li>
                 <li>Armas de fuego, municiones o explosivos de cualquier tipo.</li>
                 <li>Sustancias ilegales o controladas.</li>
                 <li>Artículos robados o de procedencia dudosa.</li>
                 <li>Material pornográfico o para adultos.</li>
                 <li>Artículos falsificados o que violen derechos de propiedad intelectual.</li>
+                <li>Animales vivos o productos derivados de especies protegidas.</li>
                 <li>Cualquier artículo cuya venta esté prohibida por la legislación argentina.</li>
             </ul>
         </div>
@@ -198,7 +241,7 @@
                 <li>Los datos personales solo se comparten entre comprador y vendedor tras confirmar el pago de la comisión.</li>
                 <li>No compartimos tus datos con terceros con fines comerciales.</li>
                 <li>Podés solicitar la eliminación de tu cuenta escribiendo a nuestro correo de contacto.</li>
-                <li>Al registrarte aceptás recibir notificaciones relacionadas con tus subastas.</li>
+                <li>Al registrarte aceptás recibir notificaciones relacionadas con tus publicaciones.</li>
             </ul>
         </div>
 
@@ -207,10 +250,10 @@
             <ul>
                 <li>El uso de la plataforma implica la aceptación de estos términos y condiciones.</li>
                 <li>Quiéndamas se reserva el derecho de modificar estos términos con previo aviso.</li>
-                <li>Las subastas son vinculantes: si ganás, tenés la obligación de coordinar la entrega.</li>
+                <li>Las compras confirmadas son vinculantes: si comprás o ganás una subasta, tenés la obligación de coordinar la entrega.</li>
                 <li>Quiéndamas puede suspender cuentas que incumplan las normas de uso.</li>
                 <li>Cualquier disputa entre usuarios debe resolverse entre las partes.</li>
-                <li>La plataforma opera para toda la República Argentina bajo el dominio quiendamas.verde.</li>
+                <li>La plataforma opera en Bariloche y zona, República Argentina.</li>
             </ul>
         </div>
 
@@ -223,7 +266,7 @@
     </div>
 
     <div class="footer">
-        © 2026 quiendamas.verde — Todos los derechos reservados.<br>
+        © 2026 Quiéndamas — Todos los derechos reservados.<br>
         Última actualización: Mayo 2026
     </div>
 
