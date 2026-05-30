@@ -11,59 +11,101 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <style>
-        body { font-family: sans-serif; background-color: #f1f8e9; display: flex; justify-content: center; padding: 15px; margin: 0; min-height: 100vh; align-items: center; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; box-sizing: border-box; }
-        h2 { color: #2e7d32; text-align: center; margin-top: 0; }
-        label { display: block; margin-top: 15px; font-weight: bold; font-size: 0.9em; color: #555; }
+        :root {
+            --rosa: #E04891;
+            --lila: #E1B7ED;
+            --rosa-claro: #F5E1E2;
+            --verde-suave: #D1E389;
+            --verde-lima: #B9DE51;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--rosa-claro); display: flex; justify-content: center; padding: 15px; margin: 0; min-height: 100vh; align-items: center; }
+        .card { background: white; padding: 28px; border-radius: 16px; box-shadow: 0 6px 24px rgba(224,72,145,0.15); width: 100%; max-width: 400px; border-top: 5px solid var(--verde-lima); }
+        h2 { color: var(--rosa); text-align: center; margin-top: 0; font-size: 1.5em; }
+        label { display: block; margin-top: 15px; font-weight: bold; font-size: 0.9em; color: #333; }
         .password-container { position: relative; width: 100%; }
-        input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; }
-        input:focus { border-color: #4caf50; }
-        .password-container input { padding-right: 40px; }
-        .toggle-password { position: absolute; right: 10px; top: 50%; transform: translateY(-3px); cursor: pointer; font-size: 1.2rem; user-select: none; }
-        button { background-color: #4caf50; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; font-size: 1rem; }
-        button:hover { background-color: #388e3c; }
-        .toggle { text-align: center; margin-top: 15px; font-size: 0.9em; color: #4caf50; cursor: pointer; text-decoration: underline; }
+        input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid var(--lila); border-radius: 10px; box-sizing: border-box; font-size: 16px; outline: none; transition: border 0.2s; }
+        input:focus { border-color: var(--rosa); box-shadow: 0 0 0 2px rgba(224,72,145,0.1); }
+        .password-container input { padding-right: 45px; }
+        .toggle-password { position: absolute; right: 12px; top: 50%; transform: translateY(-3px); cursor: pointer; font-size: 1.2rem; user-select: none; color: #999; }
+        button { background: var(--rosa); color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 20px; font-size: 1rem; transition: opacity 0.2s; }
+        button:hover { opacity: 0.88; }
+        .btn-secundario { background: var(--verde-suave); color: #333; margin-top: 10px; }
+        .toggle { text-align: center; margin-top: 18px; font-size: 0.9em; color: var(--rosa); cursor: pointer; text-decoration: underline; font-weight: bold; }
         .recuperar-link { text-align: center; margin-top: 10px; font-size: 0.85em; color: #888; cursor: pointer; text-decoration: underline; display: block; }
-        .terminos { margin-top: 15px; font-size: 0.8em; color: #666; }
-        #mensaje { margin-top: 15px; text-align: center; font-size: 0.9em; font-weight: bold; }
+        .recuperar-link:hover { color: var(--rosa); }
+        .terminos { margin-top: 15px; font-size: 0.8em; color: #444; background: var(--rosa-claro); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--lila); }
+        #mensaje { margin-top: 15px; text-align: center; font-size: 0.9em; font-weight: bold; line-height: 1.4; }
+        .hint { font-size: 0.75em; color: #999; margin-top: 3px; }
+        .logo-login { text-align: center; margin-bottom: 15px; }
+        .logo-login img { width: 90px; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2 id="titulo">Ingresar</h2>
-        <div id="campos-comunes">
-            <label>Email:</label>
-            <input type="email" id="email" placeholder="ejemplo@correo.com">
-            <label>Contraseña:</label>
+        <div class="logo-login">
+            <img src="logo.svg" alt="Logo Quiéndamas" onerror="this.style.display='none'">
+        </div>
+
+        <div id="contenedor-principal">
+            <h2 id="titulo">Ingresar</h2>
+            
+            <div id="campos-comunes">
+                <label>Email:</label>
+                <input type="email" id="email" placeholder="ejemplo@correo.com">
+                <label>Contraseña:</label>
+                <div class="password-container">
+                    <input type="password" id="password" placeholder="******">
+                    <span class="toggle-password" onclick="alternarPassword('password')">👁️</span>
+                </div>
+            </div>
+
+            <div id="campos-registro" style="display:none;">
+                <label>Nombre Completo:</label>
+                <input type="text" id="nombre" placeholder="Nombre y apellido completo">
+                <label>Apodo / Nombre de usuario:</label>
+                <input type="text" id="apodo" placeholder="Ej: juanito99 (visible en tus publicaciones)">
+                <p class="hint">Solo letras, números y guiones bajos. Sin espacios.</p>
+                <label>DNI:</label>
+                <input type="text" id="dni" placeholder="Sin puntos ni espacios">
+                <label>Dirección (para envíos):</label>
+                <input type="text" id="direccion" placeholder="Calle, número, ciudad">
+                <label>Teléfono:</label>
+                <input type="text" id="telefono" placeholder="Ej: 2944123456">
+                <div class="terminos">
+                    <input type="checkbox" id="acepto_terminos" style="width:auto;">
+                    Acepto los <a href="terminos.html" target="_blank" style="color:var(--rosa);font-weight:bold;">Términos y Condiciones</a> de Quiéndamas.
+                </div>
+            </div>
+
+            <button id="btn-principal" onclick="ejecutarAccion()">Entrar</button>
+            <a id="link-recuperar" class="recuperar-link" onclick="recuperarContrasena()">¿Te olvidaste tu contraseña?</a>
+            <div id="toggle-link" class="toggle" onclick="cambiarModo()">¿No tenés cuenta? Registrate aquí</div>
+        </div>
+
+        <div id="contenedor-recuperacion" style="display:none;">
+            <h2>Nueva Contraseña</h2>
+            <p style="text-align:center;color:#666;font-size:0.9em;">Escribí tu nueva clave de acceso.</p>
+            <label>Nueva Contraseña:</label>
             <div class="password-container">
-                <input type="password" id="password" placeholder="******">
-                <span class="toggle-password" onclick="alternarPassword()">👁️</span>
+                <input type="password" id="nueva-password" placeholder="Mínimo 6 caracteres">
+                <span class="toggle-password" onclick="alternarPassword('nueva-password')">👁️</span>
             </div>
+            <button onclick="guardarNuevaContrasena()">Guardar y Entrar</button>
         </div>
 
-        <div id="campos-registro" style="display:none;">
-            <label>Nombre Completo:</label>
-            <input type="text" id="nombre" placeholder="Nombre y apellido completo">
-            <label>DNI:</label>
-            <input type="text" id="dni" placeholder="Sin puntos ni espacios">
-            <label>Dirección (para envíos):</label>
-            <input type="text" id="direccion" placeholder="Calle, número, ciudad">
-            <label>Teléfono:</label>
-            <input type="text" id="telefono" placeholder="Ej: 2944123456">
-            <div class="terminos">
-                <input type="checkbox" id="acepto_terminos" style="width:auto;">
-                Acepto los <a href="terminos.html" target="_blank">Términos y Condiciones</a>
-            </div>
-        </div>
-
-        <button id="btn-principal" onclick="ejecutarAccion()">Entrar</button>
-        <a id="link-recuperar" class="recuperar-link" onclick="recuperarContrasena()">¿Te olvidaste tu contraseña?</a>
-        <div id="toggle-link" class="toggle" onclick="cambiarModo()">¿No tenés cuenta? Registrate aquí</div>
         <div id="mensaje"></div>
     </div>
 
     <script>
         let esRegistro = false;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.location.href.includes('type=recovery') || window.location.hash.includes('type=recovery')) {
+                document.getElementById('contenedor-principal').style.display = 'none';
+                document.getElementById('contenedor-recuperacion').style.display = 'block';
+            }
+        });
 
         function cambiarModo() {
             esRegistro = !esRegistro;
@@ -75,42 +117,34 @@
             document.getElementById('mensaje').innerText = "";
         }
 
-        function alternarPassword() {
-            const input = document.getElementById('password');
-            const ojo = document.querySelector('.toggle-password');
-            if (input.type === "password") {
-                input.type = "text";
-                ojo.innerText = "🔒";
-            } else {
-                input.type = "password";
-                ojo.innerText = "👁️";
-            }
+        function alternarPassword(idInput) {
+            const input = document.getElementById(idInput);
+            const ojo = input.nextElementSibling;
+            input.type = input.type === "password" ? "text" : "password";
+            ojo.innerText = input.type === "password" ? "👁️" : "🔒";
         }
 
         async function recuperarContrasena() {
             const email = document.getElementById('email').value;
             const msg = document.getElementById('mensaje');
-
-            if (!email) {
-                msg.style.color = "red";
-                msg.innerText = "⚠️ Escribí tu email en el cuadro de arriba primero.";
-                return;
-            }
-
-            msg.style.color = "blue";
-            msg.innerText = "⏳ Enviando enlace...";
-
-            const { data, error } = await _supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/recuperar.html',
+            if (!email) { msg.style.color = "red"; msg.innerText = "⚠️ Escribí tu email arriba primero."; return; }
+            msg.style.color = "blue"; msg.innerText = "⏳ Enviando enlace...";
+            const { error } = await _supabase.auth.signInWithOtp({
+                email,
+                options: { shouldCreateUser: false, emailRedirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html?type=recovery' }
             });
+            if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; }
+            else { msg.style.color = "green"; msg.innerHTML = `<div style="padding:12px;background:#e3f2fd;border-radius:8px;border:1px solid #bbdefb;">📧 <b>¡Enlace enviado!</b><br>Revisá tu casilla y también el SPAM.</div>`; }
+        }
 
-            if (error) {
-                msg.style.color = "red";
-                msg.innerText = "❌ " + error.message;
-            } else {
-                msg.style.color = "green";
-                msg.innerText = "✅ Te enviamos un enlace a tu correo. (Revisá SPAM)";
-            }
+        async function guardarNuevaContrasena() {
+            const pass = document.getElementById('nueva-password').value;
+            const msg = document.getElementById('mensaje');
+            if (!pass || pass.length < 6) { msg.style.color = "red"; msg.innerText = "⚠️ Mínimo 6 caracteres."; return; }
+            msg.style.color = "blue"; msg.innerText = "⏳ Guardando...";
+            const { error } = await _supabase.auth.updateUser({ password: pass });
+            if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; }
+            else { msg.style.color = "green"; msg.innerText = "✅ ¡Contraseña cambiada! Entrando..."; setTimeout(() => { window.location.href = "vidriera.html"; }, 1500); }
         }
 
         async function ejecutarAccion() {
@@ -118,38 +152,45 @@
             const password = document.getElementById('password').value;
             const msg = document.getElementById('mensaje');
 
-            if (!email || !password) {
-                msg.style.color = "red";
-                msg.innerText = "⚠️ Completá email y contraseña.";
-                return;
-            }
+            if (!email || !password) { msg.style.color = "red"; msg.innerText = "⚠️ Completá email y contraseña."; return; }
 
             msg.style.color = "blue";
             msg.innerText = "⏳ Procesando...";
 
             if (esRegistro) {
                 const nombre = document.getElementById('nombre').value;
+                const apodo = document.getElementById('apodo').value.trim();
                 const dni = document.getElementById('dni').value;
                 const dir = document.getElementById('direccion').value;
                 const tel = document.getElementById('telefono').value;
                 const acepto = document.getElementById('acepto_terminos').checked;
 
-                if (!nombre || !dni || !dir || !tel || !acepto) {
+                if (!nombre || !apodo || !dni || !dir || !tel || !acepto) {
                     msg.style.color = "red";
                     msg.innerText = "⚠️ Todos los campos son obligatorios y debés aceptar los términos.";
                     return;
                 }
 
+                if (!/^[a-zA-Z0-9_]+$/.test(apodo)) {
+                    msg.style.color = "red";
+                    msg.innerText = "⚠️ El apodo solo puede tener letras, números y guiones bajos. Sin espacios.";
+                    return;
+                }
+
+                const { data: apodoExistente } = await _supabase
+                    .from('perfiles').select('id').eq('apodo', apodo).maybeSingle();
+
+                if (apodoExistente) {
+                    msg.style.color = "red";
+                    msg.innerText = "❌ Ese apodo ya está en uso. Elegí otro.";
+                    return;
+                }
+
                 const { data, error } = await _supabase.auth.signUp({
-                    email,
-                    password,
+                    email, password,
                     options: {
-                        data: {
-                            nombre_completo: nombre,
-                            dni: dni,
-                            direccion: dir,
-                            telefono: tel
-                        }
+                        data: { nombre_completo: nombre, apodo, dni, direccion: dir, telefono: tel },
+                        emailRedirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html'
                     }
                 });
 
@@ -158,7 +199,7 @@
                 if (!error) {
                     msg.style.color = "green";
                     msg.innerHTML = `<div style="padding:12px;background:#e8f5e9;border-radius:8px;border:1px solid #c8e6c9;text-align:center;"><span style="font-size:2rem;">📩</span><br><b style="color:#2e7d32;">¡Cuenta creada!</b><br><p style="margin:8px 0 0;color:#333;font-size:0.95em;">Revisá tu casilla y también el SPAM para confirmar tu cuenta.</p></div>`;
-                    ['email','password','nombre','dni','direccion','telefono'].forEach(id => document.getElementById(id).value = "");
+                    ['email','password','nombre','apodo','dni','direccion','telefono'].forEach(id => document.getElementById(id).value = "");
                     document.getElementById('acepto_terminos').checked = false;
                 }
 
@@ -167,7 +208,6 @@
 
                 if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
 
-                // Crear perfil si no existe
                 const { data: perfilExistente } = await _supabase
                     .from('perfiles').select('id').eq('id', data.user.id).maybeSingle();
 
@@ -176,6 +216,7 @@
                     await _supabase.from('perfiles').insert([{
                         id: data.user.id,
                         nombre_completo: meta.nombre_completo || "Usuario",
+                        apodo: meta.apodo || meta.nombre_completo || "Usuario",
                         dni: meta.dni || "",
                         direccion: meta.direccion || "",
                         telefono: meta.telefono || ""
