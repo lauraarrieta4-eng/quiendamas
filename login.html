@@ -38,7 +38,6 @@
         #mensaje { margin-top: 15px; text-align: center; font-size: 0.9em; font-weight: bold; line-height: 1.4; }
         .hint { font-size: 0.75em; color: #999; margin-top: 3px; }
 
-        /* ── SOLO ESTO CAMBIÓ: logo redondo con nombre ── */
         .logo-login { text-align: center; margin-bottom: 15px; }
         .logo-login img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--verde-lima); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
         .logo-login .app-name { margin-top: 7px; font-weight: 900; font-size: 1.15em; color: #43a047; letter-spacing: 0.5px; }
@@ -71,11 +70,16 @@
                 <input type="text" id="apodo" placeholder="Ej: juanito99 (visible en tus publicaciones)">
                 <p class="hint">Solo letras, números y guiones bajos. Sin espacios.</p>
                 <label>DNI:</label>
-                <input type="text" id="dni" placeholder="Sin puntos ni espacios">
+                <input type="text" id="dni" placeholder="Sin puntos ni espacios" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 <label>Dirección (para envíos):</label>
                 <input type="text" id="direccion" placeholder="Calle, número, ciudad">
+                
                 <label>Teléfono:</label>
-                <input type="text" id="telefono" placeholder="Ej: 2944123456">
+                <div style="display: flex; gap: 8px;">
+                    <input type="tel" id="caracteristica" placeholder="Cód. (Ej: 2966)" style="width: 35%;" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <input type="tel" id="telefono" placeholder="Número" style="width: 65%;" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                </div>
+
                 <div class="terminos">
                     <input type="checkbox" id="acepto_terminos" style="width:auto;">
                     Acepto los <a href="terminos.html" target="_blank" style="color:var(--rosa);font-weight:bold;">Términos y Condiciones</a> de Quiéndamas.
@@ -161,75 +165,89 @@
             msg.style.color = "blue";
             msg.innerText = "⏳ Procesando...";
 
-            if (esRegistro) {
-                const nombre = document.getElementById('nombre').value;
-                const apodo = document.getElementById('apodo').value.trim();
-                const dni = document.getElementById('dni').value;
-                const dir = document.getElementById('direccion').value;
-                const tel = document.getElementById('telefono').value;
-                const acepto = document.getElementById('acepto_terminos').checked;
+            try {
+                if (esRegistro) {
+                    const nombre = document.getElementById('nombre').value;
+                    const apodo = document.getElementById('apodo').value.trim();
+                    const dni = document.getElementById('dni').value;
+                    const dir = document.getElementById('direccion').value;
+                    const caracteristica = document.getElementById('caracteristica').value;
+                    const numero = document.getElementById('telefono').value;
+                    const tel = caracteristica + "-" + numero;
+                    const acepto = document.getElementById('acepto_terminos').checked;
 
-                if (!nombre || !apodo || !dni || !dir || !tel || !acepto) {
-                    msg.style.color = "red";
-                    msg.innerText = "⚠️ Todos los campos son obligatorios y debés aceptar los términos.";
-                    return;
-                }
-
-                if (!/^[a-zA-Z0-9_]+$/.test(apodo)) {
-                    msg.style.color = "red";
-                    msg.innerText = "⚠️ El apodo solo puede tener letras, números y guiones bajos. Sin espacios.";
-                    return;
-                }
-
-                const { data: apodoExistente } = await _supabase
-                    .from('perfiles').select('id').eq('apodo', apodo).maybeSingle();
-
-                if (apodoExistente) {
-                    msg.style.color = "red";
-                    msg.innerText = "❌ Ese apodo ya está en uso. Elegí otro.";
-                    return;
-                }
-
-                const { data, error } = await _supabase.auth.signUp({
-                    email, password,
-                    options: {
-                        data: { nombre_completo: nombre, apodo, dni, direccion: dir, telefono: tel },
-                        emailRedirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html'
+                    if (!nombre || !apodo || !dni || !dir || !caracteristica || !numero || !acepto) {
+                        msg.style.color = "red";
+                        msg.innerText = "⚠️ Todos los campos son obligatorios y debés aceptar los términos.";
+                        return;
                     }
-                });
 
-                if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
+                    if (!/^[a-zA-Z0-9_]+$/.test(apodo)) {
+                        msg.style.color = "red";
+                        msg.innerText = "⚠️ El apodo solo puede tener letras, números y guiones bajos. Sin espacios.";
+                        return;
+                    }
 
-                if (!error) {
+                    // Validación de contraseña segura
+                    const tieneLetras = /[a-zA-Z]/.test(password);
+                    const tieneNumeros = /[0-9]/.test(password);
+                    if (!tieneLetras || !tieneNumeros) {
+                        msg.style.color = "red";
+                        msg.innerText = "⚠️ La contraseña debe tener al menos una letra y un número.";
+                        return;
+                    }
+
+                    const { data: apodoExistente } = await _supabase
+                        .from('perfiles').select('id').eq('apodo', apodo).maybeSingle();
+
+                    if (apodoExistente) {
+                        msg.style.color = "red";
+                        msg.innerText = "❌ Ese apodo ya está en uso. Elegí otro.";
+                        return;
+                    }
+
+                    const { data, error } = await _supabase.auth.signUp({
+                        email, password,
+                        options: {
+                            data: { nombre_completo: nombre, apodo, dni, direccion: dir, telefono: tel },
+                            emailRedirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html'
+                        }
+                    });
+
+                    if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
+
                     msg.style.color = "green";
                     msg.innerHTML = `<div style="padding:12px;background:#e8f5e9;border-radius:8px;border:1px solid #c8e6c9;text-align:center;"><span style="font-size:2rem;">📩</span><br><b style="color:#2e7d32;">¡Cuenta creada!</b><br><p style="margin:8px 0 0;color:#333;font-size:0.95em;">Revisá tu casilla y también el SPAM para confirmar tu cuenta.</p></div>`;
-                    ['email','password','nombre','apodo','dni','direccion','telefono'].forEach(id => document.getElementById(id).value = "");
+                    ['email','password','nombre','apodo','dni','direccion','caracteristica','telefono'].forEach(id => document.getElementById(id).value = "");
                     document.getElementById('acepto_terminos').checked = false;
+
+                } else {
+                    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+
+                    if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
+
+                    const { data: perfilExistente } = await _supabase
+                        .from('perfiles').select('id').eq('id', data.user.id).maybeSingle();
+
+                    if (!perfilExistente) {
+                        const meta = data.user.user_metadata || {};
+                        await _supabase.from('perfiles').insert([{
+                            id: data.user.id,
+                            nombre_completo: meta.nombre_completo || "Usuario",
+                            apodo: meta.apodo || meta.nombre_completo || "Usuario",
+                            dni: meta.dni || "",
+                            direccion: meta.direccion || "",
+                            telefono: meta.telefono || ""
+                        }]);
+                    }
+
+                    msg.style.color = "green";
+                    msg.innerText = "✅ ¡Entrando...";
+                    setTimeout(() => { window.location.href = "vidriera.html"; }, 1000);
                 }
-
-            } else {
-                const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-
-                if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
-
-                const { data: perfilExistente } = await _supabase
-                    .from('perfiles').select('id').eq('id', data.user.id).maybeSingle();
-
-                if (!perfilExistente) {
-                    const meta = data.user.user_metadata;
-                    await _supabase.from('perfiles').insert([{
-                        id: data.user.id,
-                        nombre_completo: meta.nombre_completo || "Usuario",
-                        apodo: meta.apodo || meta.nombre_completo || "Usuario",
-                        dni: meta.dni || "",
-                        direccion: meta.direccion || "",
-                        telefono: meta.telefono || ""
-                    }]);
-                }
-
-                msg.style.color = "green";
-                msg.innerText = "✅ ¡Entrando...";
-                setTimeout(() => { window.location.href = "vidriera.html"; }, 1000);
+            } catch (err) {
+                msg.style.color = "red";
+                msg.innerText = "🔥 Error detectado: " + err.message;
             }
         }
     </script>
