@@ -1,0 +1,25 @@
+{
+  "name": "Quiéndamas — Subastas y Ventas Bariloche",
+  "short_name": "Quiéndamas",
+  "description": "Plataforma local de compraventa y subastas en Bariloche y zona, Patagonia Argentina.",
+  "start_url": "/vidriera.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F5E1E2",
+  "theme_color": "#43a047",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
