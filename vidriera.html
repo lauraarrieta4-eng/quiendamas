@@ -77,7 +77,6 @@
         .tarjeta { background: white; border-radius: 16px; padding: 15px; width: 90%; max-width: 320px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; border-top: 4px solid var(--verde-lima); transition: transform 0.2s, box-shadow 0.2s; }
         .tarjeta:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.13); }
         .tag-cat { position: absolute; top: 10px; right: 10px; background: var(--lila); font-size: 0.7em; padding: 3px 10px; border-radius: 12px; color: #6a0050; font-weight: bold; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        /* Badge para tipo de publicación */
         .tag-tipo { position: absolute; top: 34px; right: 10px; font-size: 0.65em; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
         .tag-tipo.subasta { background: #fff3e0; color: #e65100; }
         .tag-tipo.venta { background: #e8f5e9; color: #2e7d32; }
@@ -96,6 +95,8 @@
         .btn-comprar:hover { background: linear-gradient(135deg, #2e7d32, #1b5e20); transform: scale(1.02); }
         .btn-compartir { background: white; border: 2px solid var(--lila); color: #6a0050; padding: 8px; border-radius: 10px; cursor: pointer; font-size: 0.8em; font-weight: bold; width: 100%; margin-top: 6px; transition: all 0.2s; }
         .btn-compartir:hover { background: var(--lila); }
+        .btn-preguntar { background: white; border: 2px solid var(--rosa); color: var(--rosa); padding: 8px; border-radius: 10px; cursor: pointer; font-size: 0.8em; font-weight: bold; width: 100%; margin-top: 6px; transition: all 0.2s; }
+        .btn-preguntar:hover { background: var(--rosa); color: white; }
         .sin-resultados { text-align: center; width: 100%; color: #999; padding: 30px; font-size: 1em; }
         .badge-fotos { position: absolute; top: 10px; left: 10px; background: var(--rosa); color: white; font-size: 0.72em; padding: 3px 8px; border-radius: 10px; pointer-events: none; }
 
@@ -119,6 +120,21 @@
         .carrusel-btn:hover { background: var(--rosa); color: white; }
         .carrusel-contador { color: white; font-size: 0.95em; font-weight: bold; min-width: 50px; text-align: center; }
         .carrusel-cerrar { position: absolute; top: 15px; right: 18px; background: var(--lila); color: #6a0050; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2em; cursor: pointer; font-weight: bold; }
+
+        /* ── MODAL PREGUNTAS ── */
+        .modal-preguntas-box { background: white; border-radius: 20px; padding: 22px; max-width: 420px; width: 93%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.18); border-top: 5px solid var(--lila); }
+        .modal-preguntas-box h2 { color: var(--rosa); margin-top: 0; font-size: 1.2em; text-align: center; }
+        .pregunta-item { background: var(--rosa-claro); border-radius: 12px; padding: 12px; margin-bottom: 10px; text-align: left; }
+        .pregunta-item .q { font-size: 0.88em; color: #333; font-weight: 600; margin-bottom: 5px; }
+        .pregunta-item .a { font-size: 0.85em; color: #2e7d32; background: #e8f5e9; border-radius: 8px; padding: 7px 10px; margin-top: 5px; }
+        .pregunta-item .sin-resp { font-size: 0.8em; color: #999; font-style: italic; margin-top: 4px; }
+        .input-pregunta { width: 100%; padding: 10px 14px; border: 1px solid var(--lila); border-radius: 10px; font-size: 0.9em; outline: none; margin-top: 12px; resize: none; }
+        .input-pregunta:focus { border-color: var(--rosa); box-shadow: 0 0 0 2px rgba(224,72,145,0.1); }
+        .btn-enviar-pregunta { background: var(--rosa); color: white; border: none; padding: 11px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.9em; margin-top: 8px; }
+        .btn-enviar-pregunta:hover { opacity: 0.88; }
+        .btn-responder { background: var(--verde-lima); color: #333; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.78em; font-weight: bold; margin-top: 6px; }
+        .btn-responder:hover { background: #43a047; color: white; }
+        .input-respuesta { width: 100%; padding: 7px 10px; border: 1px solid #c8e6c9; border-radius: 8px; font-size: 0.82em; outline: none; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -174,6 +190,19 @@
                 📧 Si tenés dudas escribinos a <b>quiendamas.app@gmail.com</b>
             </div>
             <button style="background:#43a047; margin-top:5px;" onclick="cerrarModalCompraOk()">¡Entendido!</button>
+        </div>
+    </div>
+
+    <!-- Modal preguntas -->
+    <div class="modal-overlay" id="modal-preguntas">
+        <div class="modal-preguntas-box">
+            <h2>❓ Preguntas del producto</h2>
+            <div id="lista-preguntas" style="margin-bottom:10px;"></div>
+            <div id="seccion-nueva-pregunta">
+                <textarea class="input-pregunta" id="texto-pregunta" rows="2" placeholder="Escribí tu pregunta al vendedor..."></textarea>
+                <button class="btn-enviar-pregunta" onclick="enviarPregunta()">Enviar pregunta</button>
+            </div>
+            <button class="btn-cerrar-modal" style="width:100%; margin-top:10px;" onclick="cerrarModalPreguntas()">Cerrar</button>
         </div>
     </div>
 
@@ -270,10 +299,11 @@
         let usuarioActualId = null;
         let tipoActual = 'productos';
         let categoriaActual = 'Todos';
+        let articuloPreguntaActual = null;
+        let vendedorPreguntaActual = null;
 
         const CATEGORIAS_SERVICIOS = ['Belleza-Estetica','Peluqueria','Hogar-Reparaciones','Plomeria-Electricidad','Tecnologia-Soporte','Clases-Tutorias','Diseno-Creatividad','Servicios-Profesionales','Otros-Servicios'];
 
-        // Vivero agrupa todas las subcategorías heredadas + el valor simple 'Vivero'
         const VALORES_CAT = {
             'Vivero': [
                 'Vivero',
@@ -461,7 +491,6 @@
             div.className = 'tarjeta';
             if (esMia) div.style.border = "2px solid var(--rosa)";
 
-            // Determinar si es venta directa o subasta
             const esVentaDirecta = art.tipo_venta === 'venta';
             const yaTermino = !esVentaDirecta && art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
             const soyGanador = !esVentaDirecta && yaTermino && art.ganador_id === usuarioActualId;
@@ -475,13 +504,11 @@
             let relojHtml = '';
 
             if (esVentaDirecta) {
-                // Badge verde para venta directa
                 if (articuloVendido) {
                     badgeTipo = `<span class="tag-tipo vendido">✅ Vendido</span>`;
                 } else {
                     badgeTipo = `<span class="tag-tipo venta">💲 Venta directa</span>`;
                 }
-
                 if (soyVendedor) {
                     if (articuloVendido) {
                         if (pagoConfirmado) {
@@ -496,11 +523,7 @@
                     if (pagoConfirmado) {
                         boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
                     } else {
-                        boton = `
-                            <div style="background:#e8f5e9; border-radius:10px; padding:12px; font-size:0.82em; color:#2e7d32; text-align:center; line-height:1.5;">
-                                ✅ <b>¡Compra confirmada!</b><br>
-                                Cuando el vendedor abone la comisión se pondrá en contacto con vos para coordinar la entrega.
-                            </div>`;
+                        boton = `<div style="background:#e8f5e9; border-radius:10px; padding:12px; font-size:0.82em; color:#2e7d32; text-align:center; line-height:1.5;">✅ <b>¡Compra confirmada!</b><br>Cuando el vendedor abone la comisión se pondrá en contacto con vos para coordinar la entrega.</div>`;
                     }
                 } else if (articuloVendido) {
                     boton = `<button class="btn-oferta" style="background:#999;" disabled>😕 Ya fue vendido</button>`;
@@ -508,10 +531,8 @@
                     boton = `<button class="btn-comprar" onclick="comprarAhora('${art.id}')">🛒 Comprar ahora — $${(art.precio_base || 0).toLocaleString('es-AR')}</button>`;
                 }
             } else {
-                // Es SUBASTA — lógica original
                 badgeTipo = `<span class="tag-tipo subasta">🔨 Subasta</span>`;
                 relojHtml = `<div class="reloj" id="reloj-${art.id}">⏳ Cargando...</div>`;
-
                 if (soyVendedor) {
                     if (yaTermino && art.ganador_id) {
                         if (pagoConfirmado) {
@@ -537,8 +558,7 @@
                             <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 1000)">+$1.000</button>
                             <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 5000)">+$5.000</button>
                             <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 10000)">+$10.000</button>
-                        </div>
-                    `;
+                        </div>`;
                 }
             }
 
@@ -559,6 +579,7 @@
                 ${precioDisplay}
                 ${relojHtml}
                 ${boton}
+                <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">❓ Preguntas</button>
                 <button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 Compartir</button>
             `;
             lista.appendChild(div);
@@ -577,7 +598,77 @@
             if (!esVentaDirecta) iniciarReloj(art.id, art.finaliza_en);
         }
 
-        // ── COMPRAR AHORA (venta directa) ──────────────────────────
+        // ── PREGUNTAS ───────────────────────────────────────────────
+        async function abrirModalPreguntas(articuloId, vendedorId) {
+            articuloPreguntaActual = articuloId;
+            vendedorPreguntaActual = vendedorId;
+            document.getElementById('texto-pregunta').value = '';
+
+            // Si es el vendedor, ocultar el campo de nueva pregunta
+            const seccion = document.getElementById('seccion-nueva-pregunta');
+            seccion.style.display = usuarioActualId === vendedorId ? 'none' : 'block';
+
+            await cargarPreguntas(articuloId, vendedorId);
+            document.getElementById('modal-preguntas').classList.add('activo');
+        }
+
+        async function cargarPreguntas(articuloId, vendedorId) {
+            const lista = document.getElementById('lista-preguntas');
+            lista.innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Cargando...</div>';
+            const { data: preguntas, error } = await _supabase
+                .from('preguntas')
+                .select('*')
+                .eq('articulo_id', articuloId)
+                .order('created_at', { ascending: true });
+            if (error || !preguntas || preguntas.length === 0) {
+                lista.innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;padding:10px;">Todavía no hay preguntas.</div>';
+                return;
+            }
+            lista.innerHTML = preguntas.map(p => {
+                const esVendedor = usuarioActualId === vendedorId;
+                const respuestaHtml = p.respuesta
+                    ? `<div class="a">💬 ${p.respuesta}</div>`
+                    : esVendedor
+                        ? `<input class="input-respuesta" id="resp-${p.id}" placeholder="Escribí tu respuesta...">
+                           <button class="btn-responder" onclick="responderPregunta('${p.id}')">Responder</button>`
+                        : `<div class="sin-resp">Sin respuesta aún</div>`;
+                return `<div class="pregunta-item">
+                    <div class="q">❓ ${p.pregunta}</div>
+                    ${respuestaHtml}
+                </div>`;
+            }).join('');
+        }
+
+        async function enviarPregunta() {
+            if (!usuarioActualId) { alert("⚠️ Tenés que ingresar para preguntar."); window.location.href = 'login.html'; return; }
+            const texto = document.getElementById('texto-pregunta').value.trim();
+            if (!texto) { alert("⚠️ Escribí tu pregunta antes de enviar."); return; }
+            const { error } = await _supabase.from('preguntas').insert([{
+                articulo_id: articuloPreguntaActual,
+                comprador_id: usuarioActualId,
+                pregunta: texto
+            }]);
+            if (error) { alert("Error al enviar: " + error.message); return; }
+            document.getElementById('texto-pregunta').value = '';
+            await cargarPreguntas(articuloPreguntaActual, vendedorPreguntaActual);
+        }
+
+        async function responderPregunta(preguntaId) {
+            const input = document.getElementById('resp-' + preguntaId);
+            const respuesta = input ? input.value.trim() : '';
+            if (!respuesta) { alert("⚠️ Escribí tu respuesta antes de enviar."); return; }
+            const { error } = await _supabase.from('preguntas').update({ respuesta }).eq('id', preguntaId);
+            if (error) { alert("Error al responder: " + error.message); return; }
+            await cargarPreguntas(articuloPreguntaActual, vendedorPreguntaActual);
+        }
+
+        function cerrarModalPreguntas() {
+            document.getElementById('modal-preguntas').classList.remove('activo');
+            articuloPreguntaActual = null;
+            vendedorPreguntaActual = null;
+        }
+
+        // ── COMPRAR AHORA ───────────────────────────────────────────
         async function comprarAhora(id) {
             const { data: { user } } = await _supabase.auth.getUser();
             if (!user) { alert("⚠️ Tenés que ingresar para comprar."); window.location.href = 'login.html'; return; }
@@ -586,35 +677,24 @@
             if (!art) { alert("No se encontró el artículo."); return; }
             if (art.perfil_id === user.id) { alert("⚠️ No podés comprar tu propia publicación."); return; }
             if (art.comprador_id) { alert("😕 Este artículo ya fue vendido."); cargarArticulos(categoriaActual); return; }
-
-            // Modal de confirmación
             const precio = (art.precio_base || 0).toLocaleString('es-AR');
             const confirmar = confirm(`¿Confirmás la compra de "${art.Titulo}" por $${precio}?`);
             if (!confirmar) return;
-
             const { error } = await _supabase.from('articulos').update({ comprador_id: user.id, ganador_id: user.id }).eq('id', id);
             if (error) { alert("Error al procesar la compra: " + error.message); return; }
-
-            // Mostrar modal de éxito para el comprador
             document.getElementById('modal-compra-ok').classList.add('activo');
             cargarArticulos(categoriaActual);
         }
 
-        function cerrarModalCompraOk() {
-            document.getElementById('modal-compra-ok').classList.remove('activo');
-        }
+        function cerrarModalCompraOk() { document.getElementById('modal-compra-ok').classList.remove('activo'); }
 
         function abrirModalVentaDirecta(precioFinal) {
             const comision = Math.round(precioFinal * 0.05);
             document.getElementById('modal-monto-venta').innerText = '$' + comision.toLocaleString('es-AR');
             document.getElementById('modal-vendedor-venta').classList.add('activo');
         }
+        function cerrarModalVentaDirecta() { document.getElementById('modal-vendedor-venta').classList.remove('activo'); }
 
-        function cerrarModalVentaDirecta() {
-            document.getElementById('modal-vendedor-venta').classList.remove('activo');
-        }
-
-        // ── MIS PUBLICACIONES ───────────────────────────────────────
         async function filtrarMisPublicaciones() {
             if (!usuarioActualId) return;
             document.getElementById('input-busqueda').value = '';
@@ -636,7 +716,6 @@
             }
         }
 
-        // ── MIS OFERTAS ─────────────────────────────────────────────
         async function filtrarMisOfertas() {
             if (!usuarioActualId) return;
             document.getElementById('input-busqueda').value = '';
@@ -736,9 +815,7 @@
             document.getElementById('modal-monto-vendedor').innerText = '$' + comision.toLocaleString('es-AR');
             document.getElementById('modal-vendedor').classList.add('activo');
         }
-        function cerrarModalVendedor() {
-            document.getElementById('modal-vendedor').classList.remove('activo');
-        }
+        function cerrarModalVendedor() { document.getElementById('modal-vendedor').classList.remove('activo'); }
 
         async function verDatosVendedor(articuloId, perfilId) {
             const { data: art } = await _supabase.from('articulos').select('pago_confirmado').eq('id', articuloId).maybeSingle();
@@ -778,9 +855,7 @@
             actualizarCarrusel();
             document.getElementById('modal-carrusel').classList.add('activo');
         }
-        function cerrarCarrusel() {
-            document.getElementById('modal-carrusel').classList.remove('activo');
-        }
+        function cerrarCarrusel() { document.getElementById('modal-carrusel').classList.remove('activo'); }
         function cambiarFoto(dir) {
             carruselIndex = (carruselIndex + dir + carruselFotos.length) % carruselFotos.length;
             actualizarCarrusel();
@@ -798,12 +873,11 @@
     </script>
     <script>
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js');
+        navigator.serviceWorker.register('/quiendamas/sw.js');
       }
     </script>
 </body>
-    
-   
+
     <!-- FOOTER REGIONAL -->
     <footer style="
         margin-top: 32px;
@@ -848,6 +922,5 @@
             <a href="terminos.html" target="_blank" style="color: #c8e6c9; text-decoration: underline;">Términos y Condiciones</a>
         </div>
     </footer>
-
 
 </html>
