@@ -121,13 +121,14 @@
         .carrusel-contador { color: white; font-size: 0.95em; font-weight: bold; min-width: 50px; text-align: center; }
         .carrusel-cerrar { position: absolute; top: 15px; right: 18px; background: var(--lila); color: #6a0050; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2em; cursor: pointer; font-weight: bold; }
 
+        .badge-preguntas { background: #e53935; color: white; border-radius: 50%; font-size: 0.75em; padding: 1px 6px; margin-left: 4px; }
         /* ── MODAL PREGUNTAS ── */
         .modal-preguntas-box { background: white; border-radius: 20px; padding: 22px; max-width: 420px; width: 93%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.18); border-top: 5px solid var(--lila); }
         .modal-preguntas-box h2 { color: var(--rosa); margin-top: 0; font-size: 1.2em; text-align: center; }
         .pregunta-item { background: var(--rosa-claro); border-radius: 12px; padding: 12px; margin-bottom: 10px; text-align: left; }
         .pregunta-item .q { font-size: 0.88em; color: #333; font-weight: 600; margin-bottom: 5px; }
         .pregunta-item .a { font-size: 0.85em; color: #2e7d32; background: #e8f5e9; border-radius: 8px; padding: 7px 10px; margin-top: 5px; }
-        .pregunta-item .sin-resp { font-size: 0.8em; color: #999; font-style: italic; margin-top: 4px; }
+        .pregunta-item .sin-resp { font-size: 0.8em; color: #999; font-: italic; margin-top: 4px; }
         .input-pregunta { width: 100%; padding: 10px 14px; border: 1px solid var(--lila); border-radius: 10px; font-size: 0.9em; outline: none; margin-top: 12px; resize: none; }
         .input-pregunta:focus { border-color: var(--rosa); box-shadow: 0 0 0 2px rgba(224,72,145,0.1); }
         .btn-enviar-pregunta { background: var(--rosa); color: white; border: none; padding: 11px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.9em; margin-top: 8px; }
@@ -231,7 +232,7 @@
     </div>
 
     <div class="barra-interacciones" id="bloque-interacciones" style="display: none;">
-        <button class="btn-interaccion" onclick="filtrarMisPublicaciones()">📝 Mis Pubs</button>
+        <button class="btn-interaccion" onclick="filtrarMisPublicaciones()">📝 Mis Pubs <span id="badge-pubs"></span></button>
         <button class="btn-interaccion" onclick="filtrarMisOfertas()">💰 Mis Ofertas</button>
     </div>
 
@@ -453,6 +454,7 @@
                 display.innerText = "Hola, " + (perfil && (perfil.apodo || perfil.nombre_completo) ? (perfil.apodo || perfil.nombre_completo) : "Usuario");
                 btn.innerText = "🚪 Salir";
                 bloqueInteracciones.style.display = "flex";
+                contarPreguntasSinResponder();
             } else {
                 usuarioActualId = null;
                 display.innerText = "Invitado";
@@ -661,7 +663,23 @@
             if (error) { alert("Error al responder: " + error.message); return; }
             await cargarPreguntas(articuloPreguntaActual, vendedorPreguntaActual);
         }
-
+async function contarPreguntasSinResponder() {
+    if (!usuarioActualId) return;
+    const { data: misArticulos } = await _supabase
+        .from('articulos').select('id').eq('perfil_id', usuarioActualId);
+    if (!misArticulos || misArticulos.length === 0) return;
+    const ids = misArticulos.map(a => a.id);
+    const { data: sinResponder } = await _supabase
+        .from('preguntas').select('id')
+        .in('articulo_id', ids)
+        .is('respuesta', null);
+    const badge = document.getElementById('badge-pubs');
+    if (badge) {
+        badge.innerHTML = sinResponder && sinResponder.length > 0
+            ? `<span class="badge-preguntas">${sinResponder.length}</span>`
+            : '';
+    }
+}
         function cerrarModalPreguntas() {
             document.getElementById('modal-preguntas').classList.remove('activo');
             articuloPreguntaActual = null;
