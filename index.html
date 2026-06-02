@@ -37,7 +37,6 @@
         .btn-tipo { flex: 1; padding: 10px; border: 2px solid var(--rosa); border-radius: 20px; background: white; color: var(--rosa); font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; margin-top: 0; transition: all 0.2s; }
         .btn-tipo.activo { background: var(--rosa); color: white; }
 
-        /* Selector Subasta / Venta directa */
         .selector-modo { display: flex; gap: 10px; margin-top: 12px; }
         .btn-modo { flex: 1; padding: 10px; border: 2px solid #43a047; border-radius: 20px; background: white; color: #43a047; font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; margin-top: 0; transition: all 0.2s; }
         .btn-modo.activo { background: #43a047; color: white; }
@@ -84,36 +83,31 @@
     <label>Descripción:</label>
     <textarea id="descripcion" rows="3" placeholder="Detalles, estado, condiciones... ⚠️ No incluyas datos de contacto."></textarea>
 
-    <!-- CATEGORÍAS PRODUCTOS -->
+    <!-- CATEGORÍAS PRODUCTOS (ACTUALIZADAS) -->
     <div id="cats-producto">
-        <label>Categoría:</label>
+        <label>Categoría principal:</label>
         <select id="cat-principal" onchange="actualizarSubcat()">
-            <option value="Autos">🚗 Autos</option>
-            <option value="Motos">🏍️ Motos</option>
-            <option value="Computacion">💻 Computación</option>
-            <option value="Celulares">📱 Celulares</option>
-            <option value="AudioVideo">📺 Audio y Video</option>
-            <option value="Electro">🔌 Electrodomésticos</option>
-            <option value="Moda">👗 Moda y Accesorios</option>
-            <option value="Joyas">⌚ Joyas y Relojes</option>
-            <option value="Belleza">💄 Belleza y Salud</option>
+            <option value="Vivero">🌿 Vivero y Plantas</option>
+            <option value="MaterialesRiego">💧 Materiales para Riego</option>
+            <option value="Tecnologia">💻 Tecnología</option>
+            <option value="Moda">👕 Moda y Ropa</option>
             <option value="Construccion">🏗️ Construcción</option>
             <option value="Antiguedades">🏺 Antigüedades</option>
-            <option value="Vivero">🌿 Vivero y Jardín</option>
+            <option value="Autos">🚗 Autos</option>
+            <option value="Motos">🏍️ Motos</option>
             <option value="Hogar">🏠 Hogar y Muebles</option>
-            <option value="Herramientas">🛠️ Herramientas</option>
             <option value="Otros">📦 Otros</option>
         </select>
 
-        <!-- Subcategoría nivel 2 (solo Vivero) -->
+        <!-- Subcategoría nivel 2 -->
         <div id="subcat-wrapper" style="display:none; margin-top:2px;">
-            <label>Subcategoría: <span class="subcat-label" id="subcat-hint"></span></label>
+            <label>Subcategoría:</label>
             <select id="cat-sub" onchange="actualizarSubcat2()"></select>
         </div>
 
-        <!-- Subcategoría nivel 3 (solo Plantas Exterior) -->
+        <!-- Subcategoría nivel 3 (Plantas Exterior o Árboles) -->
         <div id="subcat2-wrapper" style="display:none; margin-top:2px;">
-            <label>Tipo de planta exterior:</label>
+            <label>Tipo específico:</label>
             <select id="cat-sub2"></select>
         </div>
     </div>
@@ -175,40 +169,77 @@
         document.getElementById('btn-publicar').innerText = modo === 'subasta' ? '🚀 ¡Publicar Subasta!' : '💲 ¡Publicar Venta!';
     }
 
-    // ── SUBCATEGORÍAS VIVERO ──────────────────────────────────────────
+    // ── NUEVAS SUBCATEGORÍAS ──────────────────────────────────────────
     const SUBCATS = {
         'Vivero': [
             { value: 'Plantas-Exterior',   label: '🌳 Plantas de exterior' },
             { value: 'Plantas-Interior',   label: '🏠 Plantas de interior' },
+            { value: 'Plantas-Arboles',    label: '🌲 Árboles' },
             { value: 'Plantas-Huerta',     label: '🥕 Huerta' },
             { value: 'Plantas-Suculentas', label: '🌵 Suculentas y cactus' },
-            { value: 'Plantas-Raras',      label: '⭐ Raras / colección' },
+            { value: 'Plantas-Coleccion',  label: '⭐ De colección' },
             { value: 'Semillas',           label: '🌱 Semillas' },
             { value: 'Fertilizantes-Organicos',   label: '🌿 Fertilizantes orgánicos' },
             { value: 'Fertilizantes-Inorganicos', label: '🧪 Fertilizantes inorgánicos' },
             { value: 'Macetas-Barro',    label: '🪴 Macetas de barro' },
             { value: 'Macetas-Plastico', label: '🪣 Macetas de plástico' },
             { value: 'Macetas-Ceramica', label: '🏺 Macetas de cerámica' },
+            { value: 'Decoracion',       label: '✨ Decoración de jardín' },
+        ],
+        'MaterialesRiego': [
             { value: 'Riego-Goteo',          label: '💧 Riego por goteo' },
             { value: 'Riego-Aspersores',     label: '💦 Aspersores' },
             { value: 'Riego-Mangueras',      label: '🚿 Mangueras' },
             { value: 'Riego-Automatizacion', label: '⏱️ Automatización riego' },
             { value: 'Riego-Bombas',         label: '🔧 Bombas' },
-            { value: 'Decoracion',           label: '✨ Decoración de jardín' },
         ],
+        'Tecnologia': [
+            { value: 'Tec-Celulares',    label: '📱 Celulares' },
+            { value: 'Tec-PC',           label: '💻 PC' },
+            { value: 'Tec-Componentes',  label: '⚙️ Componentes PC' },
+            { value: 'Tec-Conectividad', label: '🌐 Conectividad' },
+            { value: 'Tec-Tablet',       label: '📱 Tablets' },
+            { value: 'Tec-Accesorios',   label: '🎧 Accesorios' },
+            { value: 'Tec-Consolas',     label: '🎮 Consolas' },
+        ],
+        'Moda': [
+            { value: 'Moda-Interior',    label: '🩲 Ropa Interior' },
+            { value: 'Moda-Deportiva',   label: '🏃 Ropa Deportiva' },
+            { value: 'Moda-Calzado',     label: '👟 Calzado' },
+            { value: 'Moda-Valijas',     label: '🎒 Valijas y Mochilas' },
+            { value: 'Moda-Abrigo',      label: '🧥 Abrigo' },
+            { value: 'Moda-Pantalones',  label: '👖 Pantalones' },
+            { value: 'Moda-Remeras',     label: '👕 Remeras' },
+            { value: 'Moda-Buzos',       label: '🧥 Buzos' },
+            { value: 'Moda-Accesorios',  label: '🧢 Accesorios' },
+        ],
+        'Construccion': [
+            { value: 'Construccion-Herramientas', label: '🔨 Herramientas' },
+            { value: 'Construccion-Materiales',   label: '🧱 Materiales' },
+            { value: 'Construccion-Maquinas',     label: '⚙️ Máquinas' },
+            { value: 'Construccion-Pinturas',     label: '🎨 Pinturas' },
+            { value: 'Construccion-Otros',        label: '➕ Otros' },
+        ],
+        'Antiguedades': [
+            { value: 'Antiguedades-Coleccionables', label: '🏺 Coleccionables' },
+        ]
     };
 
+    // Subcategorías de nivel 3 (Para plantas de exterior y árboles)
     const SUBCATS2 = {
         'Plantas-Exterior': [
             { value: 'Plantas-Aromaticas',  label: '🌸 Aromáticas' },
             { value: 'Plantas-Arbustos',    label: '🌿 Arbustos' },
-            { value: 'Plantas-Frutales',    label: '🍎 Frutales' },
             { value: 'Plantas-Herbaceas',   label: '🌾 Herbáceas' },
             { value: 'Plantas-Bulbosas',    label: '🌷 Bulbosas' },
             { value: 'Plantas-Trepadoras',  label: '🌱 Trepadoras' },
             { value: 'Plantas-Cubresuelos', label: '🍀 Cubresuelos' },
             { value: 'Plantas-Nativas',     label: '🌳 Nativas' },
         ],
+        'Plantas-Arboles': [
+            { value: 'Plantas-ArbolesFrutales',     label: '🍎 Árboles Frutales' },
+            { value: 'Plantas-ArbolesOrnamentales', label: '🌳 Árboles Ornamentales' }
+        ]
     };
 
     function actualizarSubcat() {
