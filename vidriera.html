@@ -120,7 +120,7 @@
         .carrusel-btn:hover { background: var(--rosa); color: white; }
         .carrusel-contador { color: white; font-size: 0.95em; font-weight: bold; min-width: 50px; text-align: center; }
         .carrusel-cerrar { position: absolute; top: 15px; right: 18px; background: var(--lila); color: #6a0050; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2em; cursor: pointer; font-weight: bold; }
-
+        .badge-preguntas { background: #e53935; color: white; border-radius: 50%; font-size: 0.75em; padding: 1px 6px; margin-left: 4px; }
         /* ── MODAL PREGUNTAS ── */
         .modal-preguntas-box { background: white; border-radius: 20px; padding: 22px; max-width: 420px; width: 93%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.18); border-top: 5px solid var(--lila); }
         .modal-preguntas-box h2 { color: var(--rosa); margin-top: 0; font-size: 1.2em; text-align: center; }
@@ -231,7 +231,7 @@
     </div>
 
     <div class="barra-interacciones" id="bloque-interacciones" style="display: none;">
-        <button class="btn-interaccion" onclick="filtrarMisPublicaciones()">📝 Mis Pubs</button>
+        <button class="btn-interaccion" onclick="filtrarMisPublicaciones()">📝 Mis Pubs <span id="badge-pubs"></span></button>
         <button class="btn-interaccion" onclick="filtrarMisOfertas()">💰 Mis Ofertas</button>
     </div>
 
@@ -453,6 +453,7 @@
                 display.innerText = "Hola, " + (perfil && (perfil.apodo || perfil.nombre_completo) ? (perfil.apodo || perfil.nombre_completo) : "Usuario");
                 btn.innerText = "🚪 Salir";
                 bloqueInteracciones.style.display = "flex";
+                contarPreguntasSinResponder();
             } else {
                 usuarioActualId = null;
                 display.innerText = "Invitado";
@@ -661,7 +662,23 @@
             if (error) { alert("Error al responder: " + error.message); return; }
             await cargarPreguntas(articuloPreguntaActual, vendedorPreguntaActual);
         }
-
+async function contarPreguntasSinResponder() {
+    if (!usuarioActualId) return;
+    const { data: misArticulos } = await _supabase
+        .from('articulos').select('id').eq('perfil_id', usuarioActualId);
+    if (!misArticulos || misArticulos.length === 0) return;
+    const ids = misArticulos.map(a => a.id);
+    const { data: sinResponder } = await _supabase
+        .from('preguntas').select('id')
+        .in('articulo_id', ids)
+        .is('respuesta', null);
+    const badge = document.getElementById('badge-pubs');
+    if (badge) {
+        badge.innerHTML = sinResponder && sinResponder.length > 0
+            ? `<span class="badge-preguntas">${sinResponder.length}</span>`
+            : '';
+    }
+}
         function cerrarModalPreguntas() {
             document.getElementById('modal-preguntas').classList.remove('activo');
             articuloPreguntaActual = null;
