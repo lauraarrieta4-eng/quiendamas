@@ -37,7 +37,6 @@
         .btn-tipo { flex: 1; padding: 10px; border: 2px solid var(--rosa); border-radius: 20px; background: white; color: var(--rosa); font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; margin-top: 0; transition: all 0.2s; }
         .btn-tipo.activo { background: var(--rosa); color: white; }
 
-        /* Selector Subasta / Venta directa */
         .selector-modo { display: flex; gap: 10px; margin-top: 12px; }
         .btn-modo { flex: 1; padding: 10px; border: 2px solid #43a047; border-radius: 20px; background: white; color: #43a047; font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; margin-top: 0; transition: all 0.2s; }
         .btn-modo.activo { background: #43a047; color: white; }
@@ -84,41 +83,42 @@
     <label>Descripción:</label>
     <textarea id="descripcion" rows="3" placeholder="Detalles, estado, condiciones... ⚠️ No incluyas datos de contacto."></textarea>
 
-    <!-- CATEGORÍAS PRODUCTOS -->
+    <!-- ══════════════════════════════════════════════════════════════
+         CATEGORÍAS PRODUCTOS
+    ══════════════════════════════════════════════════════════════ -->
     <div id="cats-producto">
         <label>Categoría:</label>
         <select id="cat-principal" onchange="actualizarSubcat()">
             <option value="Autos">🚗 Autos</option>
             <option value="Motos">🏍️ Motos</option>
-            <option value="Computacion">💻 Computación</option>
-            <option value="Celulares">📱 Celulares</option>
-            <option value="AudioVideo">📺 Audio y Video</option>
-            <option value="Electro">🔌 Electrodomésticos</option>
-            <option value="Moda">👗 Moda y Accesorios</option>
+            <option value="Tecnologia">📱 Tecnología</option>
+            <option value="Moda">👗 Moda</option>
             <option value="Joyas">⌚ Joyas y Relojes</option>
             <option value="Belleza">💄 Belleza y Salud</option>
             <option value="Construccion">🏗️ Construcción</option>
             <option value="Antiguedades">🏺 Antigüedades</option>
             <option value="Vivero">🌿 Vivero y Jardín</option>
             <option value="Hogar">🏠 Hogar y Muebles</option>
-            <option value="Herramientas">🛠️ Herramientas</option>
+            <option value="Electro">🔌 Electrodomésticos</option>
             <option value="Otros">📦 Otros</option>
         </select>
 
-        <!-- Subcategoría nivel 2 (solo Vivero) -->
-        <div id="subcat-wrapper" style="display:none; margin-top:2px;">
+        <!-- Subcategoría (dinámica según categoría principal) -->
+        <div id="subcat-wrapper" style="display:none; margin-top:8px;">
             <label>Subcategoría: <span class="subcat-label" id="subcat-hint"></span></label>
             <select id="cat-sub" onchange="actualizarSubcat2()"></select>
         </div>
 
-        <!-- Subcategoría nivel 3 (solo Plantas Exterior) -->
-        <div id="subcat2-wrapper" style="display:none; margin-top:2px;">
-            <label>Tipo de planta exterior:</label>
+        <!-- Sub-subcategoría nivel 3 (solo Vivero > Plantas Exterior) -->
+        <div id="subcat2-wrapper" style="display:none; margin-top:8px;">
+            <label>Detalle:</label>
             <select id="cat-sub2"></select>
         </div>
     </div>
 
-    <!-- CATEGORÍAS SERVICIOS -->
+    <!-- ══════════════════════════════════════════════════════════════
+         CATEGORÍAS SERVICIOS  (sin cambios)
+    ══════════════════════════════════════════════════════════════ -->
     <div id="cats-servicio" style="display:none;">
         <label>Categoría de servicio:</label>
         <select id="categoria-servicio">
@@ -175,30 +175,76 @@
         document.getElementById('btn-publicar').innerText = modo === 'subasta' ? '🚀 ¡Publicar Subasta!' : '💲 ¡Publicar Venta!';
     }
 
-    // ── SUBCATEGORÍAS VIVERO ──────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════════
+    // SUBCATEGORÍAS NIVEL 1  (aparecen según cat-principal)
+    // ══════════════════════════════════════════════════════════════════
     const SUBCATS = {
+
+        // ── TECNOLOGÍA ────────────────────────────────────────────────
+        'Tecnologia': [
+            { value: 'Celulares',          label: '📱 Celulares' },
+            { value: 'Computacion',        label: '💻 PC y notebooks' },
+            { value: 'Tech-ComponentesPC', label: '🔩 Componentes de PC' },
+            { value: 'Tech-Conectividad',  label: '📡 Conectividad' },
+            { value: 'Tech-Tablets',       label: '📟 Tablets' },
+            { value: 'Tech-Accesorios',    label: '🎧 Accesorios tech' },
+            { value: 'Tech-Consolas',      label: '🎮 Consolas y videojuegos' },
+            { value: 'AudioVideo',         label: '📺 Audio y Video' },
+        ],
+
+        // ── MODA ──────────────────────────────────────────────────────
+        'Moda': [
+            { value: 'Moda-RopaInterior',    label: '🩱 Ropa interior' },
+            { value: 'Moda-RopaDeportiva',   label: '🏃 Ropa deportiva' },
+            { value: 'Moda-Calzado',         label: '👟 Calzado' },
+            { value: 'Moda-ValijasMochilas', label: '🧳 Valijas y mochilas' },
+            { value: 'Moda-Abrigo',          label: '🧥 Abrigo' },
+            { value: 'Moda-Pantalones',      label: '👖 Pantalones' },
+            { value: 'Moda-Remeras',         label: '👕 Remeras' },
+            { value: 'Moda-Buzos',           label: '🧶 Buzos' },
+            { value: 'Moda-Accesorios',      label: '👜 Accesorios' },
+        ],
+
+        // ── CONSTRUCCIÓN ──────────────────────────────────────────────
+        'Construccion': [
+            { value: 'Construccion-Herramientas', label: '🛠️ Herramientas' },
+            { value: 'Construccion-Materiales',   label: '🧱 Materiales' },
+            { value: 'Construccion-Maquinas',     label: '⚙️ Máquinas' },
+            { value: 'Construccion-Pinturas',     label: '🎨 Pinturas' },
+            { value: 'Construccion-Otros',        label: '📦 Otros' },
+        ],
+
+        // ── ANTIGÜEDADES ──────────────────────────────────────────────
+        'Antiguedades': [
+            { value: 'Antiguedades-Coleccionables', label: '🏅 Coleccionables' },
+        ],
+
+        // ── VIVERO ────────────────────────────────────────────────────
         'Vivero': [
-            { value: 'Plantas-Exterior',   label: '🌳 Plantas de exterior' },
-            { value: 'Plantas-Interior',   label: '🏠 Plantas de interior' },
-            { value: 'Plantas-Huerta',     label: '🥕 Huerta' },
-            { value: 'Plantas-Suculentas', label: '🌵 Suculentas y cactus' },
-            { value: 'Plantas-Raras',      label: '⭐ Raras / colección' },
-            { value: 'Semillas',           label: '🌱 Semillas' },
+            { value: 'Plantas-Exterior',          label: '🌳 Plantas de exterior' },
+            { value: 'Plantas-Interior',          label: '🏠 Plantas de interior' },
+            { value: 'Plantas-Huerta',            label: '🥕 Huerta' },
+            { value: 'Plantas-Suculentas',        label: '🌵 Suculentas y cactus' },
+            { value: 'Plantas-Coleccion',         label: '⭐ Plantas de colección' },
+            { value: 'Arboles-Frutales',          label: '🍊 Árboles frutales' },
+            { value: 'Arboles-Ornamentales',      label: '🌲 Árboles ornamentales' },
+            { value: 'Semillas',                  label: '🌱 Semillas' },
             { value: 'Fertilizantes-Organicos',   label: '🌿 Fertilizantes orgánicos' },
             { value: 'Fertilizantes-Inorganicos', label: '🧪 Fertilizantes inorgánicos' },
-            { value: 'Macetas-Barro',    label: '🪴 Macetas de barro' },
-            { value: 'Macetas-Plastico', label: '🪣 Macetas de plástico' },
-            { value: 'Macetas-Ceramica', label: '🏺 Macetas de cerámica' },
-            { value: 'Riego-Goteo',          label: '💧 Riego por goteo' },
-            { value: 'Riego-Aspersores',     label: '💦 Aspersores' },
-            { value: 'Riego-Mangueras',      label: '🚿 Mangueras' },
-            { value: 'Riego-Automatizacion', label: '⏱️ Automatización riego' },
-            { value: 'Riego-Bombas',         label: '🔧 Bombas' },
-            { value: 'Decoracion',           label: '✨ Decoración de jardín' },
+            { value: 'Macetas-Barro',             label: '🪴 Macetas de barro' },
+            { value: 'Macetas-Plastico',          label: '🪣 Macetas de plástico' },
+            { value: 'Macetas-Ceramica',          label: '🏺 Macetas de cerámica' },
+            { value: 'Riego',                     label: '💧 Materiales para riego' },
+            { value: 'Decoracion',                label: '✨ Decoración de jardín' },
         ],
     };
 
+    // ══════════════════════════════════════════════════════════════════
+    // SUBCATEGORÍAS NIVEL 2  (aparecen según cat-sub)
+    // ══════════════════════════════════════════════════════════════════
     const SUBCATS2 = {
+
+        // Vivero > Plantas de exterior
         'Plantas-Exterior': [
             { value: 'Plantas-Aromaticas',  label: '🌸 Aromáticas' },
             { value: 'Plantas-Arbustos',    label: '🌿 Arbustos' },
@@ -209,6 +255,8 @@
             { value: 'Plantas-Cubresuelos', label: '🍀 Cubresuelos' },
             { value: 'Plantas-Nativas',     label: '🌳 Nativas' },
         ],
+
+
     };
 
     function actualizarSubcat() {
