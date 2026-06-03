@@ -137,6 +137,36 @@
         .btn-responder { background: var(--verde-lima); color: #333; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.78em; font-weight: bold; margin-top: 6px; }
         .btn-responder:hover { background: #43a047; color: white; }
         .input-respuesta { width: 100%; padding: 7px 10px; border: 1px solid #c8e6c9; border-radius: 8px; font-size: 0.82em; outline: none; margin-top: 5px; }
+
+        /* ── MODAL PERFIL VENDEDOR ── */
+        .modal-perfil-box { border-radius: 20px; overflow: hidden; max-width: 340px; width: 93%; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
+        .perfil-header { background: linear-gradient(135deg, #43a047, #2e7d32); padding: 28px 20px 22px; text-align: center; }
+        .perfil-avatar { width: 70px; height: 70px; border-radius: 50%; background: white; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 2em; border: 3px solid var(--verde-lima); }
+        .perfil-apodo { color: white; font-size: 1.2em; font-weight: bold; margin: 0 0 3px; }
+        .perfil-desde { color: #c8e6c9; font-size: 0.8em; margin: 0; }
+        .perfil-body { background: white; padding: 18px; }
+        .perfil-estrellas { text-align: center; margin-bottom: 16px; }
+        .perfil-estrellas .martillos { font-size: 1.4em; letter-spacing: 3px; }
+        .perfil-estrellas .puntaje { font-size: 0.8em; color: #888; margin-top: 4px; }
+        .perfil-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+        .perfil-stat { border-radius: 12px; padding: 12px; text-align: center; }
+        .perfil-stat.ventas { background: #e8f5e9; }
+        .perfil-stat.compras { background: #fce4ec; }
+        .perfil-stat .num { font-size: 1.6em; font-weight: bold; }
+        .perfil-stat.ventas .num { color: #2e7d32; }
+        .perfil-stat.compras .num { color: #c2185b; }
+        .perfil-stat .label { font-size: 0.75em; margin-top: 2px; }
+        .perfil-stat.ventas .label { color: #4caf50; }
+        .perfil-stat.compras .label { color: #e91e63; }
+        .perfil-resenas { background: #f9f9f9; border-radius: 12px; padding: 12px; margin-bottom: 14px; }
+        .perfil-resenas .titulo-resenas { font-size: 0.75em; color: #aaa; font-weight: bold; margin-bottom: 10px; }
+        .resena-item { border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 8px; }
+        .resena-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .resena-item .r-martillos { font-size: 0.9em; }
+        .resena-item .r-texto { font-size: 0.8em; color: #555; margin-top: 3px; }
+        .resena-item .r-autor { font-size: 0.72em; color: #aaa; margin-top: 2px; }
+        .apodo-art { cursor: pointer; }
+        .apodo-art:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -192,6 +222,38 @@
                 📧 Si tenés dudas escribinos a <b>quiendamas.app@gmail.com</b>
             </div>
             <button style="background:#43a047; margin-top:5px;" onclick="cerrarModalCompraOk()">¡Entendido!</button>
+        </div>
+    </div>
+
+    <!-- Modal perfil vendedor -->
+    <div class="modal-overlay" id="modal-perfil">
+        <div class="modal-perfil-box">
+            <div class="perfil-header">
+                <div class="perfil-avatar">👤</div>
+                <p class="perfil-apodo" id="perfil-apodo">...</p>
+                <p class="perfil-desde" id="perfil-desde">Miembro desde ...</p>
+            </div>
+            <div class="perfil-body">
+                <div class="perfil-estrellas">
+                    <div class="martillos" id="perfil-martillos">🔨🔨🔨🔨🔨</div>
+                    <div class="puntaje" id="perfil-puntaje">Sin calificaciones aún</div>
+                </div>
+                <div class="perfil-stats">
+                    <div class="perfil-stat ventas">
+                        <div class="num" id="perfil-ventas">0</div>
+                        <div class="label">ventas</div>
+                    </div>
+                    <div class="perfil-stat compras">
+                        <div class="num" id="perfil-compras">0</div>
+                        <div class="label">compras</div>
+                    </div>
+                </div>
+                <div class="perfil-resenas">
+                    <div class="titulo-resenas">ÚLTIMAS CALIFICACIONES</div>
+                    <div id="perfil-resenas-lista"><div style="text-align:center;color:#aaa;font-size:0.85em;">Sin reseñas todavía</div></div>
+                </div>
+                <button class="btn-cerrar-modal" style="width:100%;" onclick="cerrarModalPerfil()">Cerrar</button>
+            </div>
         </div>
     </div>
 
@@ -696,7 +758,7 @@
                 <img src="${art.foto_url || ''}" class="foto-art" data-fotos-id="${art.id}" style="cursor:pointer;">
                 ${badgeFotos}
                 <div class="titulo">${art.Titulo}</div>
-                <div class="apodo-art" id="apodo-${art.id}">👤 Cargando...</div>
+                <div class="apodo-art" id="apodo-${art.id}" onclick="abrirModalPerfil('${art.perfil_id}')">👤 Cargando...</div>
                 <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
                 ${precioDisplay}
                 ${relojHtml}
@@ -1016,8 +1078,52 @@ async function eliminarPublicacion(id) {
     filtrarMisPublicaciones();
 }
 
-        revisarSesion();
-        cargarArticulos('Todos');
+        // ── PERFIL VENDEDOR ─────────────────────────────────────────
+        async function abrirModalPerfil(vendedorId) {
+            document.getElementById('perfil-apodo').innerText = '...';
+            document.getElementById('perfil-desde').innerText = 'Cargando...';
+            document.getElementById('perfil-ventas').innerText = '...';
+            document.getElementById('perfil-compras').innerText = '...';
+            document.getElementById('perfil-martillos').innerText = '🔨🔨🔨🔨🔨';
+            document.getElementById('perfil-puntaje').innerText = 'Cargando...';
+            document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Cargando...</div>';
+            document.getElementById('modal-perfil').classList.add('activo');
+
+            const { data: perfil } = await _supabase.from('perfiles').select('apodo, nombre_completo, created_at').eq('id', vendedorId).maybeSingle();
+            if (perfil) {
+                document.getElementById('perfil-apodo').innerText = perfil.apodo || perfil.nombre_completo || 'Usuario';
+                const fecha = new Date(perfil.created_at);
+                const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+                document.getElementById('perfil-desde').innerText = `Miembro desde ${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
+            }
+
+            const { count: ventas } = await _supabase.from('articulos').select('id', { count: 'exact', head: true }).eq('perfil_id', vendedorId).not('comprador_id', 'is', null);
+            const { count: compras } = await _supabase.from('articulos').select('id', { count: 'exact', head: true }).eq('comprador_id', vendedorId);
+            document.getElementById('perfil-ventas').innerText = ventas || 0;
+            document.getElementById('perfil-compras').innerText = compras || 0;
+
+            const { data: cals } = await _supabase.from('calificaciones').select('*').eq('vendedor_id', vendedorId).order('created_at', { ascending: false }).limit(5);
+            if (cals && cals.length > 0) {
+                const promedio = (cals.reduce((s, c) => s + c.puntaje, 0) / cals.length).toFixed(1);
+                const martillos = '🔨'.repeat(Math.round(promedio)) + '🪓'.repeat(5 - Math.round(promedio));
+                document.getElementById('perfil-martillos').innerText = martillos;
+                document.getElementById('perfil-puntaje').innerText = `${promedio} · basado en ${cals.length} calificación${cals.length > 1 ? 'es' : ''}`;
+                document.getElementById('perfil-resenas-lista').innerHTML = cals.map(c => `
+                    <div class="resena-item">
+                        <div class="r-martillos">${'🔨'.repeat(c.puntaje)}</div>
+                        ${c.comentario ? `<div class="r-texto">"${c.comentario}"</div>` : ''}
+                    </div>`).join('');
+            } else {
+                document.getElementById('perfil-martillos').innerText = '—';
+                document.getElementById('perfil-puntaje').innerText = 'Sin calificaciones aún';
+                document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Sin reseñas todavía</div>';
+            }
+        }
+
+        function cerrarModalPerfil() {
+            document.getElementById('modal-perfil').classList.remove('activo');
+        }
+
         revisarSesion();
         cargarArticulos('Todos');
     </script>
