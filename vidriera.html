@@ -1150,7 +1150,7 @@ async function eliminarPublicacion(id) {
             msg.style.color = 'blue'; msg.innerText = '⏳ Subiendo foto...';
             const archivo = input.files[0];
             const nombre = `avatar_${usuarioActualId}_${Date.now()}`;
-            const { error: errorUp } = await _supabase.storage.from('fotos_subastas').upload(nombre, archivo, { upsert: true });
+            const { error: errorUp } = await _supabase.storage.from('fotos_subastas').upload(nombre, archivo, { upsert: true, contentType: archivo.type });
             if (errorUp) { msg.style.color = 'red'; msg.innerText = '❌ Error al subir: ' + errorUp.message; return; }
             const { data: urlData } = _supabase.storage.from('fotos_subastas').getPublicUrl(nombre);
             const avatarUrl = urlData.publicUrl;
