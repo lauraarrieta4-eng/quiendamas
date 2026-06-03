@@ -167,6 +167,20 @@
         .resena-item .r-autor { font-size: 0.72em; color: #aaa; margin-top: 2px; }
         .apodo-art { cursor: pointer; }
         .apodo-art:hover { text-decoration: underline; }
+
+        /* ── MODAL MI PERFIL ── */
+        .modal-miperfil-box { background: white; border-radius: 20px; overflow: hidden; max-width: 340px; width: 93%; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
+        .miperfil-header { background: linear-gradient(135deg, #E04891, #E1B7ED); padding: 28px 20px 22px; text-align: center; }
+        .miperfil-avatar-wrap { position: relative; width: 80px; margin: 0 auto 10px; cursor: pointer; }
+        .miperfil-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid white; background: white; display: block; }
+        .miperfil-avatar-edit { position: absolute; bottom: 0; right: 0; background: var(--verde-lima); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.85em; border: 2px solid white; }
+        .miperfil-nombre { color: white; font-size: 1.1em; font-weight: bold; margin: 0 0 2px; }
+        .miperfil-email { color: rgba(255,255,255,0.8); font-size: 0.8em; margin: 0; }
+        .miperfil-body { padding: 18px; }
+        .miperfil-dato { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.88em; }
+        .miperfil-dato:last-of-type { border-bottom: none; }
+        .miperfil-dato .etiqueta { color: #aaa; font-size: 0.85em; }
+        .miperfil-dato .valor { color: #333; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -222,6 +236,41 @@
                 📧 Si tenés dudas escribinos a <b>quiendamas.app@gmail.com</b>
             </div>
             <button style="background:#43a047; margin-top:5px;" onclick="cerrarModalCompraOk()">¡Entendido!</button>
+        </div>
+    </div>
+
+    <!-- Modal mi perfil -->
+    <div class="modal-overlay" id="modal-miperfil">
+        <div class="modal-miperfil-box">
+            <div class="miperfil-header">
+                <div class="miperfil-avatar-wrap" onclick="document.getElementById('input-avatar').click()">
+                    <img id="miperfil-avatar-img" class="miperfil-avatar" src="logo.jpg" alt="avatar">
+                    <div class="miperfil-avatar-edit">📷</div>
+                </div>
+                <input type="file" id="input-avatar" accept="image/*" style="display:none;" onchange="subirAvatar(this)">
+                <p class="miperfil-nombre" id="miperfil-nombre">...</p>
+                <p class="miperfil-email" id="miperfil-email">...</p>
+            </div>
+            <div class="miperfil-body">
+                <div class="miperfil-dato">
+                    <span class="etiqueta">Apodo</span>
+                    <span class="valor" id="miperfil-apodo">...</span>
+                </div>
+                <div class="miperfil-dato">
+                    <span class="etiqueta">DNI</span>
+                    <span class="valor" id="miperfil-dni">...</span>
+                </div>
+                <div class="miperfil-dato">
+                    <span class="etiqueta">Teléfono</span>
+                    <span class="valor" id="miperfil-telefono">...</span>
+                </div>
+                <div class="miperfil-dato">
+                    <span class="etiqueta">Dirección</span>
+                    <span class="valor" id="miperfil-direccion">...</span>
+                </div>
+                <div id="miperfil-msg" style="text-align:center;font-size:0.82em;margin:8px 0;"></div>
+                <button class="btn-cerrar-modal" style="width:100%;margin-top:8px;" onclick="cerrarModalMiPerfil()">Cerrar</button>
+            </div>
         </div>
     </div>
 
@@ -286,7 +335,7 @@
             <h1>🛍️ quiendamas</h1>
         </div>
         <div class="barra-superior-der">
-            <span id="usuario-nombre">Cargando...</span>
+            <span id="usuario-nombre" onclick="abrirModalMiPerfil()" style="cursor:pointer;" title="Ver mi perfil">Cargando...</span>
             <div style="display:flex; gap:8px;">
                 <button id="btn-sesion" onclick="gestionarSesion()" class="btn-top primario">🔑 Ingresar</button>
                 <button onclick="window.location.href='index.html'" class="btn-top">➕ Publicar</button>
@@ -1078,6 +1127,44 @@ async function eliminarPublicacion(id) {
     filtrarMisPublicaciones();
 }
 
+        // ── MI PERFIL ────────────────────────────────────────────────
+        async function abrirModalMiPerfil() {
+            if (!usuarioActualId) { window.location.href = 'login.html'; return; }
+            document.getElementById('modal-miperfil').classList.add('activo');
+            const { data: { user } } = await _supabase.auth.getUser();
+            const { data: perfil } = await _supabase.from('perfiles').select('*').eq('id', usuarioActualId).maybeSingle();
+            if (perfil) {
+                document.getElementById('miperfil-nombre').innerText = perfil.nombre_completo || 'Usuario';
+                document.getElementById('miperfil-apodo').innerText = perfil.apodo || '—';
+                document.getElementById('miperfil-dni').innerText = perfil.dni || '—';
+                document.getElementById('miperfil-telefono').innerText = perfil.telefono || '—';
+                document.getElementById('miperfil-direccion').innerText = perfil.direccion || '—';
+                if (perfil.avatar_url) document.getElementById('miperfil-avatar-img').src = perfil.avatar_url;
+            }
+            if (user) document.getElementById('miperfil-email').innerText = user.email || '';
+        }
+
+        async function subirAvatar(input) {
+            if (!input.files[0]) return;
+            const msg = document.getElementById('miperfil-msg');
+            msg.style.color = 'blue'; msg.innerText = '⏳ Subiendo foto...';
+            const archivo = input.files[0];
+            const nombre = `avatar_${usuarioActualId}_${Date.now()}`;
+            const { error: errorUp } = await _supabase.storage.from('fotos_subastas').upload(nombre, archivo, { upsert: true });
+            if (errorUp) { msg.style.color = 'red'; msg.innerText = '❌ Error al subir: ' + errorUp.message; return; }
+            const { data: urlData } = _supabase.storage.from('fotos_subastas').getPublicUrl(nombre);
+            const avatarUrl = urlData.publicUrl;
+            const { error: errorUpdate } = await _supabase.from('perfiles').update({ avatar_url: avatarUrl }).eq('id', usuarioActualId);
+            if (errorUpdate) { msg.style.color = 'red'; msg.innerText = '❌ Error al guardar: ' + errorUpdate.message; return; }
+            document.getElementById('miperfil-avatar-img').src = avatarUrl;
+            msg.style.color = 'green'; msg.innerText = '✅ ¡Foto actualizada!';
+        }
+
+        function cerrarModalMiPerfil() {
+            document.getElementById('modal-miperfil').classList.remove('activo');
+            document.getElementById('miperfil-msg').innerText = '';
+        }
+
         // ── PERFIL VENDEDOR ─────────────────────────────────────────
         async function abrirModalPerfil(vendedorId) {
             document.getElementById('perfil-apodo').innerText = '...';
@@ -1095,6 +1182,12 @@ async function eliminarPublicacion(id) {
                 const fecha = new Date(perfil.created_at);
                 const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
                 document.getElementById('perfil-desde').innerText = `Miembro desde ${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
+                const avatarEl = document.querySelector('.perfil-avatar');
+                if (perfil.avatar_url) {
+                    avatarEl.innerHTML = `<img src="${perfil.avatar_url}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    avatarEl.innerHTML = '👤';
+                }
             }
 
             const { count: ventas } = await _supabase.from('articulos').select('id', { count: 'exact', head: true }).eq('perfil_id', vendedorId).not('comprador_id', 'is', null);
