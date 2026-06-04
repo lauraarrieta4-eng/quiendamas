@@ -675,7 +675,7 @@
                 } else if (soyComprador) {
                     if (pagoConfirmado) {
                         const diasPasados = art.updated_at ? Math.floor((Date.now() - new Date(art.updated_at).getTime()) / 86400000) : 0;
-                    const btnCal = diasPasados >= 0 ? `<button class="btn-calificar-verde" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')">⭐ Calificar vendedor</button>` : '';
+                    const btnCal = diasPasados >= 15 ? `<button class="btn-calificar-verde" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')">⭐ Calificar vendedor</button>` : '';
                     boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>${btnCal}`;
                     } else {
                         boton = `<div style="background:#e8f5e9; border-radius:10px; padding:12px; font-size:0.82em; color:#2e7d32; text-align:center; line-height:1.5;">✅ <b>¡Compra confirmada!</b><br>Cuando el vendedor abone la comisión se pondrá en contacto con vos para coordinar la entrega.</div>`;
