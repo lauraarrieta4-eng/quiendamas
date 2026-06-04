@@ -153,6 +153,11 @@
 </div>
 
 <script>
+    // Si entran directo sin venir de la vidriera, los mandamos allá
+    if (!document.referrer.includes('vidriera.html') && !window.location.hash.includes('access_token=')) {
+        window.location.href = 'vidriera.html';
+    }
+
     if (window.location.hash.includes('access_token=')) {
         window.location.href = 'login.html' + window.location.hash;
     }
