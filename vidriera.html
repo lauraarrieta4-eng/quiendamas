@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +9,7 @@
     <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#43a047">
 <link rel="apple-touch-icon" href="logo.jpg">
-    <title>Vidriera QuiÃ©ndamas</title>
+    <title>Vidriera Quiéndamas</title>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <style>
@@ -123,7 +123,7 @@
         .carrusel-contador { color: white; font-size: 0.95em; font-weight: bold; min-width: 50px; text-align: center; }
         .carrusel-cerrar { position: absolute; top: 15px; right: 18px; background: var(--lila); color: #6a0050; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2em; cursor: pointer; font-weight: bold; }
         .badge-preguntas { background: #e53935; color: white; border-radius: 50%; font-size: 0.75em; padding: 1px 6px; margin-left: 4px; }
-        /* â”€â”€ MODAL PREGUNTAS â”€â”€ */
+        /* ── MODAL PREGUNTAS ── */
         .modal-preguntas-box { background: white; border-radius: 20px; padding: 22px; max-width: 420px; width: 93%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.18); border-top: 5px solid var(--lila); }
         .modal-preguntas-box h2 { color: var(--rosa); margin-top: 0; font-size: 1.2em; text-align: center; }
         .pregunta-item { background: var(--rosa-claro); border-radius: 12px; padding: 12px; margin-bottom: 10px; text-align: left; }
@@ -138,7 +138,7 @@
         .btn-responder:hover { background: #43a047; color: white; }
         .input-respuesta { width: 100%; padding: 7px 10px; border: 1px solid #c8e6c9; border-radius: 8px; font-size: 0.82em; outline: none; margin-top: 5px; }
 
-        /* â”€â”€ MODAL PERFIL VENDEDOR â”€â”€ */
+        /* ── MODAL PERFIL VENDEDOR ── */
         .modal-perfil-box { border-radius: 20px; overflow: hidden; max-width: 340px; width: 93%; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
         .perfil-header { background: linear-gradient(135deg, #43a047, #2e7d32); padding: 28px 20px 22px; text-align: center; }
         .perfil-avatar { width: 70px; height: 70px; border-radius: 50%; background: white; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 2em; border: 3px solid var(--verde-lima); overflow: hidden; }
@@ -167,7 +167,7 @@
         .apodo-art { cursor: pointer; }
         .apodo-art:hover { text-decoration: underline; }
 
-        /* â”€â”€ MODAL MI PERFIL â”€â”€ */
+        /* ── MODAL MI PERFIL ── */
         .modal-miperfil-box { background: white; border-radius: 20px; overflow: hidden; max-width: 340px; width: 93%; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
         .miperfil-header { background: linear-gradient(135deg, #E04891, #E1B7ED); padding: 28px 20px 22px; text-align: center; }
         .miperfil-avatar-wrap { position: relative; width: 80px; margin: 0 auto 10px; cursor: pointer; }
@@ -187,18 +187,18 @@
     <!-- Modal vendedor: subasta -->
     <div class="modal-overlay" id="modal-vendedor">
         <div class="modal-box">
-            <div style="font-size:3em;">ðŸ’°</div>
-            <h2>Â¡Tu subasta fue ganada!</h2>
-            <p style="color:#555; font-size:0.95em;">Para ver los datos del comprador y coordinar la entrega, abonÃ¡s la comisiÃ³n del <b>5% del precio final</b>:</p>
+            <div style="font-size:3em;">💰</div>
+            <h2>¡Tu subasta fue ganada!</h2>
+            <p style="color:#555; font-size:0.95em;">Para ver los datos del comprador y coordinar la entrega, abonás la comisión del <b>5% del precio final</b>:</p>
             <div class="modal-monto" id="modal-monto-vendedor">$0</div>
             <div class="modal-datos">
                 <b>Titular:</b> Laura Fernanda Arrieta<br>
                 <b>CBU:</b> 3840200500000011572611<br>
                 <b>Alias:</b> qdm.uala<br>
-                <b>Billetera:</b> UalÃ¡
+                <b>Billetera:</b> Ualá
             </div>
             <div class="modal-aviso">
-                ðŸ“Œ Una vez realizada la transferencia, verificamos el pago y liberamos los datos del comprador en un plazo de hasta 24hs hÃ¡biles. Consultas: <b>quiendamas.app@gmail.com</b>
+                📌 Una vez realizada la transferencia, verificamos el pago y liberamos los datos del comprador en un plazo de hasta 24hs hábiles. Consultas: <b>quiendamas.app@gmail.com</b>
             </div>
             <button class="btn-cerrar-modal" onclick="cerrarModalVendedor()">Cerrar</button>
         </div>
@@ -207,34 +207,34 @@
     <!-- Modal vendedor: venta directa -->
     <div class="modal-overlay" id="modal-vendedor-venta">
         <div class="modal-box">
-            <div style="font-size:3em;">ðŸ›’</div>
-            <h2 style="color:#43a047;">Â¡Compraron tu producto!</h2>
-            <p style="color:#555; font-size:0.95em;">Hay un comprador esperÃ¡ndote. Para ver sus datos y coordinar la entrega, abonÃ¡s la comisiÃ³n del <b>5% del precio de venta</b>:</p>
+            <div style="font-size:3em;">🛒</div>
+            <h2 style="color:#43a047;">¡Compraron tu producto!</h2>
+            <p style="color:#555; font-size:0.95em;">Hay un comprador esperándote. Para ver sus datos y coordinar la entrega, abonás la comisión del <b>5% del precio de venta</b>:</p>
             <div class="modal-monto" id="modal-monto-venta" style="color:#43a047;">$0</div>
             <div class="modal-datos">
                 <b>Titular:</b> Laura Fernanda Arrieta<br>
                 <b>CBU:</b> 3840200500000011572611<br>
                 <b>Alias:</b> qdm.uala<br>
-                <b>Billetera:</b> UalÃ¡
+                <b>Billetera:</b> Ualá
             </div>
             <div class="modal-aviso">
-                ðŸ“Œ Una vez realizada la transferencia, verificamos el pago y te enviamos los datos del comprador en hasta 24hs hÃ¡biles. Consultas: <b>quiendamas.app@gmail.com</b>
+                📌 Una vez realizada la transferencia, verificamos el pago y te enviamos los datos del comprador en hasta 24hs hábiles. Consultas: <b>quiendamas.app@gmail.com</b>
             </div>
             <button class="btn-cerrar-modal" onclick="cerrarModalVentaDirecta()">Cerrar</button>
         </div>
     </div>
 
-    <!-- Modal comprador: confirmaciÃ³n compra exitosa -->
+    <!-- Modal comprador: confirmación compra exitosa -->
     <div class="modal-overlay" id="modal-compra-ok">
         <div class="modal-box" style="border-top-color: #43a047;">
-            <div style="font-size:3em;">ðŸŽ‰</div>
-            <h2 style="color:#43a047;">Â¡Compra confirmada!</h2>
+            <div style="font-size:3em;">🎉</div>
+            <h2 style="color:#43a047;">¡Compra confirmada!</h2>
             <div style="background:#e8f5e9; border-radius:12px; padding:15px; margin:15px 0; font-size:0.92em; color:#333; line-height:1.7; text-align:left;">
-                âœ… Reservaste este artÃ­culo con Ã©xito.<br>
-                â³ El vendedor recibirÃ¡ una notificaciÃ³n y, una vez que abone la comisiÃ³n de la plataforma, <b>se pondrÃ¡ en contacto con vos</b> para coordinar la entrega.<br>
-                ðŸ“§ Si tenÃ©s dudas escribinos a <b>quiendamas.app@gmail.com</b>
+                ✅ Reservaste este artículo con éxito.<br>
+                ⏳ El vendedor recibirá una notificación y, una vez que abone la comisión de la plataforma, <b>se pondrá en contacto con vos</b> para coordinar la entrega.<br>
+                📧 Si tenés dudas escribinos a <b>quiendamas.app@gmail.com</b>
             </div>
-            <button style="background:#43a047; margin-top:5px;" onclick="cerrarModalCompraOk()">Â¡Entendido!</button>
+            <button style="background:#43a047; margin-top:5px;" onclick="cerrarModalCompraOk()">¡Entendido!</button>
         </div>
     </div>
 
@@ -244,7 +244,7 @@
             <div class="miperfil-header">
                 <div class="miperfil-avatar-wrap" onclick="document.getElementById('input-avatar').click()">
                     <img id="miperfil-avatar-img" class="miperfil-avatar" src="logo.jpg" alt="avatar">
-                    <div class="miperfil-avatar-edit">ðŸ“·</div>
+                    <div class="miperfil-avatar-edit">📷</div>
                 </div>
                 <input type="file" id="input-avatar" accept="image/*" style="display:none;" onchange="subirAvatar(this)">
                 <p class="miperfil-nombre" id="miperfil-nombre">...</p>
@@ -253,8 +253,8 @@
             <div class="miperfil-body">
                 <div class="miperfil-dato"><span class="etiqueta">Apodo</span><span class="valor" id="miperfil-apodo">...</span></div>
                 <div class="miperfil-dato"><span class="etiqueta">DNI</span><span class="valor" id="miperfil-dni">...</span></div>
-                <div class="miperfil-dato"><span class="etiqueta">TelÃ©fono</span><span class="valor" id="miperfil-telefono">...</span></div>
-                <div class="miperfil-dato"><span class="etiqueta">DirecciÃ³n</span><span class="valor" id="miperfil-direccion">...</span></div>
+                <div class="miperfil-dato"><span class="etiqueta">Teléfono</span><span class="valor" id="miperfil-telefono">...</span></div>
+                <div class="miperfil-dato"><span class="etiqueta">Dirección</span><span class="valor" id="miperfil-direccion">...</span></div>
                 <div id="miperfil-msg" style="text-align:center;font-size:0.82em;margin:8px 0;"></div>
                 <button class="btn-cerrar-modal" style="width:100%;margin-top:8px;" onclick="cerrarModalMiPerfil()">Cerrar</button>
             </div>
@@ -265,22 +265,22 @@
     <div class="modal-overlay" id="modal-perfil">
         <div class="modal-perfil-box">
             <div class="perfil-header">
-                <div class="perfil-avatar" id="perfil-avatar-container">ðŸ‘¤</div>
+                <div class="perfil-avatar" id="perfil-avatar-container">👤</div>
                 <p class="perfil-apodo" id="perfil-apodo">...</p>
                 <p class="perfil-desde" id="perfil-desde">Miembro desde ...</p>
             </div>
             <div class="perfil-body">
                 <div class="perfil-estrellas">
-                    <div class="martillos" id="perfil-martillos">â€”</div>
-                    <div class="puntaje" id="perfil-puntaje">Sin calificaciones aÃºn</div>
+                    <div class="martillos" id="perfil-martillos">—</div>
+                    <div class="puntaje" id="perfil-puntaje">Sin calificaciones aún</div>
                 </div>
                 <div class="perfil-stats">
                     <div class="perfil-stat ventas"><div class="num" id="perfil-ventas">0</div><div class="label">ventas</div></div>
                     <div class="perfil-stat compras"><div class="num" id="perfil-compras">0</div><div class="label">compras</div></div>
                 </div>
                 <div class="perfil-resenas">
-                    <div class="titulo-resenas">ÃšLTIMAS CALIFICACIONES</div>
-                    <div id="perfil-resenas-lista"><div style="text-align:center;color:#aaa;font-size:0.85em;">Sin reseÃ±as todavÃ­a</div></div>
+                    <div class="titulo-resenas">ÚLTIMAS CALIFICACIONES</div>
+                    <div id="perfil-resenas-lista"><div style="text-align:center;color:#aaa;font-size:0.85em;">Sin reseñas todavía</div></div>
                 </div>
                 <button class="btn-cerrar-modal" style="width:100%;" onclick="cerrarModalPerfil()">Cerrar</button>
             </div>
@@ -290,10 +290,10 @@
     <!-- Modal preguntas -->
     <div class="modal-overlay" id="modal-preguntas">
         <div class="modal-preguntas-box">
-            <h2>â“ Preguntas del producto</h2>
+            <h2>❓ Preguntas del producto</h2>
             <div id="lista-preguntas" style="margin-bottom:10px;"></div>
             <div id="seccion-nueva-pregunta">
-                <textarea class="input-pregunta" id="texto-pregunta" rows="2" placeholder="EscribÃ­ tu pregunta al vendedor..."></textarea>
+                <textarea class="input-pregunta" id="texto-pregunta" rows="2" placeholder="Escribí tu pregunta al vendedor..."></textarea>
                 <button class="btn-enviar-pregunta" onclick="enviarPregunta()">Enviar pregunta</button>
             </div>
             <button class="btn-cerrar-modal" style="width:100%; margin-top:10px;" onclick="cerrarModalPreguntas()">Cerrar</button>
@@ -301,87 +301,87 @@
     </div>
 
     <div class="modal-carrusel" id="modal-carrusel">
-        <button class="carrusel-cerrar" onclick="cerrarCarrusel()">âœ•</button>
+        <button class="carrusel-cerrar" onclick="cerrarCarrusel()">✕</button>
         <img class="carrusel-img" id="carrusel-img" src="" alt="foto">
         <div class="carrusel-controles">
-            <button class="carrusel-btn" onclick="cambiarFoto(-1)">â€¹</button>
+            <button class="carrusel-btn" onclick="cambiarFoto(-1)">‹</button>
             <span class="carrusel-contador" id="carrusel-contador">1 / 1</span>
-            <button class="carrusel-btn" onclick="cambiarFoto(1)">â€º</button>
+            <button class="carrusel-btn" onclick="cambiarFoto(1)">›</button>
         </div>
     </div>
 
     <div class="barra-superior">
         <div class="barra-superior-izq">
-            <img src="logo.jpg" alt="Logo QuiÃ©ndamas">
-            <h1>ðŸ›ï¸ quiendamas</h1>
+            <img src="logo.jpg" alt="Logo Quiéndamas">
+            <h1>🛍️ quiendamas</h1>
         </div>
         <div class="barra-superior-der">
             <span id="usuario-nombre" onclick="abrirModalMiPerfil()" style="cursor:pointer;" title="Ver mi perfil">Cargando...</span>
             <div style="display:flex; gap:8px;">
-                <button id="btn-sesion" onclick="gestionarSesion()" class="btn-top primario">ðŸ”‘ Ingresar</button>
-                <button onclick="window.location.href='publicar.html'" class="btn-top">âž• Publicar</button>
+                <button id="btn-sesion" onclick="gestionarSesion()" class="btn-top primario">🔑 Ingresar</button>
+                <button onclick="window.location.href='publicar.html'" class="btn-top">➕ Publicar</button>
             </div>
         </div>
     </div>
 
     <div class="barra-interacciones" id="bloque-interacciones" style="display: none;">
-        <button class="btn-interaccion" onclick="filtrarMisPublicaciones()">ðŸ“ Mis Pubs <span id="badge-pubs"></span></button>
-        <button class="btn-interaccion" onclick="filtrarMisOfertas()">ðŸ’° Mis Ofertas</button>
+        <button class="btn-interaccion" onclick="filtrarMisPublicaciones()">📝 Mis Pubs <span id="badge-pubs"></span></button>
+        <button class="btn-interaccion" onclick="filtrarMisOfertas()">💰 Mis Ofertas</button>
     </div>
 
     <div class="barra-busqueda">
-        <input type="text" id="input-busqueda" placeholder="ðŸ” Buscar por tÃ­tulo..." onkeydown="if(event.key==='Enter') buscarArticulos()">
+        <input type="text" id="input-busqueda" placeholder="🔍 Buscar por título..." onkeydown="if(event.key==='Enter') buscarArticulos()">
         <button onclick="buscarArticulos()">Buscar</button>
     </div>
 
     <div class="selector-tipo">
-        <button class="btn-tipo activo" id="btn-productos" onclick="cambiarTipo('productos')">ðŸ›ï¸ Productos</button>
-        <button class="btn-tipo" id="btn-servicios" onclick="cambiarTipo('servicios')">ðŸ› ï¸ Servicios</button>
+        <button class="btn-tipo activo" id="btn-productos" onclick="cambiarTipo('productos')">🛍️ Productos</button>
+        <button class="btn-tipo" id="btn-servicios" onclick="cambiarTipo('servicios')">🛠️ Servicios</button>
     </div>
 
     <!-- FILTROS PRODUCTOS -->
     <div class="filtros-wrapper" id="wrapper-productos">
-        <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-productos', -200)">â€¹</button>
+        <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-productos', -200)">‹</button>
         <div class="filtros" id="filtros-productos">
-            <button class="btn-filtro cat activo" id="cat-btn-Todos"          onclick="filtrarCategoria('Todos')">ðŸ“¦ Todos</button>
-            <button class="btn-filtro cat"        id="cat-btn-Autos"          onclick="filtrarCategoria('Autos')">ðŸš— Autos</button>
-            <button class="btn-filtro cat"        id="cat-btn-Motos"          onclick="filtrarCategoria('Motos')">ðŸï¸ Motos</button>
-            <button class="btn-filtro cat"        id="cat-btn-Tecnologia"     onclick="filtrarCategoria('Tecnologia')">ðŸ“± TecnologÃ­a</button>
-            <button class="btn-filtro cat"        id="cat-btn-Moda"           onclick="filtrarCategoria('Moda')">ðŸ‘— Moda</button>
-            <button class="btn-filtro cat"        id="cat-btn-Joyas"          onclick="filtrarCategoria('Joyas')">âŒš Joyas</button>
-            <button class="btn-filtro cat"        id="cat-btn-Belleza"        onclick="filtrarCategoria('Belleza')">ðŸ’„ Belleza</button>
-            <button class="btn-filtro cat"        id="cat-btn-Construccion"   onclick="filtrarCategoria('Construccion')">ðŸ—ï¸ ConstrucciÃ³n</button>
-            <button class="btn-filtro cat"        id="cat-btn-Antiguedades"   onclick="filtrarCategoria('Antiguedades')">ðŸº AntigÃ¼edades</button>
-            <button class="btn-filtro cat"        id="cat-btn-Vivero"         onclick="filtrarCategoria('Vivero')">ðŸŒ¿ Vivero</button>
-            <button class="btn-filtro cat"        id="cat-btn-Hogar"          onclick="filtrarCategoria('Hogar')">ðŸ  Hogar</button>
-            <button class="btn-filtro cat"        id="cat-btn-Electro"        onclick="filtrarCategoria('Electro')">ðŸ”Œ ElectrodomÃ©sticos</button>
-            <button class="btn-filtro cat"        id="cat-btn-Otros"          onclick="filtrarCategoria('Otros')">ðŸ“¦ Otros</button>
+            <button class="btn-filtro cat activo" id="cat-btn-Todos"          onclick="filtrarCategoria('Todos')">📦 Todos</button>
+            <button class="btn-filtro cat"        id="cat-btn-Autos"          onclick="filtrarCategoria('Autos')">🚗 Autos</button>
+            <button class="btn-filtro cat"        id="cat-btn-Motos"          onclick="filtrarCategoria('Motos')">🏍️ Motos</button>
+            <button class="btn-filtro cat"        id="cat-btn-Tecnologia"     onclick="filtrarCategoria('Tecnologia')">📱 Tecnología</button>
+            <button class="btn-filtro cat"        id="cat-btn-Moda"           onclick="filtrarCategoria('Moda')">👗 Moda</button>
+            <button class="btn-filtro cat"        id="cat-btn-Joyas"          onclick="filtrarCategoria('Joyas')">⌚ Joyas</button>
+            <button class="btn-filtro cat"        id="cat-btn-Belleza"        onclick="filtrarCategoria('Belleza')">💄 Belleza</button>
+            <button class="btn-filtro cat"        id="cat-btn-Construccion"   onclick="filtrarCategoria('Construccion')">🏗️ Construcción</button>
+            <button class="btn-filtro cat"        id="cat-btn-Antiguedades"   onclick="filtrarCategoria('Antiguedades')">🏺 Antigüedades</button>
+            <button class="btn-filtro cat"        id="cat-btn-Vivero"         onclick="filtrarCategoria('Vivero')">🌿 Vivero</button>
+            <button class="btn-filtro cat"        id="cat-btn-Hogar"          onclick="filtrarCategoria('Hogar')">🏠 Hogar</button>
+            <button class="btn-filtro cat"        id="cat-btn-Electro"        onclick="filtrarCategoria('Electro')">🔌 Electrodomésticos</button>
+            <button class="btn-filtro cat"        id="cat-btn-Otros"          onclick="filtrarCategoria('Otros')">📦 Otros</button>
         </div>
-        <button class="filtros-arrow der" onclick="scrollFiltros('filtros-productos', 200)">â€º</button>
+        <button class="filtros-arrow der" onclick="scrollFiltros('filtros-productos', 200)">›</button>
     </div>
 
     <div class="filtros-wrapper" id="wrapper-subcats" style="display:none; margin-bottom:8px;">
-        <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-subcats', -200)">â€¹</button>
+        <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-subcats', -200)">‹</button>
         <div class="filtros sub" id="filtros-subcats"></div>
-        <button class="filtros-arrow der" onclick="scrollFiltros('filtros-subcats', 200)">â€º</button>
+        <button class="filtros-arrow der" onclick="scrollFiltros('filtros-subcats', 200)">›</button>
     </div>
 
     <!-- FILTROS SERVICIOS -->
     <div class="filtros-wrapper" id="wrapper-servicios" style="display:none;">
-        <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-servicios', -200)">â€¹</button>
+        <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-servicios', -200)">‹</button>
         <div class="filtros" id="filtros-servicios" style="display:none;">
-            <button class="btn-filtro" onclick="cargarArticulos('Todos-Servicios')">ðŸŒŸ Todos</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Belleza-Estetica')">ðŸ’… Belleza y estÃ©tica</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Peluqueria')">âœ‚ï¸ PeluquerÃ­a</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Hogar-Reparaciones')">ðŸ  Hogar y reparaciones</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Plomeria-Electricidad')">ðŸ”§ PlomerÃ­a y electricidad</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Tecnologia-Soporte')">ðŸ’» TecnologÃ­a</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Clases-Tutorias')">ðŸ“š Clases y tutorÃ­as</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Diseno-Creatividad')">ðŸŽ¨ DiseÃ±o</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Servicios-Profesionales')">âš–ï¸ Profesionales</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Otros-Servicios')">ðŸ“¦ Otros</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Todos-Servicios')">🌟 Todos</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Belleza-Estetica')">💅 Belleza y estética</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Peluqueria')">✂️ Peluquería</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Hogar-Reparaciones')">🏠 Hogar y reparaciones</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Plomeria-Electricidad')">🔧 Plomería y electricidad</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Tecnologia-Soporte')">💻 Tecnología</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Clases-Tutorias')">📚 Clases y tutorías</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Diseno-Creatividad')">🎨 Diseño</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Servicios-Profesionales')">⚖️ Profesionales</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Otros-Servicios')">📦 Otros</button>
         </div>
-        <button class="filtros-arrow der" onclick="scrollFiltros('filtros-servicios', 200)">â€º</button>
+        <button class="filtros-arrow der" onclick="scrollFiltros('filtros-servicios', 200)">›</button>
     </div>
 
     <div id="articulos-lista" class="contenedor"></div>
@@ -395,22 +395,22 @@
 
         const CATEGORIAS_SERVICIOS = ['Belleza-Estetica','Peluqueria','Hogar-Reparaciones','Plomeria-Electricidad','Tecnologia-Soporte','Clases-Tutorias','Diseno-Creatividad','Servicios-Profesionales','Otros-Servicios'];
 
-        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        // VALORES_CAT: todos los valores de BD que agrupa cada categorÃ­a
-        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ─────────────────────────────────────────────────────────────
+        // VALORES_CAT: todos los valores de BD que agrupa cada categoría
+        // ─────────────────────────────────────────────────────────────
         const VALORES_CAT = {
 
-            // â”€â”€ TECNOLOGÃA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // ── TECNOLOGÍA ────────────────────────────────────────────
             'Tecnologia': [
                 'Tecnologia',
                 'Celulares','Computacion',
                 'Tech-ComponentesPC','Tech-Conectividad',
                 'Tech-Tablets','Tech-Accesorios','Tech-Consolas',
-                // valores legacy que ya existÃ­an en la BD
+                // valores legacy que ya existían en la BD
                 'AudioVideo',
             ],
 
-            // â”€â”€ VIVERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // ── VIVERO ────────────────────────────────────────────────
             'Vivero': [
                 'Vivero',
                 'Plantas-Aromaticas','Plantas-Arbustos','Plantas-Frutales','Plantas-Herbaceas',
@@ -418,17 +418,17 @@
                 'Plantas-Interior','Plantas-Huerta','Plantas-Suculentas',
                 'Plantas-Coleccion',   // antes: Plantas-Raras
                 'Plantas-Exterior',
-                'Arboles-Frutales','Arboles-Ornamentales',   // nueva cat Ãrboles
+                'Arboles-Frutales','Arboles-Ornamentales',   // nueva cat Árboles
                 'Semillas',
                 'Fertilizantes-Organicos','Fertilizantes-Inorganicos',
                 'Macetas-Barro','Macetas-Plastico','Macetas-Ceramica',
                 'Riego',
-                // valores legacy por si habÃ­a publicaciones anteriores
+                // valores legacy por si había publicaciones anteriores
                 'Riego-Goteo','Riego-Aspersores','Riego-Mangueras','Riego-Automatizacion','Riego-Bombas',
                 'Decoracion',
             ],
 
-            // â”€â”€ MODA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // ── MODA ──────────────────────────────────────────────────
             'Moda': [
                 'Moda',
                 'Moda-RopaInterior','Moda-RopaDeportiva','Moda-Calzado',
@@ -436,7 +436,7 @@
                 'Moda-Remeras','Moda-Buzos','Moda-Accesorios',
             ],
 
-            // â”€â”€ CONSTRUCCIÃ“N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // ── CONSTRUCCIÓN ──────────────────────────────────────────
             'Construccion': [
                 'Construccion',
                 'Construccion-Herramientas','Construccion-Materiales',
@@ -445,143 +445,143 @@
                 'Herramientas',
             ],
 
-            // â”€â”€ ANTIGÃœEDADES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // ── ANTIGÜEDADES ──────────────────────────────────────────
             'Antiguedades': [
                 'Antiguedades',
                 'Antiguedades-Coleccionables',
             ],
         };
 
-        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        // SUBCATS_FILTRO: chips que aparecen debajo de la categorÃ­a
-        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ─────────────────────────────────────────────────────────────
+        // SUBCATS_FILTRO: chips que aparecen debajo de la categoría
+        // ─────────────────────────────────────────────────────────────
         const SUBCATS_FILTRO = {
 
-            // â”€â”€ TECNOLOGÃA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // ── TECNOLOGÍA ────────────────────────────────────────────
             'Tecnologia': [
-                { value: 'Celulares',              label: 'ðŸ“± Celulares' },
-                { value: 'Computacion',            label: 'ðŸ’» PC y notebooks' },
-                { value: 'Tech-ComponentesPC',     label: 'ðŸ”© Componentes PC' },
-                { value: 'Tech-Conectividad',      label: 'ðŸ“¡ Conectividad' },
-                { value: 'Tech-Tablets',           label: 'ðŸ“Ÿ Tablets' },
-                { value: 'Tech-Accesorios',        label: 'ðŸŽ§ Accesorios' },
-                { value: 'Tech-Consolas',          label: 'ðŸŽ® Consolas' },
-                { value: 'AudioVideo',             label: 'ðŸ“º Audio y Video' },
+                { value: 'Celulares',              label: '📱 Celulares' },
+                { value: 'Computacion',            label: '💻 PC y notebooks' },
+                { value: 'Tech-ComponentesPC',     label: '🔩 Componentes PC' },
+                { value: 'Tech-Conectividad',      label: '📡 Conectividad' },
+                { value: 'Tech-Tablets',           label: '📟 Tablets' },
+                { value: 'Tech-Accesorios',        label: '🎧 Accesorios' },
+                { value: 'Tech-Consolas',          label: '🎮 Consolas' },
+                { value: 'AudioVideo',             label: '📺 Audio y Video' },
             ],
 
-            // â”€â”€ VIVERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // ── VIVERO ────────────────────────────────────────────────
             'Vivero': [
-                { value: 'Plantas-Aromaticas',        label: 'ðŸŒ¸ AromÃ¡ticas' },
-                { value: 'Plantas-Arbustos',          label: 'ðŸŒ¿ Arbustos' },
-                { value: 'Plantas-Frutales',          label: 'ðŸŽ Frutales' },
-                { value: 'Plantas-Herbaceas',         label: 'ðŸŒ¾ HerbÃ¡ceas' },
-                { value: 'Plantas-Bulbosas',          label: 'ðŸŒ· Bulbosas' },
-                { value: 'Plantas-Trepadoras',        label: 'ðŸŒ± Trepadoras' },
-                { value: 'Plantas-Cubresuelos',       label: 'ðŸ€ Cubresuelos' },
-                { value: 'Plantas-Nativas',           label: 'ðŸŒ³ Nativas' },
-                { value: 'Plantas-Interior',          label: 'ðŸ  Interior' },
-                { value: 'Plantas-Huerta',            label: 'ðŸ¥• Huerta' },
-                { value: 'Plantas-Suculentas',        label: 'ðŸŒµ Suculentas' },
-                { value: 'Plantas-Coleccion',         label: 'â­ De colecciÃ³n' },
-                { value: 'Arboles-Frutales',          label: 'ðŸŠ Ãrboles frutales' },
-                { value: 'Arboles-Ornamentales',      label: 'ðŸŒ² Ãrboles ornamentales' },
-                { value: 'Semillas',                  label: 'ðŸŒ± Semillas' },
-                { value: 'Fertilizantes-Organicos',   label: 'ðŸŒ¿ Fertiliz. Org.' },
-                { value: 'Fertilizantes-Inorganicos', label: 'ðŸ§ª Fertiliz. Inorg.' },
-                { value: 'Macetas-Barro',             label: 'ðŸª´ Macetas barro' },
-                { value: 'Macetas-Plastico',          label: 'ðŸª£ Macetas plÃ¡stico' },
-                { value: 'Macetas-Ceramica',          label: 'ðŸº Macetas cerÃ¡mica' },
-                { value: 'Riego',                     label: 'ðŸ’§ Materiales para riego' },
-                { value: 'Decoracion',                label: 'âœ¨ DecoraciÃ³n' },
+                { value: 'Plantas-Aromaticas',        label: '🌸 Aromáticas' },
+                { value: 'Plantas-Arbustos',          label: '🌿 Arbustos' },
+                { value: 'Plantas-Frutales',          label: '🍎 Frutales' },
+                { value: 'Plantas-Herbaceas',         label: '🌾 Herbáceas' },
+                { value: 'Plantas-Bulbosas',          label: '🌷 Bulbosas' },
+                { value: 'Plantas-Trepadoras',        label: '🌱 Trepadoras' },
+                { value: 'Plantas-Cubresuelos',       label: '🍀 Cubresuelos' },
+                { value: 'Plantas-Nativas',           label: '🌳 Nativas' },
+                { value: 'Plantas-Interior',          label: '🏠 Interior' },
+                { value: 'Plantas-Huerta',            label: '🥕 Huerta' },
+                { value: 'Plantas-Suculentas',        label: '🌵 Suculentas' },
+                { value: 'Plantas-Coleccion',         label: '⭐ De colección' },
+                { value: 'Arboles-Frutales',          label: '🍊 Árboles frutales' },
+                { value: 'Arboles-Ornamentales',      label: '🌲 Árboles ornamentales' },
+                { value: 'Semillas',                  label: '🌱 Semillas' },
+                { value: 'Fertilizantes-Organicos',   label: '🌿 Fertiliz. Org.' },
+                { value: 'Fertilizantes-Inorganicos', label: '🧪 Fertiliz. Inorg.' },
+                { value: 'Macetas-Barro',             label: '🪴 Macetas barro' },
+                { value: 'Macetas-Plastico',          label: '🪣 Macetas plástico' },
+                { value: 'Macetas-Ceramica',          label: '🏺 Macetas cerámica' },
+                { value: 'Riego',                     label: '💧 Materiales para riego' },
+                { value: 'Decoracion',                label: '✨ Decoración' },
             ],
 
-            // â”€â”€ MODA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // ── MODA ──────────────────────────────────────────────────
             'Moda': [
-                { value: 'Moda-RopaInterior',    label: 'ðŸ©± Ropa interior' },
-                { value: 'Moda-RopaDeportiva',   label: 'ðŸƒ Ropa deportiva' },
-                { value: 'Moda-Calzado',         label: 'ðŸ‘Ÿ Calzado' },
-                { value: 'Moda-ValijasMochilas', label: 'ðŸ§³ Valijas y mochilas' },
-                { value: 'Moda-Abrigo',          label: 'ðŸ§¥ Abrigo' },
-                { value: 'Moda-Pantalones',      label: 'ðŸ‘– Pantalones' },
-                { value: 'Moda-Remeras',         label: 'ðŸ‘• Remeras' },
-                { value: 'Moda-Buzos',           label: 'ðŸ§¶ Buzos' },
-                { value: 'Moda-Accesorios',      label: 'ðŸ‘œ Accesorios' },
+                { value: 'Moda-RopaInterior',    label: '🩱 Ropa interior' },
+                { value: 'Moda-RopaDeportiva',   label: '🏃 Ropa deportiva' },
+                { value: 'Moda-Calzado',         label: '👟 Calzado' },
+                { value: 'Moda-ValijasMochilas', label: '🧳 Valijas y mochilas' },
+                { value: 'Moda-Abrigo',          label: '🧥 Abrigo' },
+                { value: 'Moda-Pantalones',      label: '👖 Pantalones' },
+                { value: 'Moda-Remeras',         label: '👕 Remeras' },
+                { value: 'Moda-Buzos',           label: '🧶 Buzos' },
+                { value: 'Moda-Accesorios',      label: '👜 Accesorios' },
             ],
 
-            // â”€â”€ CONSTRUCCIÃ“N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // ── CONSTRUCCIÓN ──────────────────────────────────────────
             'Construccion': [
-                { value: 'Construccion-Herramientas', label: 'ðŸ› ï¸ Herramientas' },
-                { value: 'Construccion-Materiales',   label: 'ðŸ§± Materiales' },
-                { value: 'Construccion-Maquinas',     label: 'âš™ï¸ MÃ¡quinas' },
-                { value: 'Construccion-Pinturas',     label: 'ðŸŽ¨ Pinturas' },
-                { value: 'Construccion-Otros',        label: 'ðŸ“¦ Otros' },
+                { value: 'Construccion-Herramientas', label: '🛠️ Herramientas' },
+                { value: 'Construccion-Materiales',   label: '🧱 Materiales' },
+                { value: 'Construccion-Maquinas',     label: '⚙️ Máquinas' },
+                { value: 'Construccion-Pinturas',     label: '🎨 Pinturas' },
+                { value: 'Construccion-Otros',        label: '📦 Otros' },
             ],
 
-            // â”€â”€ ANTIGÃœEDADES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // ── ANTIGÜEDADES ──────────────────────────────────────────
             'Antiguedades': [
-                { value: 'Antiguedades-Coleccionables', label: 'ðŸ… Coleccionables' },
+                { value: 'Antiguedades-Coleccionables', label: '🏅 Coleccionables' },
             ],
         };
 
-        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ─────────────────────────────────────────────────────────────
         // LABEL_CAT: etiqueta legible para mostrar en la tarjeta
-        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ─────────────────────────────────────────────────────────────
         const LABEL_CAT = {
             'Autos': 'Autos', 'Motos': 'Motos',
             'Computacion': 'PC y notebooks',
             'Celulares': 'Celulares',
             'AudioVideo': 'Audio y Video',
-            'Electro': 'ElectrodomÃ©sticos',
+            'Electro': 'Electrodomésticos',
             'Moda': 'Moda',
             'Joyas': 'Joyas', 'Belleza': 'Belleza',
-            'Construccion': 'ConstrucciÃ³n',
-            'Antiguedades': 'AntigÃ¼edades',
+            'Construccion': 'Construcción',
+            'Antiguedades': 'Antigüedades',
             'Vivero': 'Vivero',
             'Hogar': 'Hogar',
             'Herramientas': 'Herramientas',
             'Otros': 'Otros',
-            'Tecnologia': 'TecnologÃ­a',
-            // TecnologÃ­a subcats
+            'Tecnologia': 'Tecnología',
+            // Tecnología subcats
             'Tech-ComponentesPC':  'Componentes PC',
             'Tech-Conectividad':   'Conectividad',
             'Tech-Tablets':        'Tablets',
             'Tech-Accesorios':     'Accesorios tech',
             'Tech-Consolas':       'Consolas',
             // Vivero subcats
-            'Plantas-Aromaticas': 'AromÃ¡ticas', 'Plantas-Arbustos': 'Arbustos',
-            'Plantas-Frutales': 'Frutales', 'Plantas-Herbaceas': 'HerbÃ¡ceas',
+            'Plantas-Aromaticas': 'Aromáticas', 'Plantas-Arbustos': 'Arbustos',
+            'Plantas-Frutales': 'Frutales', 'Plantas-Herbaceas': 'Herbáceas',
             'Plantas-Bulbosas': 'Bulbosas', 'Plantas-Trepadoras': 'Trepadoras',
             'Plantas-Cubresuelos': 'Cubresuelos', 'Plantas-Nativas': 'Nativas',
             'Plantas-Interior': 'Interior', 'Plantas-Huerta': 'Huerta',
             'Plantas-Suculentas': 'Suculentas',
-            'Plantas-Coleccion': 'De colecciÃ³n',
-            'Plantas-Raras': 'De colecciÃ³n',     // legacy â†’ mismo label
+            'Plantas-Coleccion': 'De colección',
+            'Plantas-Raras': 'De colección',     // legacy → mismo label
             'Plantas-Exterior': 'Exterior',
-            'Arboles-Frutales': 'Ãrboles frutales',
-            'Arboles-Ornamentales': 'Ãrboles ornamentales',
+            'Arboles-Frutales': 'Árboles frutales',
+            'Arboles-Ornamentales': 'Árboles ornamentales',
             'Fertilizantes-Organicos': 'Fertiliz. Org.', 'Fertilizantes-Inorganicos': 'Fertiliz. Inorg.',
-            'Macetas-Barro': 'Macetas barro', 'Macetas-Plastico': 'Macetas plÃ¡stico',
-            'Macetas-Ceramica': 'Macetas cerÃ¡mica',
+            'Macetas-Barro': 'Macetas barro', 'Macetas-Plastico': 'Macetas plástico',
+            'Macetas-Ceramica': 'Macetas cerámica',
             'Riego': 'Materiales para riego',
             'Riego-Goteo': 'Riego', 'Riego-Aspersores': 'Riego',
             'Riego-Mangueras': 'Riego', 'Riego-Automatizacion': 'Riego',
-            'Riego-Bombas': 'Riego', 'Semillas': 'Semillas', 'Decoracion': 'DecoraciÃ³n',
+            'Riego-Bombas': 'Riego', 'Semillas': 'Semillas', 'Decoracion': 'Decoración',
             // Moda subcats
             'Moda-RopaInterior': 'Ropa interior', 'Moda-RopaDeportiva': 'Ropa deportiva',
             'Moda-Calzado': 'Calzado', 'Moda-ValijasMochilas': 'Valijas y mochilas',
             'Moda-Abrigo': 'Abrigo', 'Moda-Pantalones': 'Pantalones',
             'Moda-Remeras': 'Remeras', 'Moda-Buzos': 'Buzos', 'Moda-Accesorios': 'Accesorios',
-            // ConstrucciÃ³n subcats
+            // Construcción subcats
             'Construccion-Herramientas': 'Herramientas', 'Construccion-Materiales': 'Materiales',
-            'Construccion-Maquinas': 'MÃ¡quinas', 'Construccion-Pinturas': 'Pinturas',
+            'Construccion-Maquinas': 'Máquinas', 'Construccion-Pinturas': 'Pinturas',
             'Construccion-Otros': 'Otros',
-            // AntigÃ¼edades subcats
+            // Antigüedades subcats
             'Antiguedades-Coleccionables': 'Coleccionables',
             // Servicios
-            'Belleza-Estetica': 'Belleza y estÃ©tica', 'Peluqueria': 'PeluquerÃ­a',
-            'Hogar-Reparaciones': 'Hogar y reparaciones', 'Plomeria-Electricidad': 'PlomerÃ­a y electricidad',
-            'Tecnologia-Soporte': 'TecnologÃ­a', 'Clases-Tutorias': 'Clases y tutorÃ­as',
-            'Diseno-Creatividad': 'DiseÃ±o', 'Servicios-Profesionales': 'Profesionales',
+            'Belleza-Estetica': 'Belleza y estética', 'Peluqueria': 'Peluquería',
+            'Hogar-Reparaciones': 'Hogar y reparaciones', 'Plomeria-Electricidad': 'Plomería y electricidad',
+            'Tecnologia-Soporte': 'Tecnología', 'Clases-Tutorias': 'Clases y tutorías',
+            'Diseno-Creatividad': 'Diseño', 'Servicios-Profesionales': 'Profesionales',
             'Otros-Servicios': 'Otros servicios',
         };
 
@@ -648,7 +648,7 @@
                 const lista = document.getElementById('articulos-lista');
                 lista.innerHTML = '';
                 if (articulos.length === 0) {
-                    lista.innerHTML = `<div class="sin-resultados">ðŸ˜• No hay publicaciones en esta categorÃ­a todavÃ­a.</div>`;
+                    lista.innerHTML = `<div class="sin-resultados">😕 No hay publicaciones en esta categoría todavía.</div>`;
                     return;
                 }
                 articulos.forEach(art => renderTarjeta(art, lista));
@@ -664,20 +664,20 @@
                 usuarioActualId = user.id;
                 const { data: perfil } = await _supabase.from('perfiles').select('nombre_completo, apodo').eq('id', user.id).maybeSingle();
                 display.innerText = "Hola, " + (perfil && (perfil.apodo || perfil.nombre_completo) ? (perfil.apodo || perfil.nombre_completo) : "Usuario");
-                btn.innerText = "ðŸšª Salir";
+                btn.innerText = "🚪 Salir";
                 bloqueInteracciones.style.display = "flex";
                 contarPreguntasSinResponder();
             } else {
                 usuarioActualId = null;
                 display.innerText = "Invitado";
-                btn.innerText = "ðŸ”‘ Ingresar";
+                btn.innerText = "🔑 Ingresar";
                 bloqueInteracciones.style.display = "none";
             }
         }
 
         function gestionarSesion() {
             const btn = document.getElementById('btn-sesion');
-            if (btn.innerText === "ðŸšª Salir") {
+            if (btn.innerText === "🚪 Salir") {
                 _supabase.auth.signOut().then(() => window.location.reload());
             } else {
                 window.location.href = 'login.html';
@@ -693,7 +693,7 @@
                 const lista = document.getElementById('articulos-lista');
                 lista.innerHTML = '';
                 if (articulos.length === 0) {
-                    lista.innerHTML = `<div class="sin-resultados">ðŸ˜• No encontramos artÃ­culos con "<b>${termino}</b>"</div>`;
+                    lista.innerHTML = `<div class="sin-resultados">😕 No encontramos artículos con "<b>${termino}</b>"</div>`;
                     return;
                 }
                 articulos.forEach(art => renderTarjeta(art, lista));
@@ -719,49 +719,49 @@
 
             if (esVentaDirecta) {
                 if (articuloVendido) {
-                    badgeTipo = `<span class="tag-tipo vendido">âœ… Vendido</span>`;
+                    badgeTipo = `<span class="tag-tipo vendido">✅ Vendido</span>`;
                 } else {
-                    badgeTipo = `<span class="tag-tipo venta">ðŸ’² Venta directa</span>`;
+                    badgeTipo = `<span class="tag-tipo venta">💲 Venta directa</span>`;
                 }
                 if (soyVendedor) {
                     if (articuloVendido) {
                         if (pagoConfirmado) {
-                            boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosComprador('${art.comprador_id}')">ðŸ‘¤ Ver datos del comprador</button>`;
+                            boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosComprador('${art.comprador_id}')">👤 Ver datos del comprador</button>`;
                         } else {
-                            boton = `<button class="btn-comprar" onclick="abrirModalVentaDirecta(${art.precio_base || 0})">ðŸ›’ Â¡Compraron tu producto! AbonÃ¡ la comisiÃ³n</button>`;
+                            boton = `<button class="btn-comprar" onclick="abrirModalVentaDirecta(${art.precio_base || 0})">🛒 ¡Compraron tu producto! Aboná la comisión</button>`;
                         }
                     } else {
-                        boton = `<button class="btn-oferta" style="background:#666;" disabled>Tu propia publicaciÃ³n</button>`;
+                        boton = `<button class="btn-oferta" style="background:#666;" disabled>Tu propia publicación</button>`;
                     }
                 } else if (soyComprador) {
                     if (pagoConfirmado) {
-                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">ðŸ“‹ Ver datos del vendedor</button>`;
+                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
                     } else {
-                        boton = `<div style="background:#e8f5e9; border-radius:10px; padding:12px; font-size:0.82em; color:#2e7d32; text-align:center; line-height:1.5;">âœ… <b>Â¡Compra confirmada!</b><br>Cuando el vendedor abone la comisiÃ³n se pondrÃ¡ en contacto con vos para coordinar la entrega.</div>`;
+                        boton = `<div style="background:#e8f5e9; border-radius:10px; padding:12px; font-size:0.82em; color:#2e7d32; text-align:center; line-height:1.5;">✅ <b>¡Compra confirmada!</b><br>Cuando el vendedor abone la comisión se pondrá en contacto con vos para coordinar la entrega.</div>`;
                     }
                 } else if (articuloVendido) {
-                    boton = `<button class="btn-oferta" style="background:#999;" disabled>ðŸ˜• Ya fue vendido</button>`;
+                    boton = `<button class="btn-oferta" style="background:#999;" disabled>😕 Ya fue vendido</button>`;
                 } else {
-                    boton = `<button class="btn-comprar" onclick="comprarAhora('${art.id}')">ðŸ›’ Comprar ahora â€” $${(art.precio_base || 0).toLocaleString('es-AR')}</button>`;
+                    boton = `<button class="btn-comprar" onclick="comprarAhora('${art.id}')">🛒 Comprar ahora — $${(art.precio_base || 0).toLocaleString('es-AR')}</button>`;
                 }
             } else {
-                badgeTipo = `<span class="tag-tipo subasta">ðŸ”¨ Subasta</span>`;
-                relojHtml = `<div class="reloj" id="reloj-${art.id}">â³ Cargando...</div>`;
+                badgeTipo = `<span class="tag-tipo subasta">🔨 Subasta</span>`;
+                relojHtml = `<div class="reloj" id="reloj-${art.id}">⏳ Cargando...</div>`;
                 if (soyVendedor) {
                     if (yaTermino && art.ganador_id) {
                         if (pagoConfirmado) {
-                            boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosComprador('${art.ganador_id}')">ðŸ‘¤ Ver datos del comprador</button>`;
+                            boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosComprador('${art.ganador_id}')">👤 Ver datos del comprador</button>`;
                         } else {
-                            boton = `<button class="btn-vendedor" onclick="abrirModalVendedor(${art.precio_actual || art.precio_base})">ðŸ’° Abonar comisiÃ³n para ver comprador</button>`;
+                            boton = `<button class="btn-vendedor" onclick="abrirModalVendedor(${art.precio_actual || art.precio_base})">💰 Abonar comisión para ver comprador</button>`;
                         }
                     } else {
-                        boton = `<button class="btn-oferta" style="background:#666;" disabled>Tu propia publicaciÃ³n</button>`;
+                        boton = `<button class="btn-oferta" style="background:#666;" disabled>Tu propia publicación</button>`;
                     }
                 } else if (soyGanador) {
                     if (pagoConfirmado) {
-                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">ðŸ“‹ Ver datos del vendedor</button>`;
+                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
                     } else {
-                        boton = `<button class="btn-ganador">ðŸ† Â¡Felicitaciones, ganaste! EsperÃ¡ que el vendedor coordine la entrega.</button>`;
+                        boton = `<button class="btn-ganador">🏆 ¡Felicitaciones, ganaste! Esperá que el vendedor coordine la entrega.</button>`;
                     }
                 } else if (yaTermino) {
                     boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
@@ -777,7 +777,7 @@
             }
 
             const todasFotos = [art.foto_url].concat(art.fotos_extra || []).filter(Boolean);
-            const badgeFotos = todasFotos.length > 1 ? `<span class="badge-fotos">ðŸ“· ${todasFotos.length}</span>` : '';
+            const badgeFotos = todasFotos.length > 1 ? `<span class="badge-fotos">📷 ${todasFotos.length}</span>` : '';
             const precioDisplay = esVentaDirecta
                 ? `<div class="precio">$<span id="precio-${art.id}">${art.precio_base || 0}</span></div>`
                 : `<div class="precio">$<span id="precio-${art.id}">${art.precio_actual || art.precio_base}</span></div>`;
@@ -788,20 +788,20 @@
                 <img src="${art.foto_url || ''}" class="foto-art" data-fotos-id="${art.id}" style="cursor:pointer;">
                 ${badgeFotos}
                 <div class="titulo">${art.Titulo}</div>
-                <div class="apodo-art" id="apodo-${art.id}" onclick="abrirModalPerfil('${art.perfil_id}')">ðŸ‘¤ Cargando...</div>
+                <div class="apodo-art" id="apodo-${art.id}" onclick="abrirModalPerfil('${art.perfil_id}')">👤 Cargando...</div>
                 <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
                 ${precioDisplay}
                 ${relojHtml}
                 ${boton}
-                <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">â“ Preguntas</button>
-            ${esMia && !art.comprador_id && (art.tipo_venta === 'venta' || (art.precio_actual || art.precio_base) === art.precio_base) ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">ðŸ—‘ï¸ Eliminar publicaciÃ³n</button>` : ''}
-<button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">ðŸ“¤ Compartir</button>   
+                <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">❓ Preguntas</button>
+            ${esMia && !art.comprador_id && (art.tipo_venta === 'venta' || (art.precio_actual || art.precio_base) === art.precio_base) ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ Eliminar publicación</button>` : ''}
+<button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 Compartir</button>   
             `;
             lista.appendChild(div);
 
             _supabase.from('perfiles').select('apodo, nombre_completo, created_at, avatar_url').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
                 const apodoEl = document.getElementById('apodo-' + art.id);
-                if (apodoEl && perfil) apodoEl.innerText = 'ðŸ‘¤ ' + (perfil.apodo || perfil.nombre_completo || 'Usuario');
+                if (apodoEl && perfil) apodoEl.innerText = '👤 ' + (perfil.apodo || perfil.nombre_completo || 'Usuario');
             });
 
             fotosCache[art.id] = todasFotos;
@@ -813,7 +813,7 @@
             if (!esVentaDirecta) iniciarReloj(art.id, art.finaliza_en);
         }
 
-        // â”€â”€ PREGUNTAS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ── PREGUNTAS ───────────────────────────────────────────────
         async function abrirModalPreguntas(articuloId, vendedorId) {
             articuloPreguntaActual = articuloId;
             vendedorPreguntaActual = vendedorId;
@@ -835,28 +835,28 @@
                 .eq('articulo_id', articuloId)
                 .order('created_at', { ascending: true });
             if (error || !preguntas || preguntas.length === 0) {
-                lista.innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;padding:10px;">TodavÃ­a no hay preguntas.</div>';
+                lista.innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;padding:10px;">Todavía no hay preguntas.</div>';
                 return;
             }
             lista.innerHTML = preguntas.map(p => {
                 const esVendedor = usuarioActualId === vendedorId;
                 const respuestaHtml = p.respuesta
-                    ? `<div class="a">ðŸ’¬ ${p.respuesta}</div>`
+                    ? `<div class="a">💬 ${p.respuesta}</div>`
                     : esVendedor
-                        ? `<input class="input-respuesta" id="resp-${p.id}" placeholder="EscribÃ­ tu respuesta...">
+                        ? `<input class="input-respuesta" id="resp-${p.id}" placeholder="Escribí tu respuesta...">
                            <button class="btn-responder" onclick="responderPregunta('${p.id}')">Responder</button>`
-                        : `<div class="sin-resp">Sin respuesta aÃºn</div>`;
+                        : `<div class="sin-resp">Sin respuesta aún</div>`;
                 return `<div class="pregunta-item">
-                    <div class="q">â“ ${p.pregunta}</div>
+                    <div class="q">❓ ${p.pregunta}</div>
                     ${respuestaHtml}
                 </div>`;
             }).join('');
         }
 
         async function enviarPregunta() {
-            if (!usuarioActualId) { alert("âš ï¸ TenÃ©s que ingresar para preguntar."); window.location.href = 'login.html'; return; }
+            if (!usuarioActualId) { alert("⚠️ Tenés que ingresar para preguntar."); window.location.href = 'login.html'; return; }
             const texto = document.getElementById('texto-pregunta').value.trim();
-            if (!texto) { alert("âš ï¸ EscribÃ­ tu pregunta antes de enviar."); return; }
+            if (!texto) { alert("⚠️ Escribí tu pregunta antes de enviar."); return; }
             const { error } = await _supabase.from('preguntas').insert([{
                 articulo_id: articuloPreguntaActual,
                 comprador_id: usuarioActualId,
@@ -870,7 +870,7 @@
         async function responderPregunta(preguntaId) {
             const input = document.getElementById('resp-' + preguntaId);
             const respuesta = input ? input.value.trim() : '';
-            if (!respuesta) { alert("âš ï¸ EscribÃ­ tu respuesta antes de enviar."); return; }
+            if (!respuesta) { alert("⚠️ Escribí tu respuesta antes de enviar."); return; }
             const { error } = await _supabase.from('preguntas').update({ respuesta }).eq('id', preguntaId);
             if (error) { alert("Error al responder: " + error.message); return; }
             await cargarPreguntas(articuloPreguntaActual, vendedorPreguntaActual);
@@ -900,17 +900,17 @@
             vendedorPreguntaActual = null;
         }
 
-        // â”€â”€ COMPRAR AHORA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ── COMPRAR AHORA ───────────────────────────────────────────
         async function comprarAhora(id) {
             const { data: { user } } = await _supabase.auth.getUser();
-            if (!user) { alert("âš ï¸ TenÃ©s que ingresar para comprar."); window.location.href = 'login.html'; return; }
+            if (!user) { alert("⚠️ Tenés que ingresar para comprar."); window.location.href = 'login.html'; return; }
             const { data: art, error: artError } = await _supabase.from('articulos').select('*').eq('id', id).maybeSingle();
-            if (artError) { alert("Error al buscar el artÃ­culo: " + artError.message); return; }
-            if (!art) { alert("No se encontrÃ³ el artÃ­culo."); return; }
-            if (art.perfil_id === user.id) { alert("âš ï¸ No podÃ©s comprar tu propia publicaciÃ³n."); return; }
-            if (art.comprador_id) { alert("ðŸ˜• Este artÃ­culo ya fue vendido."); cargarArticulos(categoriaActual); return; }
+            if (artError) { alert("Error al buscar el artículo: " + artError.message); return; }
+            if (!art) { alert("No se encontró el artículo."); return; }
+            if (art.perfil_id === user.id) { alert("⚠️ No podés comprar tu propia publicación."); return; }
+            if (art.comprador_id) { alert("😕 Este artículo ya fue vendido."); cargarArticulos(categoriaActual); return; }
             const precio = (art.precio_base || 0).toLocaleString('es-AR');
-            const confirmar = confirm(`Â¿ConfirmÃ¡s la compra de "${art.Titulo}" por $${precio}?`);
+            const confirmar = confirm(`¿Confirmás la compra de "${art.Titulo}" por $${precio}?`);
             if (!confirmar) return;
             const { error } = await _supabase.from('articulos').update({ comprador_id: user.id, ganador_id: user.id }).eq('id', id);
             if (error) { alert("Error al procesar la compra: " + error.message); return; }
@@ -934,7 +934,7 @@
                 const { data: articulos, error } = await _supabase.from('articulos').select('*').eq('perfil_id', usuarioActualId);
                 if (error) throw error;
                 const lista = document.getElementById('articulos-lista');
-                lista.innerHTML = articulos.length ? "" : "<div class='sin-resultados'>No publicaste nada todavÃ­a.</div>";
+                lista.innerHTML = articulos.length ? "" : "<div class='sin-resultados'>No publicaste nada todavía.</div>";
                 articulos.forEach(art => renderTarjeta(art, lista, true));
             } catch (e) { console.error(e); }
         }
@@ -942,7 +942,7 @@
         async function verDatosComprador(ganadorId) {
             const { data: perfil } = await _supabase.from('perfiles').select('nombre_completo, telefono, direccion').eq('id', ganadorId).maybeSingle();
             if (perfil) {
-                alert(`ðŸ‘¤ Datos del comprador:\n\nNombre: ${perfil.nombre_completo}\nTelÃ©fono: ${perfil.telefono}\nDirecciÃ³n: ${perfil.direccion}`);
+                alert(`👤 Datos del comprador:\n\nNombre: ${perfil.nombre_completo}\nTeléfono: ${perfil.telefono}\nDirección: ${perfil.direccion}`);
             } else {
                 alert('No se pudieron obtener los datos del comprador.');
             }
@@ -956,7 +956,7 @@
                 if (errorOfertas) throw errorOfertas;
                 const lista = document.getElementById('articulos-lista');
                 if (!ofertas || ofertas.length === 0) {
-                    lista.innerHTML = "<div class='sin-resultados'>ðŸ’° TodavÃ­a no hiciste ninguna oferta.</div>";
+                    lista.innerHTML = "<div class='sin-resultados'>💰 Todavía no hiciste ninguna oferta.</div>";
                     return;
                 }
                 const idsUnicos = [...new Set(ofertas.map(o => o.articulo_id))];
@@ -970,9 +970,9 @@
                     const pagoConfirmado = art.pago_confirmado;
                     let boton = '';
                     if (soyGanador && pagoConfirmado) {
-                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">ðŸ“‹ Ver datos del vendedor</button>`;
+                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
                     } else if (soyGanador && !pagoConfirmado) {
-                        boton = `<button class="btn-ganador" style="font-size:0.85em; padding:12px;">ðŸ† Â¡Ganaste! EsperÃ¡ que el vendedor coordine la entrega.</button>`;
+                        boton = `<button class="btn-ganador" style="font-size:0.85em; padding:12px;">🏆 ¡Ganaste! Esperá que el vendedor coordine la entrega.</button>`;
                     } else if (yaTermino) {
                         boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
                     } else {
@@ -993,8 +993,8 @@
                         <div class="titulo">${art.Titulo}</div>
                         <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
                         <div class="precio">$<span id="precio-${art.id}">${art.precio_actual || art.precio_base}</span></div>
-                        <div style="font-size:0.8em; color:#f57f17; font-weight:bold; margin-bottom:8px;">ðŸ’° Tu Ãºltima oferta: $${miOferta.monto}</div>
-                        <div class="reloj" id="reloj-${art.id}">â³ Cargando...</div>
+                        <div style="font-size:0.8em; color:#f57f17; font-weight:bold; margin-bottom:8px;">💰 Tu última oferta: $${miOferta.monto}</div>
+                        <div class="reloj" id="reloj-${art.id}">⏳ Cargando...</div>
                         ${boton}
                     `;
                     lista.appendChild(div);
@@ -1009,7 +1009,7 @@
             const intervalo = setInterval(() => {
                 const diff = new Date(fecha).getTime() - Date.now();
                 if (diff <= 0) {
-                    display.innerText = "ðŸ›‘ SUBASTA CERRADA";
+                    display.innerText = "🛑 SUBASTA CERRADA";
                     display.style.background = "#eee";
                     display.style.color = "#666";
                     clearInterval(intervalo);
@@ -1019,16 +1019,16 @@
                 const h = Math.floor((diff % 86400000) / 3600000);
                 const m = Math.floor((diff % 3600000) / 60000);
                 const s = Math.floor((diff % 60000) / 1000);
-                display.innerText = "â³ Faltan: " + (d > 0 ? `${d}d ` : '') + `${h}h ${m}m ${s}s`;
+                display.innerText = "⏳ Faltan: " + (d > 0 ? `${d}d ` : '') + `${h}h ${m}m ${s}s`;
             }, 1000);
         }
 
         async function ofertar(id, monto = 500) {
             const { data: { user } } = await _supabase.auth.getUser();
-            if (!user) { alert("âš ï¸ TenÃ©s que ingresar para ofertar."); window.location.href = 'login.html'; return; }
+            if (!user) { alert("⚠️ Tenés que ingresar para ofertar."); window.location.href = 'login.html'; return; }
             const { data: art } = await _supabase.from('articulos').select('finaliza_en, perfil_id').eq('id', id).maybeSingle();
-            if (art && art.perfil_id === user.id) { alert("âš ï¸ No podÃ©s ofertar en tu propia publicaciÃ³n."); return; }
-            if (art && new Date(art.finaliza_en).getTime() < Date.now()) { alert("ðŸ›‘ Esta subasta ya terminÃ³."); return; }
+            if (art && art.perfil_id === user.id) { alert("⚠️ No podés ofertar en tu propia publicación."); return; }
+            if (art && new Date(art.finaliza_en).getTime() < Date.now()) { alert("🛑 Esta subasta ya terminó."); return; }
             const span = document.getElementById(`precio-${id}`);
             const nuevo = parseFloat(span.innerText.replace(/\./g,'').replace(',','.')) + monto;
             const { error } = await _supabase.from('articulos').update({ "precio_actual": nuevo }).eq('id', id);
@@ -1052,12 +1052,12 @@
         async function verDatosVendedor(articuloId, perfilId) {
             const { data: art } = await _supabase.from('articulos').select('pago_confirmado').eq('id', articuloId).maybeSingle();
             if (!art || !art.pago_confirmado) {
-                alert("â³ El vendedor todavÃ­a no abonÃ³ la comisiÃ³n. Una vez que lo haga podrÃ¡s coordinar la entrega. Consultas: quiendamas.app@gmail.com");
+                alert("⏳ El vendedor todavía no abonó la comisión. Una vez que lo haga podrás coordinar la entrega. Consultas: quiendamas.app@gmail.com");
                 return;
             }
             const { data: perfil } = await _supabase.from('perfiles').select('nombre_completo, telefono, direccion').eq('id', perfilId).maybeSingle();
             if (perfil) {
-                alert(`ðŸ“‹ Datos del vendedor:\n\nNombre: ${perfil.nombre_completo}\nTelÃ©fono: ${perfil.telefono}\nDirecciÃ³n: ${perfil.direccion}`);
+                alert(`📋 Datos del vendedor:\n\nNombre: ${perfil.nombre_completo}\nTeléfono: ${perfil.telefono}\nDirección: ${perfil.direccion}`);
             } else {
                 alert('No se pudieron obtener los datos del vendedor.');
             }
@@ -1101,14 +1101,14 @@
         });
 
 async function eliminarPublicacion(id) {
-    const confirmar = confirm("Â¿Seguro que querÃ©s eliminar esta publicaciÃ³n?");
+    const confirmar = confirm("¿Seguro que querés eliminar esta publicación?");
     if (!confirmar) return;
     const { error } = await _supabase.from('articulos').delete().eq('id', id);
     if (error) { alert("Error al eliminar: " + error.message); return; }
     filtrarMisPublicaciones();
 }
 
-        // â”€â”€ MI PERFIL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ── MI PERFIL ────────────────────────────────────────────────
         async function abrirModalMiPerfil() {
             if (!usuarioActualId) { window.location.href = 'login.html'; return; }
             document.getElementById('modal-miperfil').classList.add('activo');
@@ -1116,10 +1116,10 @@ async function eliminarPublicacion(id) {
             const { data: perfil } = await _supabase.from('perfiles').select('*').eq('id', usuarioActualId).maybeSingle();
             if (perfil) {
                 document.getElementById('miperfil-nombre').innerText = perfil.nombre_completo || 'Usuario';
-                document.getElementById('miperfil-apodo').innerText = perfil.apodo || 'â€”';
-                document.getElementById('miperfil-dni').innerText = perfil.dni || 'â€”';
-                document.getElementById('miperfil-telefono').innerText = perfil.telefono || 'â€”';
-                document.getElementById('miperfil-direccion').innerText = perfil.direccion || 'â€”';
+                document.getElementById('miperfil-apodo').innerText = perfil.apodo || '—';
+                document.getElementById('miperfil-dni').innerText = perfil.dni || '—';
+                document.getElementById('miperfil-telefono').innerText = perfil.telefono || '—';
+                document.getElementById('miperfil-direccion').innerText = perfil.direccion || '—';
                 if (perfil.avatar_url) document.getElementById('miperfil-avatar-img').src = perfil.avatar_url;
             }
             if (user) document.getElementById('miperfil-email').innerText = user.email || '';
@@ -1128,17 +1128,17 @@ async function eliminarPublicacion(id) {
         async function subirAvatar(input) {
             if (!input.files[0]) return;
             const msg = document.getElementById('miperfil-msg');
-            msg.style.color = 'blue'; msg.innerText = 'â³ Subiendo foto...';
+            msg.style.color = 'blue'; msg.innerText = '⏳ Subiendo foto...';
             const archivo = input.files[0];
             const nombre = `avatar_${usuarioActualId}_${Date.now()}`;
             const { error: errorUp } = await _supabase.storage.from('fotos_subastas').upload(nombre, archivo, { upsert: true, contentType: archivo.type });
-            if (errorUp) { msg.style.color = 'red'; msg.innerText = 'âŒ Error: ' + errorUp.message; return; }
+            if (errorUp) { msg.style.color = 'red'; msg.innerText = '❌ Error: ' + errorUp.message; return; }
             const { data: urlData } = _supabase.storage.from('fotos_subastas').getPublicUrl(nombre);
             const avatarUrl = urlData.publicUrl;
             const { error: errorUpdate } = await _supabase.from('perfiles').update({ avatar_url: avatarUrl }).eq('id', usuarioActualId);
-            if (errorUpdate) { msg.style.color = 'red'; msg.innerText = 'âŒ Error BD: ' + errorUpdate.message; return; }
+            if (errorUpdate) { msg.style.color = 'red'; msg.innerText = '❌ Error BD: ' + errorUpdate.message; return; }
             document.getElementById('miperfil-avatar-img').src = avatarUrl;
-            msg.style.color = 'green'; msg.innerText = 'âœ… Â¡Foto actualizada!';
+            msg.style.color = 'green'; msg.innerText = '✅ ¡Foto actualizada!';
         }
 
         function cerrarModalMiPerfil() {
@@ -1146,14 +1146,14 @@ async function eliminarPublicacion(id) {
             document.getElementById('miperfil-msg').innerText = '';
         }
 
-        // â”€â”€ PERFIL VENDEDOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ── PERFIL VENDEDOR ─────────────────────────────────────────
         async function abrirModalPerfil(vendedorId) {
-            document.getElementById('perfil-avatar-container').innerHTML = 'ðŸ‘¤';
+            document.getElementById('perfil-avatar-container').innerHTML = '👤';
             document.getElementById('perfil-apodo').innerText = '...';
             document.getElementById('perfil-desde').innerText = 'Cargando...';
             document.getElementById('perfil-ventas').innerText = '...';
             document.getElementById('perfil-compras').innerText = '...';
-            document.getElementById('perfil-martillos').innerText = 'â€”';
+            document.getElementById('perfil-martillos').innerText = '—';
             document.getElementById('perfil-puntaje').innerText = 'Cargando...';
             document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Cargando...</div>';
             document.getElementById('modal-perfil').classList.add('activo');
@@ -1168,7 +1168,7 @@ async function eliminarPublicacion(id) {
                 if (perfil.avatar_url) {
                     avatarEl.innerHTML = `<img src="${perfil.avatar_url}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">`;
                 } else {
-                    avatarEl.innerHTML = 'ðŸ‘¤';
+                    avatarEl.innerHTML = '👤';
                 }
             }
 
@@ -1180,18 +1180,18 @@ async function eliminarPublicacion(id) {
             const { data: cals } = await _supabase.from('calificaciones').select('*').eq('vendedor_id', vendedorId).order('created_at', { ascending: false }).limit(5);
             if (cals && cals.length > 0) {
                 const promedio = (cals.reduce((s, c) => s + c.puntaje, 0) / cals.length).toFixed(1);
-                const martillos = 'ðŸ”¨'.repeat(Math.round(promedio)) + 'ðŸª“'.repeat(5 - Math.round(promedio));
+                const martillos = '🔨'.repeat(Math.round(promedio)) + '🪓'.repeat(5 - Math.round(promedio));
                 document.getElementById('perfil-martillos').innerText = martillos;
-                document.getElementById('perfil-puntaje').innerText = `${promedio} Â· basado en ${cals.length} calificaciÃ³n${cals.length > 1 ? 'es' : ''}`;
+                document.getElementById('perfil-puntaje').innerText = `${promedio} · basado en ${cals.length} calificación${cals.length > 1 ? 'es' : ''}`;
                 document.getElementById('perfil-resenas-lista').innerHTML = cals.map(c => `
                     <div class="resena-item">
-                        <div class="r-martillos">${'ðŸ”¨'.repeat(c.puntaje)}</div>
+                        <div class="r-martillos">${'🔨'.repeat(c.puntaje)}</div>
                         ${c.comentario ? `<div class="r-texto">"${c.comentario}"</div>` : ''}
                     </div>`).join('');
             } else {
-                document.getElementById('perfil-martillos').innerText = 'â€”';
-                document.getElementById('perfil-puntaje').innerText = 'Sin calificaciones aÃºn';
-                document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Sin reseÃ±as todavÃ­a</div>';
+                document.getElementById('perfil-martillos').innerText = '—';
+                document.getElementById('perfil-puntaje').innerText = 'Sin calificaciones aún';
+                document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Sin reseñas todavía</div>';
             }
         }
 
@@ -1221,12 +1221,12 @@ async function eliminarPublicacion(id) {
         text-align: center;
         box-shadow: 0 4px 18px rgba(67,160,71,0.3);
     ">
-        <div style="font-size: 1.5em; margin-bottom: 6px;">ðŸ”ï¸</div>
+        <div style="font-size: 1.5em; margin-bottom: 6px;">🏔️</div>
         <div style="font-weight: 900; font-size: 1em; letter-spacing: 1px; color: #e8f5e9; margin-bottom: 4px;">
             HECHO EN LA PATAGONIA
         </div>
         <div style="font-size: 0.85em; color: #c8e6c9; margin-bottom: 16px; font-weight: 600;">
-            Dinahuapi Â· Bariloche Â· Patagonia Argentina
+            Dinahuapi · Bariloche · Patagonia Argentina
         </div>
         <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;">
             <a href="mailto:quiendamasapp@gmail.com" style="
@@ -1237,7 +1237,7 @@ async function eliminarPublicacion(id) {
                 font-size: 0.83em; font-weight: bold;
                 transition: background 0.2s;
             " onmouseover="this.style.background='rgba(255,255,255,0.28)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
-                âœ‰ï¸ quiendamasapp@gmail.com
+                ✉️ quiendamasapp@gmail.com
             </a>
             <a href="https://wa.me/5492944628902" target="_blank" style="
                 display: flex; align-items: center; gap: 7px;
@@ -1247,12 +1247,12 @@ async function eliminarPublicacion(id) {
                 font-size: 0.83em; font-weight: bold;
                 transition: background 0.2s;
             " onmouseover="this.style.background='rgba(255,255,255,0.28)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
-                ðŸ’¬ WhatsApp &nbsp;<span style="font-weight:normal; font-size:0.9em; color:#a5d6a7;">(10 a 14 hs)</span>
+                💬 WhatsApp &nbsp;<span style="font-weight:normal; font-size:0.9em; color:#a5d6a7;">(10 a 14 hs)</span>
             </a>
         </div>
         <div style="margin-top: 16px; font-size: 0.72em; color: #a5d6a7;">
-            Â© 2025 quiendamas Â· quiendamasapp.com.ar &nbsp;Â·&nbsp;
-            <a href="terminos.html" target="_blank" style="color: #c8e6c9; text-decoration: underline;">TÃ©rminos y Condiciones</a>
+            © 2025 quiendamas · quiendamasapp.com.ar &nbsp;·&nbsp;
+            <a href="terminos.html" target="_blank" style="color: #c8e6c9; text-decoration: underline;">Términos y Condiciones</a>
         </div>
     </footer>
 
