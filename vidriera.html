@@ -138,17 +138,48 @@
         .btn-responder:hover { background: #43a047; color: white; }
         .input-respuesta { width: 100%; padding: 7px 10px; border: 1px solid #c8e6c9; border-radius: 8px; font-size: 0.82em; outline: none; margin-top: 5px; }
 
-        /* ── MODAL CALIFICAR ── */
-        .modal-calificar-box { background: white; border-radius: 20px; padding: 24px; max-width: 340px; width: 93%; box-shadow: 0 10px 40px rgba(0,0,0,0.25); text-align: center; border-top: 5px solid var(--verde-lima); }
-        .modal-calificar-box h2 { color: var(--rosa); margin-top: 0; font-size: 1.2em; }
-        .martillos-selector { display: flex; justify-content: center; gap: 8px; margin: 16px 0; }
-        .martillo-btn { font-size: 2em; cursor: pointer; opacity: 0.3; transition: opacity 0.15s, transform 0.15s; border: none; background: none; padding: 0; }
-        .martillo-btn.activo { opacity: 1; transform: scale(1.15); }
-        .input-comentario { width: 100%; padding: 10px 14px; border: 1px solid var(--lila); border-radius: 10px; font-size: 0.9em; outline: none; margin-top: 8px; resize: none; }
-        .input-comentario:focus { border-color: var(--rosa); }
-        .btn-calificar { background: var(--rosa); color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.95em; margin-top: 12px; }
-        .btn-calificar-verde { background: white; border: 2px solid var(--rosa); color: var(--rosa); padding: 8px; border-radius: 10px; cursor: pointer; font-size: 0.8em; font-weight: bold; width: 100%; margin-top: 6px; transition: all 0.2s; }
-        .btn-calificar-verde:hover { background: var(--rosa); color: white; }
+        /* ── MODAL PERFIL VENDEDOR ── */
+        .modal-perfil-box { border-radius: 20px; overflow: hidden; max-width: 340px; width: 93%; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
+        .perfil-header { background: linear-gradient(135deg, #43a047, #2e7d32); padding: 28px 20px 22px; text-align: center; }
+        .perfil-avatar { width: 70px; height: 70px; border-radius: 50%; background: white; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 2em; border: 3px solid var(--verde-lima); overflow: hidden; }
+        .perfil-apodo { color: white; font-size: 1.2em; font-weight: bold; margin: 0 0 3px; }
+        .perfil-desde { color: #c8e6c9; font-size: 0.8em; margin: 0; }
+        .perfil-body { background: white; padding: 18px; }
+        .perfil-estrellas { text-align: center; margin-bottom: 16px; }
+        .perfil-estrellas .martillos { font-size: 1.4em; letter-spacing: 3px; }
+        .perfil-estrellas .puntaje { font-size: 0.8em; color: #888; margin-top: 4px; }
+        .perfil-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+        .perfil-stat { border-radius: 12px; padding: 12px; text-align: center; }
+        .perfil-stat.ventas { background: #e8f5e9; }
+        .perfil-stat.compras { background: #fce4ec; }
+        .perfil-stat .num { font-size: 1.6em; font-weight: bold; }
+        .perfil-stat.ventas .num { color: #2e7d32; }
+        .perfil-stat.compras .num { color: #c2185b; }
+        .perfil-stat .label { font-size: 0.75em; margin-top: 2px; }
+        .perfil-stat.ventas .label { color: #4caf50; }
+        .perfil-stat.compras .label { color: #e91e63; }
+        .perfil-resenas { background: #f9f9f9; border-radius: 12px; padding: 12px; margin-bottom: 14px; }
+        .perfil-resenas .titulo-resenas { font-size: 0.75em; color: #aaa; font-weight: bold; margin-bottom: 10px; }
+        .resena-item { border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 8px; }
+        .resena-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .resena-item .r-martillos { font-size: 0.9em; }
+        .resena-item .r-texto { font-size: 0.8em; color: #555; margin-top: 3px; }
+        .apodo-art { cursor: pointer; }
+        .apodo-art:hover { text-decoration: underline; }
+
+        /* ── MODAL MI PERFIL ── */
+        .modal-miperfil-box { background: white; border-radius: 20px; overflow: hidden; max-width: 340px; width: 93%; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
+        .miperfil-header { background: linear-gradient(135deg, #E04891, #E1B7ED); padding: 28px 20px 22px; text-align: center; }
+        .miperfil-avatar-wrap { position: relative; width: 80px; margin: 0 auto 10px; cursor: pointer; }
+        .miperfil-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid white; background: white; display: block; }
+        .miperfil-avatar-edit { position: absolute; bottom: 0; right: 0; background: var(--verde-lima); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.85em; border: 2px solid white; }
+        .miperfil-nombre { color: white; font-size: 1.1em; font-weight: bold; margin: 0 0 2px; }
+        .miperfil-email { color: rgba(255,255,255,0.8); font-size: 0.8em; margin: 0; }
+        .miperfil-body { padding: 18px; }
+        .miperfil-dato { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.88em; }
+        .miperfil-dato:last-of-type { border-bottom: none; }
+        .miperfil-dato .etiqueta { color: #aaa; font-size: 0.85em; }
+        .miperfil-dato .valor { color: #333; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -207,22 +238,52 @@
         </div>
     </div>
 
-    <!-- Modal calificar vendedor -->
-    <div class="modal-overlay" id="modal-calificar">
-        <div class="modal-calificar-box">
-            <h2>🔨 Calificar vendedor</h2>
-            <p style="color:#888;font-size:0.85em;margin:0 0 4px;">¿Cómo fue tu experiencia?</p>
-            <div class="martillos-selector">
-                <button class="martillo-btn" onclick="seleccionarPuntaje(1)">🔨</button>
-                <button class="martillo-btn" onclick="seleccionarPuntaje(2)">🔨</button>
-                <button class="martillo-btn" onclick="seleccionarPuntaje(3)">🔨</button>
-                <button class="martillo-btn" onclick="seleccionarPuntaje(4)">🔨</button>
-                <button class="martillo-btn" onclick="seleccionarPuntaje(5)">🔨</button>
+    <!-- Modal mi perfil -->
+    <div class="modal-overlay" id="modal-miperfil">
+        <div class="modal-miperfil-box">
+            <div class="miperfil-header">
+                <div class="miperfil-avatar-wrap" onclick="document.getElementById('input-avatar').click()">
+                    <img id="miperfil-avatar-img" class="miperfil-avatar" src="logo.jpg" alt="avatar">
+                    <div class="miperfil-avatar-edit">📷</div>
+                </div>
+                <input type="file" id="input-avatar" accept="image/*" style="display:none;" onchange="subirAvatar(this)">
+                <p class="miperfil-nombre" id="miperfil-nombre">...</p>
+                <p class="miperfil-email" id="miperfil-email">...</p>
             </div>
-            <textarea class="input-comentario" id="cal-comentario" rows="2" placeholder="Contá tu experiencia (opcional)..."></textarea>
-            <div id="cal-msg" style="font-size:0.82em;margin:8px 0;"></div>
-            <button class="btn-calificar" onclick="enviarCalificacion()">Enviar calificación</button>
-            <button class="btn-cerrar-modal" style="width:100%;margin-top:8px;" onclick="cerrarModalCalificar()">Cancelar</button>
+            <div class="miperfil-body">
+                <div class="miperfil-dato"><span class="etiqueta">Apodo</span><span class="valor" id="miperfil-apodo">...</span></div>
+                <div class="miperfil-dato"><span class="etiqueta">DNI</span><span class="valor" id="miperfil-dni">...</span></div>
+                <div class="miperfil-dato"><span class="etiqueta">Teléfono</span><span class="valor" id="miperfil-telefono">...</span></div>
+                <div class="miperfil-dato"><span class="etiqueta">Dirección</span><span class="valor" id="miperfil-direccion">...</span></div>
+                <div id="miperfil-msg" style="text-align:center;font-size:0.82em;margin:8px 0;"></div>
+                <button class="btn-cerrar-modal" style="width:100%;margin-top:8px;" onclick="cerrarModalMiPerfil()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal perfil vendedor -->
+    <div class="modal-overlay" id="modal-perfil">
+        <div class="modal-perfil-box">
+            <div class="perfil-header">
+                <div class="perfil-avatar" id="perfil-avatar-container">👤</div>
+                <p class="perfil-apodo" id="perfil-apodo">...</p>
+                <p class="perfil-desde" id="perfil-desde">Miembro desde ...</p>
+            </div>
+            <div class="perfil-body">
+                <div class="perfil-estrellas">
+                    <div class="martillos" id="perfil-martillos">—</div>
+                    <div class="puntaje" id="perfil-puntaje">Sin calificaciones aún</div>
+                </div>
+                <div class="perfil-stats">
+                    <div class="perfil-stat ventas"><div class="num" id="perfil-ventas">0</div><div class="label">ventas</div></div>
+                    <div class="perfil-stat compras"><div class="num" id="perfil-compras">0</div><div class="label">compras</div></div>
+                </div>
+                <div class="perfil-resenas">
+                    <div class="titulo-resenas">ÚLTIMAS CALIFICACIONES</div>
+                    <div id="perfil-resenas-lista"><div style="text-align:center;color:#aaa;font-size:0.85em;">Sin reseñas todavía</div></div>
+                </div>
+                <button class="btn-cerrar-modal" style="width:100%;" onclick="cerrarModalPerfil()">Cerrar</button>
+            </div>
         </div>
     </div>
 
@@ -255,7 +316,7 @@
             <h1>🛍️ quiendamas</h1>
         </div>
         <div class="barra-superior-der">
-            <span id="usuario-nombre">Cargando...</span>
+            <span id="usuario-nombre" onclick="abrirModalMiPerfil()" style="cursor:pointer;" title="Ver mi perfil">Cargando...</span>
             <div style="display:flex; gap:8px;">
                 <button id="btn-sesion" onclick="gestionarSesion()" class="btn-top primario">🔑 Ingresar</button>
                 <button onclick="window.location.href='index.html'" class="btn-top">➕ Publicar</button>
@@ -674,9 +735,7 @@
                     }
                 } else if (soyComprador) {
                     if (pagoConfirmado) {
-                        const diasPasados = art.updated_at ? Math.floor((Date.now() - new Date(art.updated_at).getTime()) / 86400000) : 0;
-                    const btnCal = diasPasados >= 15 ? `<button class="btn-calificar-verde" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')">⭐ Calificar vendedor</button>` : '';
-                    boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>${btnCal}`;
+                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
                     } else {
                         boton = `<div style="background:#e8f5e9; border-radius:10px; padding:12px; font-size:0.82em; color:#2e7d32; text-align:center; line-height:1.5;">✅ <b>¡Compra confirmada!</b><br>Cuando el vendedor abone la comisión se pondrá en contacto con vos para coordinar la entrega.</div>`;
                     }
@@ -700,9 +759,7 @@
                     }
                 } else if (soyGanador) {
                     if (pagoConfirmado) {
-                        const diasPasadosSub = art.updated_at ? Math.floor((Date.now() - new Date(art.updated_at).getTime()) / 86400000) : 0;
-                    const btnCalSub = diasPasadosSub >= 15 ? `<button class="btn-calificar-verde" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')">⭐ Calificar vendedor</button>` : '';
-                    boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>${btnCalSub}`;
+                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
                     } else {
                         boton = `<button class="btn-ganador">🏆 ¡Felicitaciones, ganaste! Esperá que el vendedor coordine la entrega.</button>`;
                     }
@@ -731,7 +788,7 @@
                 <img src="${art.foto_url || ''}" class="foto-art" data-fotos-id="${art.id}" style="cursor:pointer;">
                 ${badgeFotos}
                 <div class="titulo">${art.Titulo}</div>
-                <div class="apodo-art" id="apodo-${art.id}">👤 Cargando...</div>
+                <div class="apodo-art" id="apodo-${art.id}" onclick="abrirModalPerfil('${art.perfil_id}')">👤 Cargando...</div>
                 <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
                 ${precioDisplay}
                 ${relojHtml}
@@ -742,7 +799,7 @@
             `;
             lista.appendChild(div);
 
-            _supabase.from('perfiles').select('apodo, nombre_completo').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
+            _supabase.from('perfiles').select('apodo, nombre_completo, created_at, avatar_url').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
                 const apodoEl = document.getElementById('apodo-' + art.id);
                 if (apodoEl && perfil) apodoEl.innerText = '👤 ' + (perfil.apodo || perfil.nombre_completo || 'Usuario');
             });
@@ -1051,70 +1108,107 @@ async function eliminarPublicacion(id) {
     filtrarMisPublicaciones();
 }
 
-        // ── CALIFICACIONES ──────────────────────────────────────────
-        let calArticuloId = null;
-        let calVendedorId = null;
-        let calPuntaje = 0;
-
-        async function abrirModalCalificar(articuloId, vendedorId) {
-            if (!usuarioActualId) { alert("⚠️ Tenés que ingresar para calificar."); return; }
-            // Verificar si ya calificó
-            const { data: existe } = await _supabase.from('calificaciones')
-                .select('id').eq('articulo_id', articuloId).eq('comprador_id', usuarioActualId).maybeSingle();
-            if (existe) { alert("✅ Ya calificaste a este vendedor."); return; }
-            calArticuloId = articuloId;
-            calVendedorId = vendedorId;
-            calPuntaje = 0;
-            document.getElementById('cal-comentario').value = '';
-            document.getElementById('cal-msg').innerText = '';
-            document.querySelectorAll('.martillo-btn').forEach(b => b.classList.remove('activo'));
-            document.getElementById('modal-calificar').classList.add('activo');
-        }
-
-        function seleccionarPuntaje(n) {
-            calPuntaje = n;
-            document.querySelectorAll('.martillo-btn').forEach((b, i) => {
-                b.classList.toggle('activo', i < n);
-            });
-        }
-
-        async function enviarCalificacion() {
-            if (calPuntaje === 0) { 
-                document.getElementById('cal-msg').style.color = 'red';
-                document.getElementById('cal-msg').innerText = '⚠️ Seleccioná un puntaje.'; 
-                return; 
+        // ── MI PERFIL ────────────────────────────────────────────────
+        async function abrirModalMiPerfil() {
+            if (!usuarioActualId) { window.location.href = 'login.html'; return; }
+            document.getElementById('modal-miperfil').classList.add('activo');
+            const { data: { user } } = await _supabase.auth.getUser();
+            const { data: perfil } = await _supabase.from('perfiles').select('*').eq('id', usuarioActualId).maybeSingle();
+            if (perfil) {
+                document.getElementById('miperfil-nombre').innerText = perfil.nombre_completo || 'Usuario';
+                document.getElementById('miperfil-apodo').innerText = perfil.apodo || '—';
+                document.getElementById('miperfil-dni').innerText = perfil.dni || '—';
+                document.getElementById('miperfil-telefono').innerText = perfil.telefono || '—';
+                document.getElementById('miperfil-direccion').innerText = perfil.direccion || '—';
+                if (perfil.avatar_url) document.getElementById('miperfil-avatar-img').src = perfil.avatar_url;
             }
-            const comentario = document.getElementById('cal-comentario').value.trim();
-            const { error } = await _supabase.from('calificaciones').insert([{
-                articulo_id: calArticuloId,
-                vendedor_id: calVendedorId,
-                comprador_id: usuarioActualId,
-                puntaje: calPuntaje,
-                comentario: comentario || null
-            }]);
-            if (error) { 
-                document.getElementById('cal-msg').style.color = 'red';
-                document.getElementById('cal-msg').innerText = '❌ Error: ' + error.message; 
-                return; 
-            }
-            document.getElementById('cal-msg').style.color = 'green';
-            document.getElementById('cal-msg').innerText = '✅ ¡Gracias por tu calificación!';
-            setTimeout(() => cerrarModalCalificar(), 1500);
+            if (user) document.getElementById('miperfil-email').innerText = user.email || '';
         }
 
-        function cerrarModalCalificar() {
-            document.getElementById('modal-calificar').classList.remove('activo');
-            calArticuloId = null; calVendedorId = null; calPuntaje = 0;
+        async function subirAvatar(input) {
+            if (!input.files[0]) return;
+            const msg = document.getElementById('miperfil-msg');
+            msg.style.color = 'blue'; msg.innerText = '⏳ Subiendo foto...';
+            const archivo = input.files[0];
+            const nombre = `avatar_${usuarioActualId}_${Date.now()}`;
+            const { error: errorUp } = await _supabase.storage.from('fotos_subastas').upload(nombre, archivo, { upsert: true, contentType: archivo.type });
+            if (errorUp) { msg.style.color = 'red'; msg.innerText = '❌ Error: ' + errorUp.message; return; }
+            const { data: urlData } = _supabase.storage.from('fotos_subastas').getPublicUrl(nombre);
+            const avatarUrl = urlData.publicUrl;
+            const { error: errorUpdate } = await _supabase.from('perfiles').update({ avatar_url: avatarUrl }).eq('id', usuarioActualId);
+            if (errorUpdate) { msg.style.color = 'red'; msg.innerText = '❌ Error BD: ' + errorUpdate.message; return; }
+            document.getElementById('miperfil-avatar-img').src = avatarUrl;
+            msg.style.color = 'green'; msg.innerText = '✅ ¡Foto actualizada!';
+        }
+
+        function cerrarModalMiPerfil() {
+            document.getElementById('modal-miperfil').classList.remove('activo');
+            document.getElementById('miperfil-msg').innerText = '';
+        }
+
+        // ── PERFIL VENDEDOR ─────────────────────────────────────────
+        async function abrirModalPerfil(vendedorId) {
+            document.getElementById('perfil-avatar-container').innerHTML = '👤';
+            document.getElementById('perfil-apodo').innerText = '...';
+            document.getElementById('perfil-desde').innerText = 'Cargando...';
+            document.getElementById('perfil-ventas').innerText = '...';
+            document.getElementById('perfil-compras').innerText = '...';
+            document.getElementById('perfil-martillos').innerText = '—';
+            document.getElementById('perfil-puntaje').innerText = 'Cargando...';
+            document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Cargando...</div>';
+            document.getElementById('modal-perfil').classList.add('activo');
+
+            const { data: perfil } = await _supabase.from('perfiles').select('apodo, nombre_completo, created_at, avatar_url').eq('id', vendedorId).maybeSingle();
+            if (perfil) {
+                document.getElementById('perfil-apodo').innerText = perfil.apodo || perfil.nombre_completo || 'Usuario';
+                const fecha = new Date(perfil.created_at);
+                const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+                document.getElementById('perfil-desde').innerText = `Miembro desde ${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
+                const avatarEl = document.getElementById('perfil-avatar-container');
+                if (perfil.avatar_url) {
+                    avatarEl.innerHTML = `<img src="${perfil.avatar_url}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    avatarEl.innerHTML = '👤';
+                }
+            }
+
+            const { count: ventas } = await _supabase.from('articulos').select('id', { count: 'exact', head: true }).eq('perfil_id', vendedorId).not('comprador_id', 'is', null);
+            const { count: compras } = await _supabase.from('articulos').select('id', { count: 'exact', head: true }).eq('comprador_id', vendedorId);
+            document.getElementById('perfil-ventas').innerText = ventas || 0;
+            document.getElementById('perfil-compras').innerText = compras || 0;
+
+            const { data: cals } = await _supabase.from('calificaciones').select('*').eq('vendedor_id', vendedorId).order('created_at', { ascending: false }).limit(5);
+            if (cals && cals.length > 0) {
+                const promedio = (cals.reduce((s, c) => s + c.puntaje, 0) / cals.length).toFixed(1);
+                const martillos = '🔨'.repeat(Math.round(promedio)) + '🪓'.repeat(5 - Math.round(promedio));
+                document.getElementById('perfil-martillos').innerText = martillos;
+                document.getElementById('perfil-puntaje').innerText = `${promedio} · basado en ${cals.length} calificación${cals.length > 1 ? 'es' : ''}`;
+                document.getElementById('perfil-resenas-lista').innerHTML = cals.map(c => `
+                    <div class="resena-item">
+                        <div class="r-martillos">${'🔨'.repeat(c.puntaje)}</div>
+                        ${c.comentario ? `<div class="r-texto">"${c.comentario}"</div>` : ''}
+                    </div>`).join('');
+            } else {
+                document.getElementById('perfil-martillos').innerText = '—';
+                document.getElementById('perfil-puntaje').innerText = 'Sin calificaciones aún';
+                document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Sin reseñas todavía</div>';
+            }
+        }
+
+        function cerrarModalPerfil() {
+            document.getElementById('modal-perfil').classList.remove('activo');
         }
 
         revisarSesion();
         cargarArticulos('Todos');
+        revisarSesion();
+        cargarArticulos('Todos');
     </script>
     <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/quiendamas/sw.js');
-      }
-    </script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+</script>
 </body>
 
     <!-- FOOTER REGIONAL -->
