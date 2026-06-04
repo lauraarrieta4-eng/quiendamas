@@ -138,7 +138,7 @@
             msg.style.color = "blue"; msg.innerText = "⏳ Enviando enlace...";
             const { error } = await _supabase.auth.signInWithOtp({
                 email,
-                options: { shouldCreateUser: false, emailRedirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html?type=recovery' }
+                options: { shouldCreateUser: false, emailRedirectTo: 'https://quiendamasapp.com.ar/login.html?type=recovery' }
             });
             if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; }
             else { msg.style.color = "green"; msg.innerHTML = `<div style="padding:12px;background:#e3f2fd;border-radius:8px;border:1px solid #bbdefb;">📧 <b>¡Enlace enviado!</b><br>Revisá tu casilla y también el SPAM.</div>`; }
@@ -197,7 +197,7 @@
                     email, password,
                     options: {
                         data: { nombre_completo: nombre, apodo, dni, direccion: dir, telefono: tel },
-                        emailRedirectTo: 'https://lauraarrieta4-eng.github.io/quiendamas/login.html'
+                        emailRedirectTo: 'https://quiendamasapp.com.ar/login.html'
                     }
                 });
 
