@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Quiéndamas - Publicar</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <style>
+        :root {
+            --rosa: #E04891;
+            --lila: #E1B7ED;
+            --rosa-claro: #F5E1E2;
+            --verde-suave: #D1E389;
+            --verde-lima: #B9DE51;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--rosa-claro); display: flex; justify-content: center; padding: 15px; margin: 0; min-height: 100vh; align-items: flex-start; }
+        .card { background: white; padding: 22px; border-radius: 16px; box-shadow: 0 6px 24px rgba(224,72,145,0.15); width: 100%; max-width: 450px; border-top: 5px solid var(--verde-lima); }
+
+        .logo-header { text-align: center; margin-bottom: 5px; }
+        .logo-header img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid var(--verde-lima); box-shadow: 0 3px 10px rgba(0,0,0,0.12); }
+
+        h1 { color: var(--rosa); text-align: center; margin-top: 5px; font-size: 1.6em; }
+        label { display: block; margin-top: 15px; font-weight: bold; color: #333; font-size: 0.9em; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid var(--lila); border-radius: 10px; box-sizing: border-box; font-size: 16px; outline: none; transition: border 0.2s; }
+        input:focus, select:focus, textarea:focus { border-color: var(--rosa); box-shadow: 0 0 0 2px rgba(224,72,145,0.1); }
+        button { background: var(--rosa); color: white; border: none; padding: 16px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 20px; font-size: 1.1em; transition: opacity 0.2s; }
+        button:hover { opacity: 0.88; }
+        .btn-volver { background: var(--verde-suave); color: #333; margin-top: 10px; padding: 12px; font-size: 0.9em; }
+        #mensaje { margin-top: 15px; text-align: center; font-weight: bold; font-size: 0.9em; }
+
+        .selector-tipo { display: flex; gap: 10px; margin-top: 12px; }
+        .btn-tipo { flex: 1; padding: 10px; border: 2px solid var(--rosa); border-radius: 20px; background: white; color: var(--rosa); font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; margin-top: 0; transition: all 0.2s; }
+        .btn-tipo.activo { background: var(--rosa); color: white; }
+
+        .selector-modo { display: flex; gap: 10px; margin-top: 12px; }
+        .btn-modo { flex: 1; padding: 10px; border: 2px solid #43a047; border-radius: 20px; background: white; color: #43a047; font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; margin-top: 0; transition: all 0.2s; }
+        .btn-modo.activo { background: #43a047; color: white; }
+
+        .fotos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+        .foto-slot { border: 2px dashed var(--lila); border-radius: 10px; height: 90px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; background: var(--rosa-claro); transition: border 0.2s; }
+        .foto-slot:hover { border-color: var(--rosa); background: #fce4ec; }
+        .foto-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+        .foto-slot .btn-borrar { position: absolute; top: 3px; right: 3px; background: rgba(224,72,145,0.8); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 0.75em; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-top: 0; padding: 0; }
+        .foto-slot .icono-agregar { font-size: 1.8em; color: #ccc; }
+        .foto-hint { font-size: 0.78em; color: #999; margin-top: 5px; }
+        .subcat-label { font-size: 0.82em; color: #888; margin-top: 3px; font-weight: normal; }
+    </style>
+</head>
+<body>
+<div class="card">
+
+    <div class="logo-header">
+        <img src="logo.jpg" alt="Logo Quiéndamas" onerror="this.style.display='none'">
+    </div>
+    <h1>🛍️ Quiéndamas</h1>
+    <p style="text-align:center;font-size:0.9em;color:#888;margin-top:0;">Publicá tu artículo o servicio</p>
+
+    <!-- Tipo: Producto / Servicio -->
+    <label>¿Qué vas a publicar?</label>
+    <div class="selector-tipo">
+        <button type="button" class="btn-tipo activo" id="btn-producto" onclick="cambiarTipo('producto')">🛍️ Producto</button>
+        <button type="button" class="btn-tipo" id="btn-servicio" onclick="cambiarTipo('servicio')">🛠️ Servicio</button>
+    </div>
+
+    <!-- Modo: Subasta / Venta directa -->
+    <label>Modalidad de venta:</label>
+    <div class="selector-modo">
+        <button type="button" class="btn-modo activo" id="btn-subasta" onclick="cambiarModoVenta('subasta')">🔨 Subasta</button>
+        <button type="button" class="btn-modo" id="btn-venta" onclick="cambiarModoVenta('venta')">💲 Venta directa</button>
+    </div>
+
+    <label>Título:</label>
+    <input type="text" id="titulo" placeholder="Ej: Bicicleta rodado 26 / iPhone 12 / Monstera">
+
+    <label id="label-precio">Precio Base ($):</label>
+    <input type="number" id="precio_base" placeholder="0.00">
+
+    <label>Descripción:</label>
+    <textarea id="descripcion" rows="3" placeholder="Detalles, estado, condiciones... ⚠️ No incluyas datos de contacto."></textarea>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CATEGORÍAS PRODUCTOS
+    ══════════════════════════════════════════════════════════════ -->
+    <div id="cats-producto">
+        <label>Categoría:</label>
+        <select id="cat-principal" onchange="actualizarSubcat()">
+            <option value="Autos">🚗 Autos</option>
+            <option value="Motos">🏍️ Motos</option>
+            <option value="Tecnologia">📱 Tecnología</option>
+            <option value="Moda">👗 Moda</option>
+            <option value="Joyas">⌚ Joyas y Relojes</option>
+            <option value="Belleza">💄 Belleza y Salud</option>
+            <option value="Construccion">🏗️ Construcción</option>
+            <option value="Antiguedades">🏺 Antigüedades</option>
+            <option value="Vivero">🌿 Vivero y Jardín</option>
+            <option value="Hogar">🏠 Hogar y Muebles</option>
+            <option value="Electro">🔌 Electrodomésticos</option>
+            <option value="Otros">📦 Otros</option>
+        </select>
+
+        <!-- Subcategoría (dinámica según categoría principal) -->
+        <div id="subcat-wrapper" style="display:none; margin-top:8px;">
+            <label>Subcategoría: <span class="subcat-label" id="subcat-hint"></span></label>
+            <select id="cat-sub" onchange="actualizarSubcat2()"></select>
+        </div>
+
+        <!-- Sub-subcategoría nivel 3 (solo Vivero > Plantas Exterior) -->
+        <div id="subcat2-wrapper" style="display:none; margin-top:8px;">
+            <label>Detalle:</label>
+            <select id="cat-sub2"></select>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CATEGORÍAS SERVICIOS  (sin cambios)
+    ══════════════════════════════════════════════════════════════ -->
+    <div id="cats-servicio" style="display:none;">
+        <label>Categoría de servicio:</label>
+        <select id="categoria-servicio">
+            <option value="Belleza-Estetica">💅 Belleza y estética</option>
+            <option value="Peluqueria">✂️ Peluquería</option>
+            <option value="Hogar-Reparaciones">🏠 Hogar y reparaciones</option>
+            <option value="Plomeria-Electricidad">🔧 Plomería y electricidad</option>
+            <option value="Tecnologia-Soporte">💻 Tecnología y soporte</option>
+            <option value="Clases-Tutorias">📚 Clases y tutorías</option>
+            <option value="Diseno-Creatividad">🎨 Diseño y creatividad</option>
+            <option value="Servicios-Profesionales">⚖️ Servicios profesionales</option>
+            <option value="Otros-Servicios">📦 Otros servicios</option>
+        </select>
+    </div>
+
+    <!-- Fotos -->
+    <label>Fotos (hasta 5):</label>
+    <div class="fotos-grid" id="fotos-grid"></div>
+    <p class="foto-hint">La primera foto es la principal. Tocá cada cuadro para agregar una imagen.</p>
+    <input type="file" id="input-foto-hidden" accept="image/*" style="display:none;" onchange="agregarFoto(this)">
+
+    <!-- Fecha cierre (solo subasta) -->
+    <div id="bloque-fecha">
+        <label>¿Cuándo termina la subasta?</label>
+        <input type="datetime-local" id="fecha_cierre">
+    </div>
+
+    <button id="btn-publicar" onclick="publicar()">🚀 ¡Publicar Subasta!</button>
+    <button class="btn-volver" onclick="window.location.href='vidriera.html'">⬅ Volver a la vidriera</button>
+
+    <div id="mensaje"></div>
+</div>
+
+<script>
+    // Si entran directo sin venir de la vidriera, los mandamos allá
+    if (!document.referrer.includes('vidriera.html') && !window.location.hash.includes('access_token=')) {
+        window.location.href = 'vidriera.html';
+    }
+
+    if (window.location.hash.includes('access_token=')) {
+        window.location.href = 'login.html' + window.location.hash;
+    }
+
+    async function protegerPagina() {
+        const { data: { user } } = await _supabase.auth.getUser();
+        if (!user) { alert("⚠️ Tenés que iniciar sesión para publicar."); window.location.href = 'login.html'; }
+    }
+    protegerPagina();
+
+    // ── MODO DE VENTA ─────────────────────────────────────────────────
+    let modoVenta = 'subasta';
+
+    function cambiarModoVenta(modo) {
+        modoVenta = modo;
+        document.getElementById('btn-subasta').classList.toggle('activo', modo === 'subasta');
+        document.getElementById('btn-venta').classList.toggle('activo', modo === 'venta');
+        document.getElementById('bloque-fecha').style.display = modo === 'subasta' ? 'block' : 'none';
+        document.getElementById('label-precio').innerText = modo === 'subasta' ? 'Precio Base ($):' : 'Precio de venta ($):';
+        document.getElementById('btn-publicar').innerText = modo === 'subasta' ? '🚀 ¡Publicar Subasta!' : '💲 ¡Publicar Venta!';
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // SUBCATEGORÍAS NIVEL 1  (aparecen según cat-principal)
+    // ══════════════════════════════════════════════════════════════════
+    const SUBCATS = {
+
+        // ── TECNOLOGÍA ────────────────────────────────────────────────
+        'Tecnologia': [
+            { value: 'Celulares',          label: '📱 Celulares' },
+            { value: 'Computacion',        label: '💻 PC y notebooks' },
+            { value: 'Tech-ComponentesPC', label: '🔩 Componentes de PC' },
+            { value: 'Tech-Conectividad',  label: '📡 Conectividad' },
+            { value: 'Tech-Tablets',       label: '📟 Tablets' },
+            { value: 'Tech-Accesorios',    label: '🎧 Accesorios tech' },
+            { value: 'Tech-Consolas',      label: '🎮 Consolas y videojuegos' },
+            { value: 'AudioVideo',         label: '📺 Audio y Video' },
+        ],
+
+        // ── MODA ──────────────────────────────────────────────────────
+        'Moda': [
+            { value: 'Moda-RopaInterior',    label: '🩱 Ropa interior' },
+            { value: 'Moda-RopaDeportiva',   label: '🏃 Ropa deportiva' },
+            { value: 'Moda-Calzado',         label: '👟 Calzado' },
+            { value: 'Moda-ValijasMochilas', label: '🧳 Valijas y mochilas' },
+            { value: 'Moda-Abrigo',          label: '🧥 Abrigo' },
+            { value: 'Moda-Pantalones',      label: '👖 Pantalones' },
+            { value: 'Moda-Remeras',         label: '👕 Remeras' },
+            { value: 'Moda-Buzos',           label: '🧶 Buzos' },
+            { value: 'Moda-Accesorios',      label: '👜 Accesorios' },
+        ],
+
+        // ── CONSTRUCCIÓN ──────────────────────────────────────────────
+        'Construccion': [
+            { value: 'Construccion-Herramientas', label: '🛠️ Herramientas' },
+            { value: 'Construccion-Materiales',   label: '🧱 Materiales' },
+            { value: 'Construccion-Maquinas',     label: '⚙️ Máquinas' },
+            { value: 'Construccion-Pinturas',     label: '🎨 Pinturas' },
+            { value: 'Construccion-Otros',        label: '📦 Otros' },
+        ],
+
+        // ── ANTIGÜEDADES ──────────────────────────────────────────────
+        'Antiguedades': [
+            { value: 'Antiguedades-Coleccionables', label: '🏅 Coleccionables' },
+        ],
+
+        // ── VIVERO ────────────────────────────────────────────────────
+        'Vivero': [
+            { value: 'Plantas-Exterior',          label: '🌳 Plantas de exterior' },
+            { value: 'Plantas-Interior',          label: '🏠 Plantas de interior' },
+            { value: 'Plantas-Huerta',            label: '🥕 Huerta' },
+            { value: 'Plantas-Suculentas',        label: '🌵 Suculentas y cactus' },
+            { value: 'Plantas-Coleccion',         label: '⭐ Plantas de colección' },
+            { value: 'Arboles-Frutales',          label: '🍊 Árboles frutales' },
+            { value: 'Arboles-Ornamentales',      label: '🌲 Árboles ornamentales' },
+            { value: 'Semillas',                  label: '🌱 Semillas' },
+            { value: 'Fertilizantes-Organicos',   label: '🌿 Fertilizantes orgánicos' },
+            { value: 'Fertilizantes-Inorganicos', label: '🧪 Fertilizantes inorgánicos' },
+            { value: 'Macetas-Barro',             label: '🪴 Macetas de barro' },
+            { value: 'Macetas-Plastico',          label: '🪣 Macetas de plástico' },
+            { value: 'Macetas-Ceramica',          label: '🏺 Macetas de cerámica' },
+            { value: 'Riego',                     label: '💧 Materiales para riego' },
+            { value: 'Decoracion',                label: '✨ Decoración de jardín' },
+        ],
+    };
+
+    // ══════════════════════════════════════════════════════════════════
+    // SUBCATEGORÍAS NIVEL 2  (aparecen según cat-sub)
+    // ══════════════════════════════════════════════════════════════════
+    const SUBCATS2 = {
+
+        // Vivero > Plantas de exterior
+        'Plantas-Exterior': [
+            { value: 'Plantas-Aromaticas',  label: '🌸 Aromáticas' },
+            { value: 'Plantas-Arbustos',    label: '🌿 Arbustos' },
+            { value: 'Plantas-Frutales',    label: '🍎 Frutales' },
+            { value: 'Plantas-Herbaceas',   label: '🌾 Herbáceas' },
+            { value: 'Plantas-Bulbosas',    label: '🌷 Bulbosas' },
+            { value: 'Plantas-Trepadoras',  label: '🌱 Trepadoras' },
+            { value: 'Plantas-Cubresuelos', label: '🍀 Cubresuelos' },
+            { value: 'Plantas-Nativas',     label: '🌳 Nativas' },
+        ],
+
+
+    };
+
+    function actualizarSubcat() {
+        const principal = document.getElementById('cat-principal').value;
+        const subcatWrapper = document.getElementById('subcat-wrapper');
+        const subcat2Wrapper = document.getElementById('subcat2-wrapper');
+        const catSub = document.getElementById('cat-sub');
+        catSub.innerHTML = '';
+        subcat2Wrapper.style.display = 'none';
+
+        if (SUBCATS[principal]) {
+            catSub.innerHTML = SUBCATS[principal].map(s => `<option value="${s.value}">${s.label}</option>`).join('');
+            subcatWrapper.style.display = 'block';
+            actualizarSubcat2();
+        } else {
+            subcatWrapper.style.display = 'none';
+        }
+    }
+
+    function actualizarSubcat2() {
+        const subVal = document.getElementById('cat-sub').value;
+        const subcat2Wrapper = document.getElementById('subcat2-wrapper');
+        const catSub2 = document.getElementById('cat-sub2');
+        if (SUBCATS2[subVal]) {
+            catSub2.innerHTML = SUBCATS2[subVal].map(s => `<option value="${s.value}">${s.label}</option>`).join('');
+            subcat2Wrapper.style.display = 'block';
+        } else {
+            subcat2Wrapper.style.display = 'none';
+            catSub2.innerHTML = '';
+        }
+    }
+
+    function getCategoriaFinal() {
+        if (tipoActual === 'servicio') return document.getElementById('categoria-servicio').value;
+        const principal = document.getElementById('cat-principal').value;
+        if (document.getElementById('subcat-wrapper').style.display !== 'none') {
+            const subVal = document.getElementById('cat-sub').value;
+            if (document.getElementById('subcat2-wrapper').style.display !== 'none') {
+                return document.getElementById('cat-sub2').value;
+            }
+            return subVal;
+        }
+        return principal;
+    }
+
+    actualizarSubcat();
+
+    // ── TIPO PRODUCTO / SERVICIO ──────────────────────────────────────
+    let tipoActual = 'producto';
+    function cambiarTipo(tipo) {
+        tipoActual = tipo;
+        document.getElementById('btn-producto').classList.toggle('activo', tipo === 'producto');
+        document.getElementById('btn-servicio').classList.toggle('activo', tipo === 'servicio');
+        document.getElementById('cats-producto').style.display = tipo === 'producto' ? 'block' : 'none';
+        document.getElementById('cats-servicio').style.display = tipo === 'servicio' ? 'block' : 'none';
+    }
+
+    // ── FOTOS ─────────────────────────────────────────────────────────
+    const MAX_FOTOS = 5;
+    let fotosArchivos = [];
+    let slotActual = null;
+
+    function renderFotosGrid() {
+        const grid = document.getElementById('fotos-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < MAX_FOTOS; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'foto-slot';
+            if (fotosArchivos[i]) {
+                const url = URL.createObjectURL(fotosArchivos[i]);
+                slot.innerHTML = `<img src="${url}" alt="foto ${i+1}"><button class="btn-borrar" onclick="borrarFoto(${i})">✕</button>`;
+            } else {
+                slot.innerHTML = `<span class="icono-agregar">📷</span>`;
+                slot.onclick = () => { slotActual = i; document.getElementById('input-foto-hidden').click(); };
+            }
+            grid.appendChild(slot);
+        }
+    }
+
+    function agregarFoto(input) {
+        if (input.files[0] && slotActual !== null) {
+            fotosArchivos[slotActual] = input.files[0];
+            input.value = '';
+            slotActual = null;
+            renderFotosGrid();
+        }
+    }
+
+    function borrarFoto(i) {
+        fotosArchivos.splice(i, 1);
+        renderFotosGrid();
+    }
+
+    renderFotosGrid();
+
+    // ── PUBLICAR ──────────────────────────────────────────────────────
+    async function publicar() {
+        const { data: { user } } = await _supabase.auth.getUser();
+        const titulo = document.getElementById('titulo').value;
+        const precio = document.getElementById('precio_base').value;
+        const desc = document.getElementById('descripcion').value;
+        const fecha = document.getElementById('fecha_cierre').value;
+        const cat = getCategoriaFinal();
+        const msgDiv = document.getElementById('mensaje');
+        const fotosValidas = fotosArchivos.filter(Boolean);
+
+        if (!titulo || !precio || fotosValidas.length === 0) {
+            msgDiv.style.color = "red";
+            msgDiv.innerText = "⚠️ Completá título, precio y agregá al menos una foto.";
+            return;
+        }
+        if (modoVenta === 'subasta' && !fecha) {
+            msgDiv.style.color = "red";
+            msgDiv.innerText = "⚠️ Indicá la fecha y hora de cierre de la subasta.";
+            return;
+        }
+
+        msgDiv.style.color = "blue";
+        msgDiv.innerText = "⏳ Subiendo fotos y publicando...";
+
+        try {
+            const urlsFotos = [];
+            for (let i = 0; i < fotosValidas.length; i++) {
+                const archivo = fotosValidas[i];
+                const nombreFoto = Date.now() + "_" + i + "_" + archivo.name.replace(/\s/g, '_');
+                const { error: errorFoto } = await _supabase.storage.from('fotos_subastas').upload(nombreFoto, archivo);
+                if (errorFoto) throw errorFoto;
+                const { data: urlPublica } = _supabase.storage.from('fotos_subastas').getPublicUrl(nombreFoto);
+                urlsFotos.push(urlPublica.publicUrl);
+            }
+
+            const registro = {
+                "Titulo": titulo,
+                "precio_base": parseFloat(precio),
+                "precio_actual": parseFloat(precio),
+                "descripcion": desc,
+                "categoria": cat,
+                "foto_url": urlsFotos[0],
+                "fotos_extra": urlsFotos.slice(1),
+                "perfil_id": user.id,
+                "tipo_venta": modoVenta,
+            };
+
+            if (modoVenta === 'subasta') {
+                registro["finaliza_en"] = new Date(fecha).toISOString();
+            }
+
+            const { error: errorTabla } = await _supabase.from('articulos').insert([registro]);
+            if (errorTabla) throw errorTabla;
+
+            msgDiv.style.color = "green";
+            msgDiv.innerText = "✅ ¡Publicado con éxito!";
+            setTimeout(() => { window.location.href = "vidriera.html"; }, 1500);
+
+        } catch (err) {
+            msgDiv.style.color = "red";
+            msgDiv.innerText = "❌ Error: " + err.message;
+        }
+    }
+</script>
+</body>
+</html>
