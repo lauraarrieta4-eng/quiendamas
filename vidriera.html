@@ -646,8 +646,8 @@
 
             const esVentaDirecta = art.tipo_venta === 'venta';
             const yaTermino = !esVentaDirecta && art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
-            const soyGanador = !esVentaDirecta && yaTermino && art.ganador_id === usuarioActualId;
-            const soyComprador = esVentaDirecta && art.comprador_id === usuarioActualId;
+            const soyGanador = !esVentaDirecta && yaTermino && !!usuarioActualId && art.ganador_id === usuarioActualId;
+            const soyComprador = esVentaDirecta && !!usuarioActualId && art.comprador_id === usuarioActualId;
             const articuloVendido = esVentaDirecta && !!art.comprador_id;
             const soyVendedor = esMia;
             const pagoConfirmado = art.pago_confirmado;
