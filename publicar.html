@@ -153,7 +153,6 @@
 </div>
 
 <script>
-    // Si entran directo sin venir de la vidriera, los mandamos allá
     if (!document.referrer.includes('vidriera.html') && !window.location.hash.includes('access_token=')) {
         window.location.href = 'vidriera.html';
     }
@@ -225,43 +224,52 @@
         ],
 
         // ── VIVERO ────────────────────────────────────────────────────
+        // Nivel 1: categorías principales del vivero
         'Vivero': [
             { value: 'Plantas-Exterior',          label: '🌳 Plantas de exterior' },
             { value: 'Plantas-Interior',          label: '🏠 Plantas de interior' },
-            { value: 'Plantas-Huerta',            label: '🥕 Huerta' },
             { value: 'Plantas-Suculentas',        label: '🌵 Suculentas y cactus' },
             { value: 'Plantas-Coleccion',         label: '⭐ Plantas de colección' },
-            { value: 'Arboles-Frutales',          label: '🍊 Árboles frutales' },
-            { value: 'Arboles-Ornamentales',      label: '🌲 Árboles ornamentales' },
             { value: 'Semillas',                  label: '🌱 Semillas' },
-            { value: 'Fertilizantes-Organicos',   label: '🌿 Fertilizantes orgánicos' },
-            { value: 'Fertilizantes-Inorganicos', label: '🧪 Fertilizantes inorgánicos' },
             { value: 'Macetas-Barro',             label: '🪴 Macetas de barro' },
             { value: 'Macetas-Plastico',          label: '🪣 Macetas de plástico' },
             { value: 'Macetas-Ceramica',          label: '🏺 Macetas de cerámica' },
-            { value: 'Riego',                     label: '💧 Materiales para riego' },
+            { value: 'Riego',                     label: '💧 Riego' },
+            { value: 'Sustratos',                 label: '🌍 Sustratos' },
+            { value: 'Fertilizantes-Organicos',   label: '🌿 Fertilizantes orgánicos' },
+            { value: 'Fertilizantes-Inorganicos', label: '🧪 Fertilizantes inorgánicos' },
+            { value: 'Herramientas-Jardin',       label: '🛠️ Herramientas de jardín' },
+            { value: 'Indumentaria-Jardin',       label: '👒 Indumentaria para jardineros' },
             { value: 'Decoracion',                label: '✨ Decoración de jardín' },
         ],
     };
 
     // ══════════════════════════════════════════════════════════════════
-    // SUBCATEGORÍAS NIVEL 2  (aparecen según cat-sub)
+    // SUBCATEGORÍAS NIVEL 2  (solo Vivero > Plantas Exterior)
     // ══════════════════════════════════════════════════════════════════
     const SUBCATS2 = {
 
-        // Vivero > Plantas de exterior
+        // Vivero > Plantas de exterior → tipos de planta
         'Plantas-Exterior': [
-            { value: 'Plantas-Aromaticas',  label: '🌸 Aromáticas' },
-            { value: 'Plantas-Arbustos',    label: '🌿 Arbustos' },
-            { value: 'Plantas-Frutales',    label: '🍎 Frutales' },
-            { value: 'Plantas-Herbaceas',   label: '🌾 Herbáceas' },
-            { value: 'Plantas-Bulbosas',    label: '🌷 Bulbosas' },
-            { value: 'Plantas-Trepadoras',  label: '🌱 Trepadoras' },
-            { value: 'Plantas-Cubresuelos', label: '🍀 Cubresuelos' },
-            { value: 'Plantas-Nativas',     label: '🌳 Nativas' },
+            { value: 'Plantas-Gramineas',    label: '🌾 Gramíneas' },
+            { value: 'Plantas-Herbaceas',    label: '🌿 Herbáceas' },
+            { value: 'Plantas-Bulbosas',     label: '🌷 Bulbosas' },
+            { value: 'Plantas-Arbustos',     label: '🌳 Arbustos' },
+            { value: 'Plantas-Cubresuelos',  label: '🍀 Cubresuelos' },
+            { value: 'Plantas-Aromaticas',   label: '🌸 Aromáticas' },
+            { value: 'Plantas-Trepadoras',   label: '🌱 Trepadoras' },
+            { value: 'Plantas-Huerta',       label: '🥕 Huerta' },
+            { value: 'Plantas-Nativas',      label: '🌲 Nativas' },
+            { value: 'Plantas-Helechos',     label: '🌿 Helechos' },
+            { value: 'Arboles-Frutales',     label: '🍊 Árboles frutales' },
+            { value: 'Arboles-Ornamentales', label: '🌲 Árboles ornamentales' },
         ],
 
-
+        // Herramientas de jardín → manuales / máquinas
+        'Herramientas-Jardin': [
+            { value: 'Herramientas-Jardin-Manuales', label: '🪚 Manuales' },
+            { value: 'Herramientas-Jardin-Maquinas', label: '⚙️ Máquinas' },
+        ],
     };
 
     function actualizarSubcat() {
