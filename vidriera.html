@@ -7,8 +7,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#43a047">
-    <link rel="apple-touch-icon" href="logo.jpg">
+<meta name="theme-color" content="#43a047">
+<link rel="apple-touch-icon" href="logo.jpg">
     <title>Vidriera Quiéndamas</title>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
@@ -73,8 +73,10 @@
         .filtros-arrow.der { right: 2px; }
         @media (hover: hover) { .filtros-arrow { display: flex; } }
 
-        .contenedor { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; justify-items: center; }
-        .tarjeta { background: white; border-radius: 16px; padding: 15px; width: 90%; max-width: 320px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; border-top: 4px solid var(--verde-lima); transition: transform 0.2s, box-shadow 0.2s; }
+        .contenedor { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        @media (min-width: 600px) { .contenedor { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 900px) { .contenedor { grid-template-columns: repeat(4, 1fr); } }
+        .tarjeta { background: white; border-radius: 12px; padding: 8px; width: 100%; max-width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; border-top: 3px solid var(--verde-lima); transition: transform 0.2s, box-shadow 0.2s; }
         .tarjeta:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.13); }
         .tag-cat { position: absolute; top: 10px; right: 10px; background: var(--lila); font-size: 0.7em; padding: 3px 10px; border-radius: 12px; color: #6a0050; font-weight: bold; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .tag-tipo { position: absolute; top: 34px; right: 10px; font-size: 0.65em; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
@@ -82,12 +84,12 @@
         .tag-tipo.venta { background: #e8f5e9; color: #2e7d32; }
         .tag-tipo.vendido { background: #eeeeee; color: #757575; }
 
-        .foto-art { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; cursor: pointer; }
+        .foto-art { width: 100%; height: 130px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
         .foto-art:hover { opacity: 0.92; }
-        .titulo { font-size: 1.1em; font-weight: bold; color: #222; }
-        .apodo-art { font-size: 0.78em; color: var(--rosa); margin-top: 2px; margin-bottom: 5px; font-weight: 600; }
-        .descripcion { font-size: 0.85em; color: #666; margin: 8px 0; min-height: 38px; line-height: 1.4; }
-        .precio { font-size: 1.6em; color: var(--rosa); margin: 8px 0; font-weight: bold; }
+        .titulo { font-size: 0.85em; font-weight: bold; color: #222; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .apodo-art { font-size: 0.7em; color: var(--rosa); margin-top: 2px; margin-bottom: 3px; font-weight: 600; cursor: pointer; }
+        .descripcion { display: none; }
+        .precio { font-size: 1.2em; color: var(--rosa); margin: 4px 0; font-weight: bold; }
         .reloj { font-size: 0.85em; font-weight: bold; color: #555; background: var(--verde-suave); padding: 8px; border-radius: 8px; text-align: center; margin-bottom: 10px; }
         .btn-oferta { background: var(--verde-lima); color: #333; border: none; padding: 12px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.95rem; transition: background 0.2s; }
         .btn-oferta:hover { background: var(--rosa); color: white; }
@@ -97,8 +99,8 @@
         .btn-compartir:hover { background: var(--lila); }
         .btn-preguntar { background: white; border: 2px solid var(--rosa); color: var(--rosa); padding: 8px; border-radius: 10px; cursor: pointer; font-size: 0.8em; font-weight: bold; width: 100%; margin-top: 6px; transition: all 0.2s; }
         .btn-preguntar:hover { background: var(--rosa); color: white; }
-        .btn-eliminar { background: white; border: 2px solid #e53935; color: #e53935; padding: 8px; border-radius: 10px; cursor: pointer; font-size: 0.8em; font-weight: bold; width: 100%; margin-top: 6px; transition: all 0.2s; }
-        .btn-eliminar:hover { background: #e53935; color: white; }
+.btn-eliminar { background: white; border: 2px solid #e53935; color: #e53935; padding: 8px; border-radius: 10px; cursor: pointer; font-size: 0.8em; font-weight: bold; width: 100%; margin-top: 6px; transition: all 0.2s; }
+.btn-eliminar:hover { background: #e53935; color: white; }
         .sin-resultados { text-align: center; width: 100%; color: #999; padding: 30px; font-size: 1em; }
         .badge-fotos { position: absolute; top: 10px; left: 10px; background: var(--rosa); color: white; font-size: 0.72em; padding: 3px 8px; border-radius: 10px; pointer-events: none; }
 
@@ -123,6 +125,7 @@
         .carrusel-contador { color: white; font-size: 0.95em; font-weight: bold; min-width: 50px; text-align: center; }
         .carrusel-cerrar { position: absolute; top: 15px; right: 18px; background: var(--lila); color: #6a0050; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2em; cursor: pointer; font-weight: bold; }
         .badge-preguntas { background: #e53935; color: white; border-radius: 50%; font-size: 0.75em; padding: 1px 6px; margin-left: 4px; }
+        /* ── MODAL PREGUNTAS ── */
         .modal-preguntas-box { background: white; border-radius: 20px; padding: 22px; max-width: 420px; width: 93%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.18); border-top: 5px solid var(--lila); }
         .modal-preguntas-box h2 { color: var(--rosa); margin-top: 0; font-size: 1.2em; text-align: center; }
         .pregunta-item { background: var(--rosa-claro); border-radius: 12px; padding: 12px; margin-bottom: 10px; text-align: left; }
@@ -136,47 +139,6 @@
         .btn-responder { background: var(--verde-lima); color: #333; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.78em; font-weight: bold; margin-top: 6px; }
         .btn-responder:hover { background: #43a047; color: white; }
         .input-respuesta { width: 100%; padding: 7px 10px; border: 1px solid #c8e6c9; border-radius: 8px; font-size: 0.82em; outline: none; margin-top: 5px; }
-
-        .modal-perfil-box { border-radius: 20px; overflow: hidden; max-width: 340px; width: 93%; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
-        .perfil-header { background: linear-gradient(135deg, #43a047, #2e7d32); padding: 28px 20px 22px; text-align: center; }
-        .perfil-avatar { width: 70px; height: 70px; border-radius: 50%; background: white; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 2em; border: 3px solid var(--verde-lima); overflow: hidden; }
-        .perfil-apodo { color: white; font-size: 1.2em; font-weight: bold; margin: 0 0 3px; }
-        .perfil-desde { color: #c8e6c9; font-size: 0.8em; margin: 0; }
-        .perfil-body { background: white; padding: 18px; }
-        .perfil-estrellas { text-align: center; margin-bottom: 16px; }
-        .perfil-estrellas .martillos { font-size: 1.4em; letter-spacing: 3px; }
-        .perfil-estrellas .puntaje { font-size: 0.8em; color: #888; margin-top: 4px; }
-        .perfil-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-        .perfil-stat { border-radius: 12px; padding: 12px; text-align: center; }
-        .perfil-stat.ventas { background: #e8f5e9; }
-        .perfil-stat.compras { background: #fce4ec; }
-        .perfil-stat .num { font-size: 1.6em; font-weight: bold; }
-        .perfil-stat.ventas .num { color: #2e7d32; }
-        .perfil-stat.compras .num { color: #c2185b; }
-        .perfil-stat .label { font-size: 0.75em; margin-top: 2px; }
-        .perfil-stat.ventas .label { color: #4caf50; }
-        .perfil-stat.compras .label { color: #e91e63; }
-        .perfil-resenas { background: #f9f9f9; border-radius: 12px; padding: 12px; margin-bottom: 14px; }
-        .perfil-resenas .titulo-resenas { font-size: 0.75em; color: #aaa; font-weight: bold; margin-bottom: 10px; }
-        .resena-item { border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 8px; }
-        .resena-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .resena-item .r-martillos { font-size: 0.9em; }
-        .resena-item .r-texto { font-size: 0.8em; color: #555; margin-top: 3px; }
-        .apodo-art { cursor: pointer; }
-        .apodo-art:hover { text-decoration: underline; }
-
-        .modal-miperfil-box { background: white; border-radius: 20px; overflow: hidden; max-width: 340px; width: 93%; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
-        .miperfil-header { background: linear-gradient(135deg, #E04891, #E1B7ED); padding: 28px 20px 22px; text-align: center; }
-        .miperfil-avatar-wrap { position: relative; width: 80px; margin: 0 auto 10px; cursor: pointer; }
-        .miperfil-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid white; background: white; display: block; }
-        .miperfil-avatar-edit { position: absolute; bottom: 0; right: 0; background: var(--verde-lima); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.85em; border: 2px solid white; }
-        .miperfil-nombre { color: white; font-size: 1.1em; font-weight: bold; margin: 0 0 2px; }
-        .miperfil-email { color: rgba(255,255,255,0.8); font-size: 0.8em; margin: 0; }
-        .miperfil-body { padding: 18px; }
-        .miperfil-dato { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.88em; }
-        .miperfil-dato:last-of-type { border-bottom: none; }
-        .miperfil-dato .etiqueta { color: #aaa; font-size: 0.85em; }
-        .miperfil-dato .valor { color: #333; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -235,55 +197,6 @@
         </div>
     </div>
 
-    <!-- Modal mi perfil -->
-    <div class="modal-overlay" id="modal-miperfil">
-        <div class="modal-miperfil-box">
-            <div class="miperfil-header">
-                <div class="miperfil-avatar-wrap" onclick="document.getElementById('input-avatar').click()">
-                    <img id="miperfil-avatar-img" class="miperfil-avatar" src="logo.jpg" alt="avatar">
-                    <div class="miperfil-avatar-edit">📷</div>
-                </div>
-                <input type="file" id="input-avatar" accept="image/*" style="display:none;" onchange="subirAvatar(this)">
-                <p class="miperfil-nombre" id="miperfil-nombre">...</p>
-                <p class="miperfil-email" id="miperfil-email">...</p>
-            </div>
-            <div class="miperfil-body">
-                <div class="miperfil-dato"><span class="etiqueta">Apodo</span><span class="valor" id="miperfil-apodo">...</span></div>
-                <div class="miperfil-dato"><span class="etiqueta">DNI</span><span class="valor" id="miperfil-dni">...</span></div>
-                <div class="miperfil-dato"><span class="etiqueta">Teléfono</span><span class="valor" id="miperfil-telefono">...</span></div>
-                <div class="miperfil-dato"><span class="etiqueta">Dirección</span><span class="valor" id="miperfil-direccion">...</span></div>
-                <div id="miperfil-msg" style="text-align:center;font-size:0.82em;margin:8px 0;"></div>
-                <button class="btn-cerrar-modal" style="width:100%;margin-top:8px;" onclick="cerrarModalMiPerfil()">Cerrar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal perfil vendedor -->
-    <div class="modal-overlay" id="modal-perfil">
-        <div class="modal-perfil-box">
-            <div class="perfil-header">
-                <div class="perfil-avatar" id="perfil-avatar-container">👤</div>
-                <p class="perfil-apodo" id="perfil-apodo">...</p>
-                <p class="perfil-desde" id="perfil-desde">Miembro desde ...</p>
-            </div>
-            <div class="perfil-body">
-                <div class="perfil-estrellas">
-                    <div class="martillos" id="perfil-martillos">—</div>
-                    <div class="puntaje" id="perfil-puntaje">Sin calificaciones aún</div>
-                </div>
-                <div class="perfil-stats">
-                    <div class="perfil-stat ventas"><div class="num" id="perfil-ventas">0</div><div class="label">ventas</div></div>
-                    <div class="perfil-stat compras"><div class="num" id="perfil-compras">0</div><div class="label">compras</div></div>
-                </div>
-                <div class="perfil-resenas">
-                    <div class="titulo-resenas">ÚLTIMAS CALIFICACIONES</div>
-                    <div id="perfil-resenas-lista"><div style="text-align:center;color:#aaa;font-size:0.85em;">Sin reseñas todavía</div></div>
-                </div>
-                <button class="btn-cerrar-modal" style="width:100%;" onclick="cerrarModalPerfil()">Cerrar</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal preguntas -->
     <div class="modal-overlay" id="modal-preguntas">
         <div class="modal-preguntas-box">
@@ -313,10 +226,10 @@
             <h1>🛍️ quiendamas</h1>
         </div>
         <div class="barra-superior-der">
-            <span id="usuario-nombre" onclick="abrirModalMiPerfil()" style="cursor:pointer;" title="Ver mi perfil">Cargando...</span>
+            <span id="usuario-nombre">Cargando...</span>
             <div style="display:flex; gap:8px;">
                 <button id="btn-sesion" onclick="gestionarSesion()" class="btn-top primario">🔑 Ingresar</button>
-                <button onclick="window.location.href='publicar.html'" class="btn-top">➕ Publicar</button>
+                <button onclick="window.location.href='index.html'" class="btn-top">➕ Publicar</button>
             </div>
         </div>
     </div>
@@ -403,36 +316,26 @@
                 'Celulares','Computacion',
                 'Tech-ComponentesPC','Tech-Conectividad',
                 'Tech-Tablets','Tech-Accesorios','Tech-Consolas',
+                // valores legacy que ya existían en la BD
                 'AudioVideo',
             ],
 
             // ── VIVERO ────────────────────────────────────────────────
             'Vivero': [
                 'Vivero',
-                // Plantas exterior y sus subtipos
+                'Plantas-Aromaticas','Plantas-Arbustos','Plantas-Frutales','Plantas-Herbaceas',
+                'Plantas-Bulbosas','Plantas-Trepadoras','Plantas-Cubresuelos','Plantas-Nativas',
+                'Plantas-Interior','Plantas-Huerta','Plantas-Suculentas',
+                'Plantas-Coleccion',   // antes: Plantas-Raras
                 'Plantas-Exterior',
-                'Plantas-Gramineas','Plantas-Herbaceas','Plantas-Bulbosas',
-                'Plantas-Arbustos','Plantas-Cubresuelos','Plantas-Aromaticas',
-                'Plantas-Trepadoras','Plantas-Huerta','Plantas-Nativas',
-                'Plantas-Helechos',
-                'Arboles-Frutales','Arboles-Ornamentales',
-                // Otras plantas
-                'Plantas-Interior',
-                'Plantas-Suculentas',
-                'Plantas-Coleccion',
-                // Insumos y accesorios
+                'Arboles-Frutales','Arboles-Ornamentales',   // nueva cat Árboles
                 'Semillas',
+                'Fertilizantes-Organicos','Fertilizantes-Inorganicos',
                 'Macetas-Barro','Macetas-Plastico','Macetas-Ceramica',
                 'Riego',
-                'Sustratos',
-                'Fertilizantes-Organicos','Fertilizantes-Inorganicos',
-                'Herramientas-Jardin','Herramientas-Jardin-Manuales','Herramientas-Jardin-Maquinas',
-                'Indumentaria-Jardin',
-                'Decoracion',
-                // valores legacy (publicaciones viejas en la BD)
-                'Plantas-Frutales',
+                // valores legacy por si había publicaciones anteriores
                 'Riego-Goteo','Riego-Aspersores','Riego-Mangueras','Riego-Automatizacion','Riego-Bombas',
-                'Plantas-Raras',
+                'Decoracion',
             ],
 
             // ── MODA ──────────────────────────────────────────────────
@@ -448,6 +351,7 @@
                 'Construccion',
                 'Construccion-Herramientas','Construccion-Materiales',
                 'Construccion-Maquinas','Construccion-Pinturas','Construccion-Otros',
+                // valores legacy
                 'Herramientas',
             ],
 
@@ -477,35 +381,27 @@
 
             // ── VIVERO ────────────────────────────────────────────────
             'Vivero': [
-                // Plantas
-                { value: 'Plantas-Exterior',          label: '🌳 Plantas exterior' },
-                { value: 'Plantas-Interior',          label: '🏠 Plantas interior' },
-                { value: 'Plantas-Suculentas',        label: '🌵 Suculentas y cactus' },
-                { value: 'Plantas-Coleccion',         label: '⭐ De colección' },
-                // Subtipos exterior
-                { value: 'Plantas-Gramineas',         label: '🌾 Gramíneas' },
-                { value: 'Plantas-Herbaceas',         label: '🌿 Herbáceas' },
-                { value: 'Plantas-Bulbosas',          label: '🌷 Bulbosas' },
-                { value: 'Plantas-Arbustos',          label: '🌳 Arbustos' },
-                { value: 'Plantas-Cubresuelos',       label: '🍀 Cubresuelos' },
                 { value: 'Plantas-Aromaticas',        label: '🌸 Aromáticas' },
+                { value: 'Plantas-Arbustos',          label: '🌿 Arbustos' },
+                { value: 'Plantas-Frutales',          label: '🍎 Frutales' },
+                { value: 'Plantas-Herbaceas',         label: '🌾 Herbáceas' },
+                { value: 'Plantas-Bulbosas',          label: '🌷 Bulbosas' },
                 { value: 'Plantas-Trepadoras',        label: '🌱 Trepadoras' },
+                { value: 'Plantas-Cubresuelos',       label: '🍀 Cubresuelos' },
+                { value: 'Plantas-Nativas',           label: '🌳 Nativas' },
+                { value: 'Plantas-Interior',          label: '🏠 Interior' },
                 { value: 'Plantas-Huerta',            label: '🥕 Huerta' },
-                { value: 'Plantas-Nativas',           label: '🌲 Nativas' },
-                { value: 'Plantas-Helechos',          label: '🌿 Helechos' },
+                { value: 'Plantas-Suculentas',        label: '🌵 Suculentas' },
+                { value: 'Plantas-Coleccion',         label: '⭐ De colección' },
                 { value: 'Arboles-Frutales',          label: '🍊 Árboles frutales' },
                 { value: 'Arboles-Ornamentales',      label: '🌲 Árboles ornamentales' },
-                // Insumos
                 { value: 'Semillas',                  label: '🌱 Semillas' },
+                { value: 'Fertilizantes-Organicos',   label: '🌿 Fertiliz. Org.' },
+                { value: 'Fertilizantes-Inorganicos', label: '🧪 Fertiliz. Inorg.' },
                 { value: 'Macetas-Barro',             label: '🪴 Macetas barro' },
                 { value: 'Macetas-Plastico',          label: '🪣 Macetas plástico' },
                 { value: 'Macetas-Ceramica',          label: '🏺 Macetas cerámica' },
-                { value: 'Riego',                     label: '💧 Riego' },
-                { value: 'Sustratos',                 label: '🌍 Sustratos' },
-                { value: 'Fertilizantes-Organicos',   label: '🌿 Fertiliz. Org.' },
-                { value: 'Fertilizantes-Inorganicos', label: '🧪 Fertiliz. Inorg.' },
-                { value: 'Herramientas-Jardin',       label: '🛠️ Herramientas jardín' },
-                { value: 'Indumentaria-Jardin',       label: '👒 Indumentaria' },
+                { value: 'Riego',                     label: '💧 Materiales para riego' },
                 { value: 'Decoracion',                label: '✨ Decoración' },
             ],
 
@@ -561,42 +457,25 @@
             'Tech-Tablets':        'Tablets',
             'Tech-Accesorios':     'Accesorios tech',
             'Tech-Consolas':       'Consolas',
-            // Vivero — plantas
-            'Plantas-Exterior':        'Exterior',
-            'Plantas-Interior':        'Interior',
-            'Plantas-Suculentas':      'Suculentas',
-            'Plantas-Coleccion':       'De colección',
-            'Plantas-Raras':           'De colección',
-            'Plantas-Gramineas':       'Gramíneas',
-            'Plantas-Herbaceas':       'Herbáceas',
-            'Plantas-Bulbosas':        'Bulbosas',
-            'Plantas-Arbustos':        'Arbustos',
-            'Plantas-Cubresuelos':     'Cubresuelos',
-            'Plantas-Aromaticas':      'Aromáticas',
-            'Plantas-Trepadoras':      'Trepadoras',
-            'Plantas-Huerta':          'Huerta',
-            'Plantas-Nativas':         'Nativas',
-            'Plantas-Helechos':        'Helechos',
-            'Plantas-Frutales':        'Frutales',
-            'Arboles-Frutales':        'Árboles frutales',
-            'Arboles-Ornamentales':    'Árboles ornamentales',
-            // Vivero — insumos
-            'Semillas':                'Semillas',
-            'Macetas-Barro':           'Macetas barro',
-            'Macetas-Plastico':        'Macetas plástico',
-            'Macetas-Ceramica':        'Macetas cerámica',
-            'Riego':                   'Riego',
-            'Riego-Goteo':             'Riego', 'Riego-Aspersores': 'Riego',
-            'Riego-Mangueras':         'Riego', 'Riego-Automatizacion': 'Riego',
-            'Riego-Bombas':            'Riego',
-            'Sustratos':               'Sustratos',
-            'Fertilizantes-Organicos': 'Fertiliz. Org.',
-            'Fertilizantes-Inorganicos':'Fertiliz. Inorg.',
-            'Herramientas-Jardin':          'Herramientas jardín',
-            'Herramientas-Jardin-Manuales': 'Herramientas manuales',
-            'Herramientas-Jardin-Maquinas': 'Máquinas jardín',
-            'Indumentaria-Jardin':          'Indumentaria jardín',
-            'Decoracion':              'Decoración',
+            // Vivero subcats
+            'Plantas-Aromaticas': 'Aromáticas', 'Plantas-Arbustos': 'Arbustos',
+            'Plantas-Frutales': 'Frutales', 'Plantas-Herbaceas': 'Herbáceas',
+            'Plantas-Bulbosas': 'Bulbosas', 'Plantas-Trepadoras': 'Trepadoras',
+            'Plantas-Cubresuelos': 'Cubresuelos', 'Plantas-Nativas': 'Nativas',
+            'Plantas-Interior': 'Interior', 'Plantas-Huerta': 'Huerta',
+            'Plantas-Suculentas': 'Suculentas',
+            'Plantas-Coleccion': 'De colección',
+            'Plantas-Raras': 'De colección',     // legacy → mismo label
+            'Plantas-Exterior': 'Exterior',
+            'Arboles-Frutales': 'Árboles frutales',
+            'Arboles-Ornamentales': 'Árboles ornamentales',
+            'Fertilizantes-Organicos': 'Fertiliz. Org.', 'Fertilizantes-Inorganicos': 'Fertiliz. Inorg.',
+            'Macetas-Barro': 'Macetas barro', 'Macetas-Plastico': 'Macetas plástico',
+            'Macetas-Ceramica': 'Macetas cerámica',
+            'Riego': 'Materiales para riego',
+            'Riego-Goteo': 'Riego', 'Riego-Aspersores': 'Riego',
+            'Riego-Mangueras': 'Riego', 'Riego-Automatizacion': 'Riego',
+            'Riego-Bombas': 'Riego', 'Semillas': 'Semillas', 'Decoracion': 'Decoración',
             // Moda subcats
             'Moda-RopaInterior': 'Ropa interior', 'Moda-RopaDeportiva': 'Ropa deportiva',
             'Moda-Calzado': 'Calzado', 'Moda-ValijasMochilas': 'Valijas y mochilas',
@@ -738,8 +617,8 @@
 
             const esVentaDirecta = art.tipo_venta === 'venta';
             const yaTermino = !esVentaDirecta && art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
-            const soyGanador = !esVentaDirecta && yaTermino && !!usuarioActualId && art.ganador_id === usuarioActualId;
-            const soyComprador = esVentaDirecta && !!usuarioActualId && art.comprador_id === usuarioActualId;
+            const soyGanador = !esVentaDirecta && yaTermino && art.ganador_id === usuarioActualId;
+            const soyComprador = esVentaDirecta && art.comprador_id === usuarioActualId;
             const articuloVendido = esVentaDirecta && !!art.comprador_id;
             const soyVendedor = esMia;
             const pagoConfirmado = art.pago_confirmado;
@@ -819,18 +698,18 @@
                 <img src="${art.foto_url || ''}" class="foto-art" data-fotos-id="${art.id}" style="cursor:pointer;">
                 ${badgeFotos}
                 <div class="titulo">${art.Titulo}</div>
-                <div class="apodo-art" id="apodo-${art.id}" onclick="abrirModalPerfil('${art.perfil_id}')">👤 Cargando...</div>
+                <div class="apodo-art" id="apodo-${art.id}">👤 Cargando...</div>
                 <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
                 ${precioDisplay}
                 ${relojHtml}
                 ${boton}
                 <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">❓ Preguntas</button>
-                ${esMia && !art.comprador_id && (art.tipo_venta === 'venta' || (art.precio_actual || art.precio_base) === art.precio_base) ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ Eliminar publicación</button>` : ''}
-                <button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 Compartir</button>
+            ${esMia && !art.comprador_id && (art.tipo_venta === 'venta' || (art.precio_actual || art.precio_base) === art.precio_base) ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ Eliminar publicación</button>` : ''}
+<button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 Compartir</button>   
             `;
             lista.appendChild(div);
 
-            _supabase.from('perfiles').select('apodo, nombre_completo, created_at, avatar_url').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
+            _supabase.from('perfiles').select('apodo, nombre_completo').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
                 const apodoEl = document.getElementById('apodo-' + art.id);
                 if (apodoEl && perfil) apodoEl.innerText = '👤 ' + (perfil.apodo || perfil.nombre_completo || 'Usuario');
             });
@@ -849,8 +728,10 @@
             articuloPreguntaActual = articuloId;
             vendedorPreguntaActual = vendedorId;
             document.getElementById('texto-pregunta').value = '';
+
             const seccion = document.getElementById('seccion-nueva-pregunta');
             seccion.style.display = usuarioActualId === vendedorId ? 'none' : 'block';
+
             await cargarPreguntas(articuloId, vendedorId);
             document.getElementById('modal-preguntas').classList.add('activo');
         }
@@ -1129,112 +1010,23 @@
             if (e.target === this) cerrarCarrusel();
         });
 
-        async function eliminarPublicacion(id) {
-            const confirmar = confirm("¿Seguro que querés eliminar esta publicación?");
-            if (!confirmar) return;
-            const { error } = await _supabase.from('articulos').delete().eq('id', id);
-            if (error) { alert("Error al eliminar: " + error.message); return; }
-            filtrarMisPublicaciones();
-        }
+async function eliminarPublicacion(id) {
+    const confirmar = confirm("¿Seguro que querés eliminar esta publicación?");
+    if (!confirmar) return;
+    const { error } = await _supabase.from('articulos').delete().eq('id', id);
+    if (error) { alert("Error al eliminar: " + error.message); return; }
+    filtrarMisPublicaciones();
+}
 
-        // ── MI PERFIL ────────────────────────────────────────────────
-        async function abrirModalMiPerfil() {
-            if (!usuarioActualId) { window.location.href = 'login.html'; return; }
-            document.getElementById('modal-miperfil').classList.add('activo');
-            const { data: { user } } = await _supabase.auth.getUser();
-            const { data: perfil } = await _supabase.from('perfiles').select('*').eq('id', usuarioActualId).maybeSingle();
-            if (perfil) {
-                document.getElementById('miperfil-nombre').innerText = perfil.nombre_completo || 'Usuario';
-                document.getElementById('miperfil-apodo').innerText = perfil.apodo || '—';
-                document.getElementById('miperfil-dni').innerText = perfil.dni || '—';
-                document.getElementById('miperfil-telefono').innerText = perfil.telefono || '—';
-                document.getElementById('miperfil-direccion').innerText = perfil.direccion || '—';
-                if (perfil.avatar_url) document.getElementById('miperfil-avatar-img').src = perfil.avatar_url;
-            }
-            if (user) document.getElementById('miperfil-email').innerText = user.email || '';
-        }
-
-        async function subirAvatar(input) {
-            if (!input.files[0]) return;
-            const msg = document.getElementById('miperfil-msg');
-            msg.style.color = 'blue'; msg.innerText = '⏳ Subiendo foto...';
-            const archivo = input.files[0];
-            const nombre = `avatar_${usuarioActualId}_${Date.now()}`;
-            const { error: errorUp } = await _supabase.storage.from('fotos_subastas').upload(nombre, archivo, { upsert: true, contentType: archivo.type });
-            if (errorUp) { msg.style.color = 'red'; msg.innerText = '❌ Error: ' + errorUp.message; return; }
-            const { data: urlData } = _supabase.storage.from('fotos_subastas').getPublicUrl(nombre);
-            const avatarUrl = urlData.publicUrl;
-            const { error: errorUpdate } = await _supabase.from('perfiles').update({ avatar_url: avatarUrl }).eq('id', usuarioActualId);
-            if (errorUpdate) { msg.style.color = 'red'; msg.innerText = '❌ Error BD: ' + errorUpdate.message; return; }
-            document.getElementById('miperfil-avatar-img').src = avatarUrl;
-            msg.style.color = 'green'; msg.innerText = '✅ ¡Foto actualizada!';
-        }
-
-        function cerrarModalMiPerfil() {
-            document.getElementById('modal-miperfil').classList.remove('activo');
-            document.getElementById('miperfil-msg').innerText = '';
-        }
-
-        // ── PERFIL VENDEDOR ─────────────────────────────────────────
-        async function abrirModalPerfil(vendedorId) {
-            document.getElementById('perfil-avatar-container').innerHTML = '👤';
-            document.getElementById('perfil-apodo').innerText = '...';
-            document.getElementById('perfil-desde').innerText = 'Cargando...';
-            document.getElementById('perfil-ventas').innerText = '...';
-            document.getElementById('perfil-compras').innerText = '...';
-            document.getElementById('perfil-martillos').innerText = '—';
-            document.getElementById('perfil-puntaje').innerText = 'Cargando...';
-            document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Cargando...</div>';
-            document.getElementById('modal-perfil').classList.add('activo');
-
-            const { data: perfil } = await _supabase.from('perfiles').select('apodo, nombre_completo, created_at, avatar_url').eq('id', vendedorId).maybeSingle();
-            if (perfil) {
-                document.getElementById('perfil-apodo').innerText = perfil.apodo || perfil.nombre_completo || 'Usuario';
-                const fecha = new Date(perfil.created_at);
-                const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-                document.getElementById('perfil-desde').innerText = `Miembro desde ${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
-                const avatarEl = document.getElementById('perfil-avatar-container');
-                if (perfil.avatar_url) {
-                    avatarEl.innerHTML = `<img src="${perfil.avatar_url}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">`;
-                } else {
-                    avatarEl.innerHTML = '👤';
-                }
-            }
-
-            const { count: ventas } = await _supabase.from('articulos').select('id', { count: 'exact', head: true }).eq('perfil_id', vendedorId).not('comprador_id', 'is', null);
-            const { count: compras } = await _supabase.from('articulos').select('id', { count: 'exact', head: true }).eq('comprador_id', vendedorId);
-            document.getElementById('perfil-ventas').innerText = ventas || 0;
-            document.getElementById('perfil-compras').innerText = compras || 0;
-
-            const { data: cals } = await _supabase.from('calificaciones').select('*').eq('vendedor_id', vendedorId).order('created_at', { ascending: false }).limit(5);
-            if (cals && cals.length > 0) {
-                const promedio = (cals.reduce((s, c) => s + c.puntaje, 0) / cals.length).toFixed(1);
-                const martillos = '🔨'.repeat(Math.round(promedio)) + '🪓'.repeat(5 - Math.round(promedio));
-                document.getElementById('perfil-martillos').innerText = martillos;
-                document.getElementById('perfil-puntaje').innerText = `${promedio} · basado en ${cals.length} calificación${cals.length > 1 ? 'es' : ''}`;
-                document.getElementById('perfil-resenas-lista').innerHTML = cals.map(c => `
-                    <div class="resena-item">
-                        <div class="r-martillos">${'🔨'.repeat(c.puntaje)}</div>
-                        ${c.comentario ? `<div class="r-texto">"${c.comentario}"</div>` : ''}
-                    </div>`).join('');
-            } else {
-                document.getElementById('perfil-martillos').innerText = '—';
-                document.getElementById('perfil-puntaje').innerText = 'Sin calificaciones aún';
-                document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Sin reseñas todavía</div>';
-            }
-        }
-
-        function cerrarModalPerfil() {
-            document.getElementById('modal-perfil').classList.remove('activo');
-        }
-
+        revisarSesion();
+        cargarArticulos('Todos');
         revisarSesion();
         cargarArticulos('Todos');
     </script>
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
-        }
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/quiendamas/sw.js');
+      }
     </script>
 </body>
 
