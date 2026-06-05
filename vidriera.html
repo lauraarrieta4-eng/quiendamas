@@ -1018,6 +1018,15 @@ async function eliminarPublicacion(id) {
     filtrarMisPublicaciones();
 }
 
+        function compartir(titulo, id) {
+            const url = `https://quiendamasapp.com.ar/vidriera.html?art=${id}`;
+            if (navigator.share) {
+                navigator.share({ title: titulo, text: '¡Mirá este artículo en QuiénDaMás!', url: url });
+            } else {
+                navigator.clipboard.writeText(url).then(() => alert('✅ Link copiado al portapapeles'));
+            }
+        }
+
         revisarSesion();
         cargarArticulos('Todos');
         revisarSesion();
