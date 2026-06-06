@@ -52,7 +52,8 @@
         .btn-interaccion { background: white; border: 2px solid rgba(106,0,80,0.12); color: #6a0050; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.85em; cursor: pointer; flex: 1; max-width: 160px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: all 0.2s; }
         .btn-interaccion:hover { background: var(--rosa); color: white; border-color: var(--rosa); }
 
-        .barra-busqueda { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; background: var(--verde-suave); padding: 8px 10px; border-radius: 25px; position: relative; }
+        .busqueda-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .barra-busqueda { display: flex; align-items: center; gap: 8px; flex: 1; background: var(--verde-suave); padding: 8px 10px; border-radius: 25px; }
         .barra-busqueda input { flex: 1; padding: 9px 16px; border: none; border-radius: 20px; font-size: 0.95em; outline: none; background: white; }
         .barra-busqueda input:focus { box-shadow: 0 0 0 2px var(--rosa); }
         .barra-busqueda button:not(.btn-hamburguesa) { background: var(--rosa); color: white; border: none; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 0.9em; cursor: pointer; }
@@ -60,7 +61,7 @@
         /* ── MENÚ HAMBURGUESA ── */
         .btn-hamburguesa { background: white; color: #6a0050; border: 2px solid rgba(224,72,145,0.25); padding: 8px 12px; border-radius: 20px; font-size: 1.05em; cursor: pointer; flex-shrink: 0; transition: all 0.2s; line-height: 1; }
         .btn-hamburguesa:hover, .btn-hamburguesa.abierto { background: var(--rosa); color: white; border-color: var(--rosa); }
-        .menu-filtro-venta { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: white; border-radius: 16px; box-shadow: 0 8px 28px rgba(0,0,0,0.15); padding: 8px; z-index: 300; min-width: 200px; border: 1px solid rgba(0,0,0,0.07); animation: fadeDown 0.17s ease; }
+        .menu-filtro-venta { display: none; position: absolute; top: calc(100% + 6px); right: 0; background: white; border-radius: 16px; box-shadow: 0 8px 28px rgba(0,0,0,0.15); padding: 8px; z-index: 300; min-width: 200px; border: 1px solid rgba(0,0,0,0.07); animation: fadeDown 0.17s ease; }
         .menu-filtro-venta.abierto { display: block; }
         @keyframes fadeDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
         .menu-fv-titulo { font-size: 0.7em; font-weight: bold; color: #bbb; text-transform: uppercase; letter-spacing: 0.07em; padding: 4px 12px 6px; }
@@ -397,15 +398,19 @@
         <button class="btn-interaccion" onclick="filtrarMisOfertas()">💰 Mis Ofertas</button>
     </div>
 
-    <div class="barra-busqueda">
-        <input type="text" id="input-busqueda" placeholder="🔍 Buscar por título..." onkeydown="if(event.key==='Enter') buscarArticulos()">
-        <button onclick="buscarArticulos()">🔍<span class="btn-buscar-texto"> Buscar</span></button>
-        <button class="btn-hamburguesa" id="btn-hamburguesa" onclick="toggleMenuFiltro()" title="Filtrar por tipo">☰</button>
-        <div class="menu-filtro-venta" id="menu-filtro-venta">
-            <div class="menu-fv-titulo">Filtrar por tipo</div>
-            <button class="btn-fv activo" id="fv-todos"   onclick="cambiarFiltroVenta(null)">📦 Todos</button>
-            <button class="btn-fv"        id="fv-subasta" onclick="cambiarFiltroVenta('subasta')"><img src="martillo.png" style="width:15px;height:15px;"> Subastas</button>
-            <button class="btn-fv"        id="fv-venta"   onclick="cambiarFiltroVenta('venta')">💲 Venta directa</button>
+    <div class="busqueda-wrap">
+        <div class="barra-busqueda">
+            <input type="text" id="input-busqueda" placeholder="🔍 Buscar por título..." onkeydown="if(event.key==='Enter') buscarArticulos()">
+            <button onclick="buscarArticulos()">🔍<span class="btn-buscar-texto"> Buscar</span></button>
+        </div>
+        <div style="position:relative; flex-shrink:0;">
+            <button class="btn-hamburguesa" id="btn-hamburguesa" onclick="toggleMenuFiltro()" title="Filtrar por tipo">☰</button>
+            <div class="menu-filtro-venta" id="menu-filtro-venta">
+                <div class="menu-fv-titulo">Filtrar por tipo</div>
+                <button class="btn-fv activo" id="fv-todos"   onclick="cambiarFiltroVenta(null)">📦 Todos</button>
+                <button class="btn-fv"        id="fv-subasta" onclick="cambiarFiltroVenta('subasta')"><img src="martillo.png" style="width:15px;height:15px;"> Subastas</button>
+                <button class="btn-fv"        id="fv-venta"   onclick="cambiarFiltroVenta('venta')">💲 Venta directa</button>
+            </div>
         </div>
     </div>
 
