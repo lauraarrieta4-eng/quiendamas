@@ -210,10 +210,11 @@
         .miperfil-nombre { margin: 10px 0 2px; font-weight: 800; font-size: 1.1em; color: white; }
         .miperfil-email { margin: 0; font-size: 0.78em; color: rgba(255,255,255,0.8); }
         .miperfil-body { padding: 18px; }
-        .miperfil-dato { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.88em; }
+        .miperfil-dato { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.88em; gap: 10px; }
         .miperfil-dato:last-of-type { border-bottom: none; }
-        .miperfil-dato .etiqueta { color: #999; font-weight: 600; }
-        .miperfil-dato .valor { color: #333; font-weight: 700; text-align: right; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .miperfil-dato .etiqueta { color: #999; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+        .miperfil-input { flex: 1; border: 1.5px solid #e0e0e0; border-radius: 8px; padding: 6px 10px; font-size: 0.92em; color: #333; font-weight: 600; outline: none; background: #fafafa; text-align: right; }
+        .miperfil-input:focus { border-color: var(--rosa); background: white; box-shadow: 0 0 0 2px rgba(224,72,145,0.12); }
 
         /* ── MODAL PERFIL VENDEDOR ── */
         .modal-perfil-box { background: white; border-radius: 20px; overflow: hidden; max-width: 380px; width: 92%; max-height: 88vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.18); }
@@ -318,12 +319,15 @@
                 <p class="miperfil-email" id="miperfil-email">...</p>
             </div>
             <div class="miperfil-body">
-                <div class="miperfil-dato"><span class="etiqueta">Apodo</span><span class="valor" id="miperfil-apodo">...</span></div>
-                <div class="miperfil-dato"><span class="etiqueta">DNI</span><span class="valor" id="miperfil-dni">...</span></div>
-                <div class="miperfil-dato"><span class="etiqueta">Teléfono</span><span class="valor" id="miperfil-telefono">...</span></div>
-                <div class="miperfil-dato"><span class="etiqueta">Dirección</span><span class="valor" id="miperfil-direccion">...</span></div>
-                <div id="miperfil-msg" style="text-align:center;font-size:0.82em;margin:8px 0;"></div>
-                <button class="btn-cerrar-modal" style="width:100%;margin-top:8px;" onclick="cerrarModalMiPerfil()">Cerrar</button>
+                <div class="miperfil-dato"><span class="etiqueta">Apodo</span><input class="miperfil-input" id="miperfil-apodo" placeholder="Tu apodo público"></div>
+                <div class="miperfil-dato"><span class="etiqueta">DNI</span><input class="miperfil-input" id="miperfil-dni" placeholder="Número de DNI"></div>
+                <div class="miperfil-dato"><span class="etiqueta">Teléfono</span><input class="miperfil-input" id="miperfil-telefono" type="tel" placeholder="Ej: 11 1234-5678"></div>
+                <div class="miperfil-dato"><span class="etiqueta">Dirección</span><input class="miperfil-input" id="miperfil-direccion" placeholder="Tu dirección"></div>
+                <div id="miperfil-msg" style="text-align:center;font-size:0.82em;margin:8px 0;min-height:20px;"></div>
+                <div style="display:flex;gap:8px;margin-top:4px;">
+                    <button class="btn-cerrar-modal" style="flex:1;" onclick="cerrarModalMiPerfil()">Cerrar</button>
+                    <button class="btn-cerrar-modal" style="flex:1;background:var(--rosa);color:white;border-color:var(--rosa);" onclick="guardarPerfil()">💾 Guardar</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1373,17 +1377,33 @@ async function eliminarPublicacion(id) {
         async function abrirModalMiPerfil() {
             if (!usuarioActualId) { window.location.href = 'login.html'; return; }
             document.getElementById('modal-miperfil').classList.add('activo');
+            document.getElementById('miperfil-msg').innerText = '';
             const { data: { user } } = await _supabase.auth.getUser();
             const { data: perfil } = await _supabase.from('perfiles').select('*').eq('id', usuarioActualId).maybeSingle();
             if (perfil) {
                 document.getElementById('miperfil-nombre').innerText = perfil.nombre_completo || 'Usuario';
-                document.getElementById('miperfil-apodo').innerText = perfil.apodo || '—';
-                document.getElementById('miperfil-dni').innerText = perfil.dni || '—';
-                document.getElementById('miperfil-telefono').innerText = perfil.telefono || '—';
-                document.getElementById('miperfil-direccion').innerText = perfil.direccion || '—';
+                document.getElementById('miperfil-apodo').value = perfil.apodo || '';
+                document.getElementById('miperfil-dni').value = perfil.dni || '';
+                document.getElementById('miperfil-telefono').value = perfil.telefono || '';
+                document.getElementById('miperfil-direccion').value = perfil.direccion || '';
                 if (perfil.avatar_url) document.getElementById('miperfil-avatar-img').src = perfil.avatar_url;
             }
             if (user) document.getElementById('miperfil-email').innerText = user.email || '';
+        }
+
+        async function guardarPerfil() {
+            const msg = document.getElementById('miperfil-msg');
+            const apodo    = document.getElementById('miperfil-apodo').value.trim();
+            const dni      = document.getElementById('miperfil-dni').value.trim();
+            const telefono = document.getElementById('miperfil-telefono').value.trim();
+            const direccion = document.getElementById('miperfil-direccion').value.trim();
+            if (!apodo) { msg.style.color = 'red'; msg.innerText = '⚠️ El apodo no puede estar vacío.'; return; }
+            msg.style.color = 'blue'; msg.innerText = '⏳ Guardando...';
+            const { error } = await _supabase.from('perfiles').update({ apodo, dni, telefono, direccion }).eq('id', usuarioActualId);
+            if (error) { msg.style.color = 'red'; msg.innerText = '❌ Error: ' + error.message; return; }
+            msg.style.color = 'green'; msg.innerText = '✅ ¡Datos actualizados!';
+            // actualizar apodo en el header
+            document.getElementById('usuario-nombre').innerText = apodo;
         }
         async function subirAvatar(input) {
             if (!input.files[0]) return;
