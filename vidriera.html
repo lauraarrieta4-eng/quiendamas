@@ -52,13 +52,13 @@
         .btn-interaccion { background: white; border: 2px solid rgba(106,0,80,0.12); color: #6a0050; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.85em; cursor: pointer; flex: 1; max-width: 160px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: all 0.2s; }
         .btn-interaccion:hover { background: var(--rosa); color: white; border-color: var(--rosa); }
 
-        .barra-busqueda { display: flex; gap: 8px; margin-bottom: 12px; background: var(--verde-suave); padding: 8px 10px; border-radius: 25px; position: relative; }
+        .barra-busqueda { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; background: var(--verde-suave); padding: 8px 10px; border-radius: 25px; position: relative; }
         .barra-busqueda input { flex: 1; padding: 9px 16px; border: none; border-radius: 20px; font-size: 0.95em; outline: none; background: white; }
         .barra-busqueda input:focus { box-shadow: 0 0 0 2px var(--rosa); }
-        .barra-busqueda button { background: var(--rosa); color: white; border: none; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 0.9em; cursor: pointer; }
+        .barra-busqueda button:not(.btn-hamburguesa) { background: var(--rosa); color: white; border: none; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 0.9em; cursor: pointer; }
 
         /* ── MENÚ HAMBURGUESA ── */
-        .btn-hamburguesa { background: white; color: #6a0050; border: 2px solid rgba(224,72,145,0.25); padding: 9px 13px; border-radius: 20px; font-size: 1.05em; cursor: pointer; flex-shrink: 0; transition: all 0.2s; line-height: 1; }
+        .btn-hamburguesa { background: white; color: #6a0050; border: 2px solid rgba(224,72,145,0.25); padding: 8px 12px; border-radius: 20px; font-size: 1.05em; cursor: pointer; flex-shrink: 0; transition: all 0.2s; line-height: 1; }
         .btn-hamburguesa:hover, .btn-hamburguesa.abierto { background: var(--rosa); color: white; border-color: var(--rosa); }
         .menu-filtro-venta { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: white; border-radius: 16px; box-shadow: 0 8px 28px rgba(0,0,0,0.15); padding: 8px; z-index: 300; min-width: 200px; border: 1px solid rgba(0,0,0,0.07); animation: fadeDown 0.17s ease; }
         .menu-filtro-venta.abierto { display: block; }
@@ -351,15 +351,15 @@
     <!-- Modal calificación -->
     <div class="modal-overlay" id="modal-calificacion">
         <div class="modal-cal-box">
-            <img src="mazo.svg" style="width:58px;height:58px;display:block;margin:0 auto 6px;">
+            <img src="martillo.png" style="width:58px;height:58px;display:block;margin:0 auto 6px;">
             <h2 style="color:var(--rosa);margin-top:6px;">Calificar al vendedor</h2>
             <p style="color:#666;font-size:0.88em;margin-top:0;">¿Cómo fue tu experiencia de compra?</p>
             <div class="martillo-selector">
-                <button class="martillo-btn" onclick="seleccionarMartillo(1)"><img src="mazo.svg" alt="1"></button>
-                <button class="martillo-btn" onclick="seleccionarMartillo(2)"><img src="mazo.svg" alt="2"></button>
-                <button class="martillo-btn" onclick="seleccionarMartillo(3)"><img src="mazo.svg" alt="3"></button>
-                <button class="martillo-btn" onclick="seleccionarMartillo(4)"><img src="mazo.svg" alt="4"></button>
-                <button class="martillo-btn" onclick="seleccionarMartillo(5)"><img src="mazo.svg" alt="5"></button>
+                <button class="martillo-btn" onclick="seleccionarMartillo(1)"><img src="martillo.png" alt="1"></button>
+                <button class="martillo-btn" onclick="seleccionarMartillo(2)"><img src="martillo.png" alt="2"></button>
+                <button class="martillo-btn" onclick="seleccionarMartillo(3)"><img src="martillo.png" alt="3"></button>
+                <button class="martillo-btn" onclick="seleccionarMartillo(4)"><img src="martillo.png" alt="4"></button>
+                <button class="martillo-btn" onclick="seleccionarMartillo(5)"><img src="martillo.png" alt="5"></button>
             </div>
             <div class="cal-label" id="cal-label"></div>
             <textarea class="input-pregunta" id="cal-comentario" rows="3" placeholder="Comentario opcional... ¿Cómo fue la entrega, el producto, el trato?"></textarea>
@@ -381,7 +381,7 @@
     <div class="barra-superior">
         <div class="barra-superior-izq">
             <img src="logo.jpg" alt="Logo Quiéndamas">
-            <h1><img src="mazo.svg" style="width:30px;height:30px;vertical-align:middle;margin-right:4px;"> quiendamas</h1>
+            <h1><img src="martillo.png" style="width:30px;height:30px;vertical-align:middle;margin-right:4px;"> quiendamas</h1>
         </div>
         <div class="barra-superior-der">
             <span id="usuario-nombre" onclick="abrirModalMiPerfil()" style="cursor:pointer;" title="Ver mi perfil">Cargando...</span>
@@ -404,7 +404,7 @@
         <div class="menu-filtro-venta" id="menu-filtro-venta">
             <div class="menu-fv-titulo">Filtrar por tipo</div>
             <button class="btn-fv activo" id="fv-todos"   onclick="cambiarFiltroVenta(null)">📦 Todos</button>
-            <button class="btn-fv"        id="fv-subasta" onclick="cambiarFiltroVenta('subasta')"><img src="mazo.svg" style="width:15px;height:15px;"> Subastas</button>
+            <button class="btn-fv"        id="fv-subasta" onclick="cambiarFiltroVenta('subasta')"><img src="martillo.png" style="width:15px;height:15px;"> Subastas</button>
             <button class="btn-fv"        id="fv-venta"   onclick="cambiarFiltroVenta('venta')">💲 Venta directa</button>
         </div>
     </div>
@@ -919,7 +919,7 @@
 
             // Botón calificar: solo para el comprador/ganador, después de pago confirmado
             if (pagoConfirmado && usuarioActualId && (soyComprador || soyGanador)) {
-                btnCalificar = `<button class="btn-calificar" id="btn-cal-${art.id}" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')"><img src="mazo.svg" style="width:16px;height:16px;"> Calificar al vendedor</button>`;
+                btnCalificar = `<button class="btn-calificar" id="btn-cal-${art.id}" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')"><img src="martillo.png" style="width:16px;height:16px;"> Calificar al vendedor</button>`;
             }
 
             const todasFotos = [art.foto_url].concat(art.fotos_extra || []).filter(Boolean);
@@ -1411,13 +1411,13 @@ async function eliminarPublicacion(id) {
             if (cals && cals.length > 0) {
                 const promedio = (cals.reduce((s, c) => s + c.puntaje, 0) / cals.length).toFixed(1);
                 const n = Math.round(promedio);
-                const mazoFull  = `<img src="mazo.svg" style="width:22px;height:22px;display:inline-block;">`;
-                const mazoEmpty = `<img src="mazo.svg" style="width:22px;height:22px;display:inline-block;opacity:0.15;filter:grayscale(1)">`;
+                const mazoFull  = `<img src="martillo.png" style="width:22px;height:22px;display:inline-block;">`;
+                const mazoEmpty = `<img src="martillo.png" style="width:22px;height:22px;display:inline-block;opacity:0.15;filter:grayscale(1)">`;
                 document.getElementById('perfil-martillos').innerHTML = mazoFull.repeat(n) + mazoEmpty.repeat(5 - n);
                 document.getElementById('perfil-puntaje').innerText = `${promedio} · basado en ${cals.length} calificación${cals.length > 1 ? 'es' : ''}`;
                 document.getElementById('perfil-resenas-lista').innerHTML = cals.map(c => `
                     <div class="resena-item">
-                        <div class="r-martillos">${`<img src="mazo.svg" style="width:16px;height:16px;display:inline-block;">`.repeat(c.puntaje)}</div>
+                        <div class="r-martillos">${`<img src="martillo.png" style="width:16px;height:16px;display:inline-block;">`.repeat(c.puntaje)}</div>
                         ${c.comentario ? `<div class="r-texto">"${escapeHtml(c.comentario)}"</div>` : ''}
                     </div>`).join('');
             } else {
