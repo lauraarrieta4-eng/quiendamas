@@ -26,7 +26,7 @@
         .barra-superior { display: flex; align-items: center; justify-content: space-between; background: #43a047; padding: 10px 15px; border-radius: 16px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(67,160,71,0.35); color: white; flex-wrap: wrap; gap: 10px; }
         .barra-superior-izq { display: flex; align-items: center; gap: 12px; }
         .barra-superior-izq img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.15); background: white; }
-        .barra-superior-izq h1 { margin: 0; font-size: 1.25em; font-weight: 900; letter-spacing: 0.5px; color: white; }
+        .barra-superior-izq h1 { margin: 0; font-size: 2.2em; font-weight: 900; letter-spacing: -1px; color: white; text-shadow: 0 2px 6px rgba(0,0,0,0.18); }
         .barra-superior-der { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .barra-superior-der span { font-size: 0.85em; font-weight: bold; color: #e8f5e9; }
         .btn-top { background: white; color: var(--rosa); border: 2px solid rgba(224,72,145,0.2); padding: 7px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85em; box-shadow: 0 2px 8px rgba(0,0,0,0.07); transition: all 0.2s; }
@@ -34,7 +34,7 @@
         .btn-top:hover { transform: scale(1.05); box-shadow: 0 4px 14px rgba(0,0,0,0.13); }
         @media (max-width: 480px) {
             .barra-superior { padding: 10px; }
-            .barra-superior-izq h1 { font-size: 1.1em; }
+            .barra-superior-izq h1 { font-size: 1.75em; }
             .barra-superior-izq img { width: 38px; height: 38px; }
             .btn-top { padding: 6px 12px; font-size: 0.8em; }
             .barra-superior-der span { width: 100%; text-align: right; margin-bottom: 2px; }
@@ -47,14 +47,15 @@
             .menu-filtro-venta { right: 0; left: auto; min-width: 170px; }
         }
 
-        .btn-filtro { background: white; border: 2px solid var(--rosa); color: var(--rosa); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85em; white-space: nowrap; transition: all 0.2s; }
-        .btn-filtro:hover { background: var(--rosa); color: white; }
+        .btn-filtro { background: white; border: 2px solid #43a047; color: #2e7d32; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85em; white-space: nowrap; transition: all 0.2s; }
+        .btn-filtro:hover { background: #43a047; color: white; }
+        .btn-filtro.activo { background: #43a047; color: white; }
 
         .barra-interacciones { display: flex; justify-content: center; gap: 10px; margin-bottom: 12px; padding: 8px; background: var(--lila); border-radius: 12px; }
         .btn-interaccion { background: white; border: 2px solid rgba(106,0,80,0.12); color: #6a0050; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.85em; cursor: pointer; flex: 1; max-width: 160px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: all 0.2s; }
         .btn-interaccion:hover { background: var(--rosa); color: white; border-color: var(--rosa); }
 
-        .busqueda-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .busqueda-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; position: relative; }
         .barra-busqueda { display: flex; align-items: center; gap: 8px; flex: 1; background: var(--verde-suave); padding: 8px 10px; border-radius: 25px; }
         .barra-busqueda input { flex: 1; padding: 9px 16px; border: none; border-radius: 20px; font-size: 0.95em; outline: none; background: white; }
         .barra-busqueda input:focus { box-shadow: 0 0 0 2px var(--rosa); }
@@ -425,14 +426,12 @@
             <input type="text" id="input-busqueda" placeholder="🔍 Buscar por título..." onkeydown="if(event.key==='Enter') buscarArticulos()">
             <button onclick="buscarArticulos()">🔍<span class="btn-buscar-texto"> Buscar</span></button>
         </div>
-        <div style="position:relative; flex-shrink:0;">
-            <button class="btn-hamburguesa" id="btn-hamburguesa" onclick="toggleMenuFiltro()" title="Filtrar por tipo">☰</button>
-            <div class="menu-filtro-venta" id="menu-filtro-venta">
-                <div class="menu-fv-titulo">Filtrar por tipo</div>
-                <button class="btn-fv activo" id="fv-todos"   onclick="cambiarFiltroVenta(null)">📦 Todos</button>
-                <button class="btn-fv"        id="fv-subasta" onclick="cambiarFiltroVenta('subasta')"><img src="martillo.png" style="width:15px;height:15px;"> Subastas</button>
-                <button class="btn-fv"        id="fv-venta"   onclick="cambiarFiltroVenta('venta')">💲 Venta directa</button>
-            </div>
+        <button class="btn-hamburguesa" id="btn-hamburguesa" onclick="toggleMenuFiltro()" title="Filtrar por tipo">☰</button>
+        <div class="menu-filtro-venta" id="menu-filtro-venta">
+            <div class="menu-fv-titulo">Filtrar por tipo</div>
+            <button class="btn-fv activo" id="fv-todos"   onclick="cambiarFiltroVenta(null)">📦 Todos</button>
+            <button class="btn-fv"        id="fv-subasta" onclick="cambiarFiltroVenta('subasta')"><img src="martillo.png" style="width:15px;height:15px;"> Subastas</button>
+            <button class="btn-fv"        id="fv-venta"   onclick="cambiarFiltroVenta('venta')">💲 Venta directa</button>
         </div>
     </div>
 
