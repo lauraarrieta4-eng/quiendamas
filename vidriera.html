@@ -29,9 +29,9 @@
         .barra-superior-izq h1 { margin: 0; font-size: 1.25em; font-weight: 900; letter-spacing: 0.5px; color: white; }
         .barra-superior-der { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .barra-superior-der span { font-size: 0.85em; font-weight: bold; color: #e8f5e9; }
-        .btn-top { background: white; color: var(--rosa); border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85em; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s, background 0.2s; }
-        .btn-top.primario { background: var(--rosa); color: white; }
-        .btn-top:hover { transform: scale(1.05); }
+        .btn-top { background: white; color: var(--rosa); border: 2px solid rgba(224,72,145,0.2); padding: 7px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85em; box-shadow: 0 2px 8px rgba(0,0,0,0.07); transition: all 0.2s; }
+        .btn-top.primario { background: var(--rosa); color: white; border-color: var(--rosa); }
+        .btn-top:hover { transform: scale(1.05); box-shadow: 0 4px 14px rgba(0,0,0,0.13); }
         @media (max-width: 480px) {
             .barra-superior { padding: 10px; }
             .barra-superior-izq h1 { font-size: 1.1em; }
@@ -45,19 +45,25 @@
         .btn-filtro:hover { background: var(--rosa); color: white; }
 
         .barra-interacciones { display: flex; justify-content: center; gap: 10px; margin-bottom: 12px; padding: 8px; background: var(--lila); border-radius: 12px; }
-        .btn-interaccion { background: white; border: none; color: #6a0050; padding: 8px 14px; border-radius: 10px; font-weight: bold; font-size: 0.85em; cursor: pointer; flex: 1; max-width: 150px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.08); transition: all 0.2s; }
-        .btn-interaccion:hover { background: var(--rosa); color: white; }
+        .btn-interaccion { background: white; border: 2px solid rgba(106,0,80,0.12); color: #6a0050; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.85em; cursor: pointer; flex: 1; max-width: 160px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: all 0.2s; }
+        .btn-interaccion:hover { background: var(--rosa); color: white; border-color: var(--rosa); }
 
-        .barra-busqueda { display: flex; gap: 8px; margin-bottom: 12px; background: var(--verde-suave); padding: 8px 10px; border-radius: 25px; }
+        .barra-busqueda { display: flex; gap: 8px; margin-bottom: 12px; background: var(--verde-suave); padding: 8px 10px; border-radius: 25px; position: relative; }
         .barra-busqueda input { flex: 1; padding: 9px 16px; border: none; border-radius: 20px; font-size: 0.95em; outline: none; background: white; }
         .barra-busqueda input:focus { box-shadow: 0 0 0 2px var(--rosa); }
         .barra-busqueda button { background: var(--rosa); color: white; border: none; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 0.9em; cursor: pointer; }
 
-        .filtro-venta { display: flex; gap: 8px; margin-bottom: 10px; justify-content: center; flex-wrap: wrap; }
-        .btn-fv { background: white; border: 2px solid #ddd; color: #666; padding: 7px 16px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.82em; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
-        .btn-fv:hover { border-color: var(--rosa); color: var(--rosa); }
-        .btn-fv.activo { border-color: var(--rosa); color: var(--rosa); background: #fce4ec; }
-        .btn-fv.activo-verde { border-color: #43a047; color: #2e7d32; background: #e8f5e9; }
+        /* ── MENÚ HAMBURGUESA ── */
+        .btn-hamburguesa { background: white; color: #6a0050; border: 2px solid rgba(224,72,145,0.25); padding: 9px 13px; border-radius: 20px; font-size: 1.05em; cursor: pointer; flex-shrink: 0; transition: all 0.2s; line-height: 1; }
+        .btn-hamburguesa:hover, .btn-hamburguesa.abierto { background: var(--rosa); color: white; border-color: var(--rosa); }
+        .menu-filtro-venta { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: white; border-radius: 16px; box-shadow: 0 8px 28px rgba(0,0,0,0.15); padding: 8px; z-index: 300; min-width: 200px; border: 1px solid rgba(0,0,0,0.07); animation: fadeDown 0.17s ease; }
+        .menu-filtro-venta.abierto { display: block; }
+        @keyframes fadeDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+        .menu-fv-titulo { font-size: 0.7em; font-weight: bold; color: #bbb; text-transform: uppercase; letter-spacing: 0.07em; padding: 4px 12px 6px; }
+        .btn-fv { display: flex; align-items: center; gap: 8px; width: 100%; background: none; border: none; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.88em; color: #555; transition: all 0.15s; text-align: left; box-sizing: border-box; }
+        .btn-fv:hover { background: #f8f0f6; color: var(--rosa); }
+        .btn-fv.activo { background: #fce4ec; color: var(--rosa); }
+        .btn-fv.activo-verde { background: #e8f5e9; color: #2e7d32; }
         .selector-tipo { display: flex; gap: 10px; margin-bottom: 10px; justify-content: center; }
         .btn-tipo { flex: 1; max-width: 180px; padding: 10px; border: 2px solid var(--rosa); border-radius: 25px; background: white; color: var(--rosa); font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; transition: all 0.2s; }
         .btn-tipo.activo { background: var(--rosa); color: white; border-color: transparent; box-shadow: 0 3px 10px rgba(224,72,145,0.35); }
@@ -104,16 +110,35 @@
         .descripcion { font-size: 0.85em; color: #666; margin: 8px 0; min-height: 38px; line-height: 1.4; }
         .precio { font-size: 1.6em; color: var(--rosa); margin: 8px 0; font-weight: bold; }
         .reloj { font-size: 0.85em; font-weight: bold; color: #555; background: var(--verde-suave); padding: 8px; border-radius: 8px; text-align: center; margin-bottom: 10px; }
-        .btn-oferta { background: var(--verde-lima); color: #333; border: none; padding: 12px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.95rem; transition: background 0.2s; }
-        .btn-oferta:hover { background: var(--rosa); color: white; }
-        .btn-comprar { background: linear-gradient(135deg, #43a047, #2e7d32); color: white; border: none; padding: 13px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: all 0.2s; box-shadow: 0 3px 10px rgba(67,160,71,0.3); }
+        /* ── BOTONES DE TARJETA — sistema unificado ── */
+        /* Base compartida */
+        .btn-oferta, .btn-comprar, .btn-vendedor, .btn-ganador,
+        .btn-compartir, .btn-preguntar, .btn-eliminar, .btn-calificar {
+            width: 100%; border-radius: 11px; cursor: pointer; font-weight: bold;
+            margin-top: 7px; transition: all 0.2s; border: none;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        /* Primarios — fondo lleno */
+        .btn-oferta  { background: var(--verde-lima); color: #333; padding: 12px; font-size: 0.9em; }
+        .btn-oferta:hover  { background: #a8d040; }
+        .btn-comprar { background: linear-gradient(135deg, #43a047, #2e7d32); color: white; padding: 13px; font-size: 0.95em; box-shadow: 0 3px 10px rgba(67,160,71,0.28); }
         .btn-comprar:hover { background: linear-gradient(135deg, #2e7d32, #1b5e20); transform: scale(1.02); }
-        .btn-compartir { background: white; border: 2px solid var(--lila); color: #6a0050; padding: 8px; border-radius: 10px; cursor: pointer; font-size: 0.8em; font-weight: bold; width: 100%; margin-top: 6px; transition: all 0.2s; }
+        .btn-vendedor { background: var(--rosa); color: white; padding: 13px; font-size: 0.95em; box-shadow: 0 3px 10px rgba(224,72,145,0.25); }
+        .btn-vendedor:hover { opacity: 0.88; }
+        .btn-ganador  { background: linear-gradient(135deg, #f9a825, #f57f17); color: white; padding: 13px; font-size: 0.95em; }
+        .btn-ganador:hover { opacity: 0.88; }
+        /* Secundarios — outline */
+        .btn-compartir, .btn-preguntar, .btn-eliminar, .btn-calificar {
+            background: white; padding: 10px; font-size: 0.83em; border-width: 2px; border-style: solid;
+        }
+        .btn-compartir { border-color: var(--lila);  color: #6a0050; }
         .btn-compartir:hover { background: var(--lila); }
-        .btn-preguntar { background: white; border: 2px solid var(--rosa); color: var(--rosa); padding: 8px; border-radius: 10px; cursor: pointer; font-size: 0.8em; font-weight: bold; width: 100%; margin-top: 6px; transition: all 0.2s; }
+        .btn-preguntar { border-color: var(--rosa);  color: var(--rosa); }
         .btn-preguntar:hover { background: var(--rosa); color: white; }
-.btn-eliminar { background: white; border: 2px solid #e53935; color: #e53935; padding: 8px; border-radius: 10px; cursor: pointer; font-size: 0.8em; font-weight: bold; width: 100%; margin-top: 6px; transition: all 0.2s; }
-.btn-eliminar:hover { background: #e53935; color: white; }
+        .btn-eliminar  { border-color: #e53935; color: #e53935; }
+        .btn-eliminar:hover  { background: #e53935; color: white; }
+        .btn-calificar { border-color: #43a047; color: #2e7d32; }
+        .btn-calificar:hover { background: #e8f5e9; }
         .sin-resultados { text-align: center; width: 100%; color: #999; padding: 30px; font-size: 1em; }
         .badge-fotos { position: absolute; top: 10px; left: 10px; background: var(--rosa); color: white; font-size: 0.72em; padding: 3px 8px; border-radius: 10px; pointer-events: none; }
 
@@ -194,7 +219,7 @@
         /* ── MODAL CALIFICACIÓN ── */
         .modal-cal-box { background: white; border-radius: 20px; padding: 28px; max-width: 360px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.18); text-align: center; border-top: 5px solid var(--verde-lima); }
         .martillo-selector { display: flex; justify-content: center; gap: 10px; margin: 16px 0 6px; }
-        .martillo-btn { background: none; border: none; cursor: pointer; opacity: 0.18; transition: all 0.15s; padding: 4px; border-radius: 8px; }
+        .martillo-btn { background: none; border: none; cursor: pointer; opacity: 0.32; transition: all 0.15s; padding: 4px; border-radius: 8px; }
         .martillo-btn img { width: 42px; height: 42px; display: block; }
         .martillo-btn.activo { opacity: 1; transform: scale(1.15); filter: drop-shadow(0 2px 5px rgba(0,0,0,0.25)); }
         .martillo-btn:hover { opacity: 0.7; }
@@ -371,12 +396,13 @@
     <div class="barra-busqueda">
         <input type="text" id="input-busqueda" placeholder="🔍 Buscar por título..." onkeydown="if(event.key==='Enter') buscarArticulos()">
         <button onclick="buscarArticulos()">Buscar</button>
-    </div>
-
-    <div class="filtro-venta" id="filtro-venta">
-        <button class="btn-fv activo" id="fv-todos"    onclick="cambiarFiltroVenta(null)">📦 Todos</button>
-        <button class="btn-fv"        id="fv-subasta"  onclick="cambiarFiltroVenta('subasta')"><img src="mazo.svg" style="width:16px;height:16px;"> Subastas</button>
-        <button class="btn-fv"        id="fv-venta"    onclick="cambiarFiltroVenta('venta')">💲 Venta directa</button>
+        <button class="btn-hamburguesa" id="btn-hamburguesa" onclick="toggleMenuFiltro()" title="Filtrar por tipo">☰</button>
+        <div class="menu-filtro-venta" id="menu-filtro-venta">
+            <div class="menu-fv-titulo">Filtrar por tipo</div>
+            <button class="btn-fv activo" id="fv-todos"   onclick="cambiarFiltroVenta(null)">📦 Todos</button>
+            <button class="btn-fv"        id="fv-subasta" onclick="cambiarFiltroVenta('subasta')"><img src="mazo.svg" style="width:15px;height:15px;"> Subastas</button>
+            <button class="btn-fv"        id="fv-venta"   onclick="cambiarFiltroVenta('venta')">💲 Venta directa</button>
+        </div>
     </div>
 
     <div class="selector-tipo">
@@ -440,11 +466,30 @@
         let categoriaActual = 'Todos';
         let filtroVenta = null; // null = todos, 'subasta', 'venta'
 
+        function toggleMenuFiltro() {
+            const menu = document.getElementById('menu-filtro-venta');
+            const btn  = document.getElementById('btn-hamburguesa');
+            const abierto = menu.classList.toggle('abierto');
+            btn.classList.toggle('abierto', abierto);
+        }
+
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('menu-filtro-venta');
+            const btn  = document.getElementById('btn-hamburguesa');
+            if (menu && !menu.contains(e.target) && e.target !== btn) {
+                menu.classList.remove('abierto');
+                btn.classList.remove('abierto');
+            }
+        });
+
         function cambiarFiltroVenta(tipo) {
             filtroVenta = tipo;
-            document.getElementById('fv-todos').className   = 'btn-fv' + (tipo === null     ? ' activo' : '');
+            document.getElementById('fv-todos').className   = 'btn-fv' + (tipo === null      ? ' activo' : '');
             document.getElementById('fv-subasta').className = 'btn-fv' + (tipo === 'subasta' ? ' activo' : '');
             document.getElementById('fv-venta').className   = 'btn-fv' + (tipo === 'venta'   ? ' activo-verde' : '');
+            // cerrar el menú al seleccionar
+            document.getElementById('menu-filtro-venta').classList.remove('abierto');
+            document.getElementById('btn-hamburguesa').classList.remove('abierto');
             cargarArticulos(categoriaActual);
         }
         let articuloPreguntaActual = null;
@@ -699,8 +744,8 @@
             document.getElementById('fv-todos').className   = 'btn-fv activo';
             document.getElementById('fv-subasta').className = 'btn-fv';
             document.getElementById('fv-venta').className   = 'btn-fv';
-            // El filtro de venta solo aplica a productos
-            document.getElementById('filtro-venta').style.display = tipo === 'productos' ? 'flex' : 'none';
+            // El filtro de venta solo aplica a productos (botón hamburguesa)
+            document.getElementById('btn-hamburguesa').style.display = tipo === 'productos' ? '' : 'none';
             document.getElementById('btn-productos').classList.toggle('activo', tipo === 'productos');
             document.getElementById('btn-servicios').classList.toggle('activo', tipo === 'servicios');
             const wrapperProd = document.getElementById('wrapper-productos');
@@ -870,7 +915,7 @@
 
             // Botón calificar: solo para el comprador/ganador, después de pago confirmado
             if (pagoConfirmado && usuarioActualId && (soyComprador || soyGanador)) {
-                btnCalificar = `<button class="btn-preguntar" style="background:var(--verde-suave);color:#333;border-color:var(--verde-lima);display:flex;align-items:center;justify-content:center;gap:6px;" id="btn-cal-${art.id}" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')"><img src="mazo.svg" style="width:18px;height:18px;"> Calificar al vendedor</button>`;
+                btnCalificar = `<button class="btn-calificar" id="btn-cal-${art.id}" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')"><img src="mazo.svg" style="width:16px;height:16px;"> Calificar al vendedor</button>`;
             }
 
             const todasFotos = [art.foto_url].concat(art.fotos_extra || []).filter(Boolean);
