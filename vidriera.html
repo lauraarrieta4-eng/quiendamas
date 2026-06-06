@@ -73,10 +73,8 @@
         .filtros-arrow.der { right: 2px; }
         @media (hover: hover) { .filtros-arrow { display: flex; } }
 
-        .contenedor { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        @media (min-width: 600px) { .contenedor { grid-template-columns: repeat(3, 1fr); } }
-        @media (min-width: 900px) { .contenedor { grid-template-columns: repeat(4, 1fr); } }
-        .tarjeta { background: white; border-radius: 12px; padding: 8px; width: 100%; max-width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; border-top: 3px solid var(--verde-lima); transition: transform 0.2s, box-shadow 0.2s; }
+        .contenedor { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; justify-items: center; }
+        .tarjeta { background: white; border-radius: 16px; padding: 15px; width: 90%; max-width: 320px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; border-top: 4px solid var(--verde-lima); transition: transform 0.2s, box-shadow 0.2s; }
         .tarjeta:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.13); }
         .tag-cat { position: absolute; top: 10px; right: 10px; background: var(--lila); font-size: 0.7em; padding: 3px 10px; border-radius: 12px; color: #6a0050; font-weight: bold; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .tag-tipo { position: absolute; top: 34px; right: 10px; font-size: 0.65em; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
@@ -84,12 +82,12 @@
         .tag-tipo.venta { background: #e8f5e9; color: #2e7d32; }
         .tag-tipo.vendido { background: #eeeeee; color: #757575; }
 
-        .foto-art { width: 100%; height: 130px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
+        .foto-art { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; cursor: pointer; }
         .foto-art:hover { opacity: 0.92; }
-        .titulo { font-size: 0.85em; font-weight: bold; color: #222; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        .apodo-art { font-size: 0.7em; color: var(--rosa); margin-top: 2px; margin-bottom: 3px; font-weight: 600; cursor: pointer; }
-        .descripcion { display: none; }
-        .precio { font-size: 1.2em; color: var(--rosa); margin: 4px 0; font-weight: bold; }
+        .titulo { font-size: 1.1em; font-weight: bold; color: #222; }
+        .apodo-art { font-size: 0.78em; color: var(--rosa); margin-top: 2px; margin-bottom: 5px; font-weight: 600; }
+        .descripcion { font-size: 0.85em; color: #666; margin: 8px 0; min-height: 38px; line-height: 1.4; }
+        .precio { font-size: 1.6em; color: var(--rosa); margin: 8px 0; font-weight: bold; }
         .reloj { font-size: 0.85em; font-weight: bold; color: #555; background: var(--verde-suave); padding: 8px; border-radius: 8px; text-align: center; margin-bottom: 10px; }
         .btn-oferta { background: var(--verde-lima); color: #333; border: none; padding: 12px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.95rem; transition: background 0.2s; }
         .btn-oferta:hover { background: var(--rosa); color: white; }
@@ -197,6 +195,55 @@
         </div>
     </div>
 
+    <!-- Modal mi perfil -->
+    <div class="modal-overlay" id="modal-miperfil">
+        <div class="modal-miperfil-box">
+            <div class="miperfil-header">
+                <div class="miperfil-avatar-wrap" onclick="document.getElementById('input-avatar').click()">
+                    <img id="miperfil-avatar-img" class="miperfil-avatar" src="logo.jpg" alt="avatar">
+                    <div class="miperfil-avatar-edit">📷</div>
+                </div>
+                <input type="file" id="input-avatar" accept="image/*" style="display:none;" onchange="subirAvatar(this)">
+                <p class="miperfil-nombre" id="miperfil-nombre">...</p>
+                <p class="miperfil-email" id="miperfil-email">...</p>
+            </div>
+            <div class="miperfil-body">
+                <div class="miperfil-dato"><span class="etiqueta">Apodo</span><span class="valor" id="miperfil-apodo">...</span></div>
+                <div class="miperfil-dato"><span class="etiqueta">DNI</span><span class="valor" id="miperfil-dni">...</span></div>
+                <div class="miperfil-dato"><span class="etiqueta">Teléfono</span><span class="valor" id="miperfil-telefono">...</span></div>
+                <div class="miperfil-dato"><span class="etiqueta">Dirección</span><span class="valor" id="miperfil-direccion">...</span></div>
+                <div id="miperfil-msg" style="text-align:center;font-size:0.82em;margin:8px 0;"></div>
+                <button class="btn-cerrar-modal" style="width:100%;margin-top:8px;" onclick="cerrarModalMiPerfil()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal perfil vendedor -->
+    <div class="modal-overlay" id="modal-perfil">
+        <div class="modal-perfil-box">
+            <div class="perfil-header">
+                <div class="perfil-avatar" id="perfil-avatar-container">👤</div>
+                <p class="perfil-apodo" id="perfil-apodo">...</p>
+                <p class="perfil-desde" id="perfil-desde">Miembro desde ...</p>
+            </div>
+            <div class="perfil-body">
+                <div class="perfil-estrellas">
+                    <div class="martillos" id="perfil-martillos">—</div>
+                    <div class="puntaje" id="perfil-puntaje">Sin calificaciones aún</div>
+                </div>
+                <div class="perfil-stats">
+                    <div class="perfil-stat ventas"><div class="num" id="perfil-ventas">0</div><div class="label">ventas</div></div>
+                    <div class="perfil-stat compras"><div class="num" id="perfil-compras">0</div><div class="label">compras</div></div>
+                </div>
+                <div class="perfil-resenas">
+                    <div class="titulo-resenas">ÚLTIMAS CALIFICACIONES</div>
+                    <div id="perfil-resenas-lista"><div style="text-align:center;color:#aaa;font-size:0.85em;">Sin reseñas todavía</div></div>
+                </div>
+                <button class="btn-cerrar-modal" style="width:100%;" onclick="cerrarModalPerfil()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal preguntas -->
     <div class="modal-overlay" id="modal-preguntas">
         <div class="modal-preguntas-box">
@@ -226,10 +273,10 @@
             <h1>🛍️ quiendamas</h1>
         </div>
         <div class="barra-superior-der">
-            <span id="usuario-nombre">Cargando...</span>
+            <span id="usuario-nombre" onclick="abrirModalMiPerfil()" style="cursor:pointer;" title="Ver mi perfil">Cargando...</span>
             <div style="display:flex; gap:8px;">
                 <button id="btn-sesion" onclick="gestionarSesion()" class="btn-top primario">🔑 Ingresar</button>
-                <button onclick="window.location.href='index.html'" class="btn-top">➕ Publicar</button>
+                <button onclick="window.location.href='publicar.html'" class="btn-top">➕ Publicar</button>
             </div>
         </div>
     </div>
@@ -617,8 +664,8 @@
 
             const esVentaDirecta = art.tipo_venta === 'venta';
             const yaTermino = !esVentaDirecta && art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
-            const soyGanador = !esVentaDirecta && yaTermino && art.ganador_id === usuarioActualId;
-            const soyComprador = esVentaDirecta && art.comprador_id === usuarioActualId;
+            const soyGanador = !esVentaDirecta && yaTermino && !!usuarioActualId && art.ganador_id === usuarioActualId;
+            const soyComprador = esVentaDirecta && !!usuarioActualId && art.comprador_id === usuarioActualId;
             const articuloVendido = esVentaDirecta && !!art.comprador_id;
             const soyVendedor = esMia;
             const pagoConfirmado = art.pago_confirmado;
@@ -698,7 +745,7 @@
                 <img src="${art.foto_url || ''}" class="foto-art" data-fotos-id="${art.id}" style="cursor:pointer;">
                 ${badgeFotos}
                 <div class="titulo">${art.Titulo}</div>
-                <div class="apodo-art" id="apodo-${art.id}">👤 Cargando...</div>
+                <div class="apodo-art" id="apodo-${art.id}" onclick="abrirModalPerfil('${art.perfil_id}')">👤 Cargando...</div>
                 <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
                 ${precioDisplay}
                 ${relojHtml}
@@ -1018,23 +1065,92 @@ async function eliminarPublicacion(id) {
     filtrarMisPublicaciones();
 }
 
-        function compartir(titulo, id) {
-            const url = `https://quiendamasapp.com.ar/vidriera.html?art=${id}`;
-            if (navigator.share) {
-                navigator.share({ title: titulo, text: '¡Mirá este artículo en QuiénDaMás!', url: url });
+        // ── MI PERFIL ────────────────────────────────────────────────
+        async function abrirModalMiPerfil() {
+            if (!usuarioActualId) { window.location.href = 'login.html'; return; }
+            document.getElementById('modal-miperfil').classList.add('activo');
+            const { data: { user } } = await _supabase.auth.getUser();
+            const { data: perfil } = await _supabase.from('perfiles').select('*').eq('id', usuarioActualId).maybeSingle();
+            if (perfil) {
+                document.getElementById('miperfil-nombre').innerText = perfil.nombre_completo || 'Usuario';
+                document.getElementById('miperfil-apodo').innerText = perfil.apodo || '—';
+                document.getElementById('miperfil-dni').innerText = perfil.dni || '—';
+                document.getElementById('miperfil-telefono').innerText = perfil.telefono || '—';
+                document.getElementById('miperfil-direccion').innerText = perfil.direccion || '—';
+                if (perfil.avatar_url) document.getElementById('miperfil-avatar-img').src = perfil.avatar_url;
+            }
+            if (user) document.getElementById('miperfil-email').innerText = user.email || '';
+        }
+        async function subirAvatar(input) {
+            if (!input.files[0]) return;
+            const msg = document.getElementById('miperfil-msg');
+            msg.style.color = 'blue'; msg.innerText = '⏳ Subiendo foto...';
+            const archivo = input.files[0];
+            const nombre = `avatar_${usuarioActualId}_${Date.now()}`;
+            const { error: errorUp } = await _supabase.storage.from('fotos_subastas').upload(nombre, archivo, { upsert: true, contentType: archivo.type });
+            if (errorUp) { msg.style.color = 'red'; msg.innerText = '❌ Error: ' + errorUp.message; return; }
+            const { data: urlData } = _supabase.storage.from('fotos_subastas').getPublicUrl(nombre);
+            const avatarUrl = urlData.publicUrl;
+            const { error: errorUpdate } = await _supabase.from('perfiles').update({ avatar_url: avatarUrl }).eq('id', usuarioActualId);
+            if (errorUpdate) { msg.style.color = 'red'; msg.innerText = '❌ Error BD: ' + errorUpdate.message; return; }
+            document.getElementById('miperfil-avatar-img').src = avatarUrl;
+            msg.style.color = 'green'; msg.innerText = '✅ ¡Foto actualizada!';
+        }
+        function cerrarModalMiPerfil() {
+            document.getElementById('modal-miperfil').classList.remove('activo');
+            document.getElementById('miperfil-msg').innerText = '';
+        }
+        // ── PERFIL VENDEDOR ─────────────────────────────────────────
+        async function abrirModalPerfil(vendedorId) {
+            document.getElementById('perfil-avatar-container').innerHTML = '👤';
+            document.getElementById('perfil-apodo').innerText = '...';
+            document.getElementById('perfil-desde').innerText = 'Cargando...';
+            document.getElementById('perfil-ventas').innerText = '...';
+            document.getElementById('perfil-compras').innerText = '...';
+            document.getElementById('perfil-martillos').innerText = '—';
+            document.getElementById('perfil-puntaje').innerText = 'Cargando...';
+            document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Cargando...</div>';
+            document.getElementById('modal-perfil').classList.add('activo');
+            const { data: perfil } = await _supabase.from('perfiles').select('apodo, nombre_completo, created_at, avatar_url').eq('id', vendedorId).maybeSingle();
+            if (perfil) {
+                document.getElementById('perfil-apodo').innerText = perfil.apodo || perfil.nombre_completo || 'Usuario';
+                const fecha = new Date(perfil.created_at);
+                const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+                document.getElementById('perfil-desde').innerText = `Miembro desde ${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
+                const avatarEl = document.getElementById('perfil-avatar-container');
+                if (perfil.avatar_url) {
+                    avatarEl.innerHTML = `<img src="${perfil.avatar_url}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">`;
+                } else { avatarEl.innerHTML = '👤'; }
+            }
+            const { count: ventas } = await _supabase.from('articulos').select('id', { count: 'exact', head: true }).eq('perfil_id', vendedorId).not('comprador_id', 'is', null);
+            const { count: compras } = await _supabase.from('articulos').select('id', { count: 'exact', head: true }).eq('comprador_id', vendedorId);
+            document.getElementById('perfil-ventas').innerText = ventas || 0;
+            document.getElementById('perfil-compras').innerText = compras || 0;
+            const { data: cals } = await _supabase.from('calificaciones').select('*').eq('vendedor_id', vendedorId).order('created_at', { ascending: false }).limit(5);
+            if (cals && cals.length > 0) {
+                const promedio = (cals.reduce((s, c) => s + c.puntaje, 0) / cals.length).toFixed(1);
+                const martillos = '🔨'.repeat(Math.round(promedio)) + '🪓'.repeat(5 - Math.round(promedio));
+                document.getElementById('perfil-martillos').innerText = martillos;
+                document.getElementById('perfil-puntaje').innerText = `${promedio} · basado en ${cals.length} calificación${cals.length > 1 ? 'es' : ''}`;
+                document.getElementById('perfil-resenas-lista').innerHTML = cals.map(c => `
+                    <div class="resena-item">
+                        <div class="r-martillos">${'🔨'.repeat(c.puntaje)}</div>
+                        ${c.comentario ? `<div class="r-texto">"${c.comentario}"</div>` : ''}
+                    </div>`).join('');
             } else {
-                navigator.clipboard.writeText(url).then(() => alert('✅ Link copiado al portapapeles'));
+                document.getElementById('perfil-martillos').innerText = '—';
+                document.getElementById('perfil-puntaje').innerText = 'Sin calificaciones aún';
+                document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Sin reseñas todavía</div>';
             }
         }
+        function cerrarModalPerfil() { document.getElementById('modal-perfil').classList.remove('activo'); }
 
-        revisarSesion();
-        cargarArticulos('Todos');
         revisarSesion();
         cargarArticulos('Todos');
     </script>
     <script>
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/quiendamas/sw.js');
+        navigator.serviceWorker.register('/sw.js');
       }
     </script>
 </body>
