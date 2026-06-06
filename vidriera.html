@@ -8,7 +8,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#43a047">
-<link rel="apple-touch-icon" href="logo.jpg">
+<link rel="apple-touch-icon" href="quiendamas.jpg">
     <title>Vidriera Quiéndamas</title>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
@@ -39,10 +39,12 @@
             .btn-top { padding: 6px 12px; font-size: 0.8em; }
             .barra-superior-der span { width: 100%; text-align: right; margin-bottom: 2px; }
             .barra-superior-der { justify-content: flex-end; }
-            /* Barra de búsqueda en mobile: ocultar texto "Buscar", solo ícono */
+            /* Barra búsqueda mobile: achicada para que entre el hamburguesa */
             .barra-busqueda .btn-buscar-texto { display: none; }
-            .barra-busqueda button:first-of-type { padding: 9px 13px; }
-            .menu-filtro-venta { right: 0; left: auto; min-width: 180px; }
+            .barra-busqueda button:not(.btn-hamburguesa) { padding: 8px 10px; font-size: 0.85em; }
+            .barra-busqueda input { padding: 8px 10px; font-size: 0.88em; }
+            .barra-busqueda { padding: 6px 8px; }
+            .menu-filtro-venta { right: 0; left: auto; min-width: 170px; }
         }
 
         .btn-filtro { background: white; border: 2px solid var(--rosa); color: var(--rosa); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85em; white-space: nowrap; transition: all 0.2s; }
@@ -292,7 +294,7 @@
         <div class="modal-miperfil-box">
             <div class="miperfil-header">
                 <div class="miperfil-avatar-wrap" onclick="document.getElementById('input-avatar').click()">
-                    <img id="miperfil-avatar-img" class="miperfil-avatar" src="logo.jpg" alt="avatar">
+                    <img id="miperfil-avatar-img" class="miperfil-avatar" src="quiendamas.jpg" alt="avatar">
                     <div class="miperfil-avatar-edit">📷</div>
                 </div>
                 <input type="file" id="input-avatar" accept="image/*" style="display:none;" onchange="subirAvatar(this)">
@@ -381,7 +383,7 @@
 
     <div class="barra-superior">
         <div class="barra-superior-izq">
-            <img src="logo.jpg" alt="Logo Quiéndamas">
+            <img src="quiendamas.jpg" alt="Logo Quiéndamas">
             <h1><img src="martillo.png" style="width:30px;height:30px;vertical-align:middle;margin-right:4px;"> quiendamas</h1>
         </div>
         <div class="barra-superior-der">
