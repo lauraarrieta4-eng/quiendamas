@@ -372,6 +372,22 @@
         </div>
     </div>
 
+    <!-- Modal ofertar -->
+    <div class="modal-overlay" id="modal-ofertar">
+        <div class="modal-cal-box">
+            <img src="martillo.png" style="width:38px;height:38px;margin-bottom:4px;">
+            <h2 style="color:var(--rosa);margin:4px 0 2px;">Hacer una oferta</h2>
+            <p style="color:#888;font-size:0.82em;margin:0 0 14px;" id="oferta-precio-actual"></p>
+            <input type="number" id="oferta-monto-input" class="input-pregunta" placeholder="Ingresá tu oferta en $" style="font-size:1.1em;text-align:center;font-weight:bold;">
+            <p style="color:#bbb;font-size:0.75em;margin:6px 0 14px;" id="oferta-minimo"></p>
+            <div style="display:flex;gap:8px;">
+                <button class="btn-cerrar-modal" style="flex:1;" onclick="cerrarModalOfertar()">Cancelar</button>
+                <button class="btn-cerrar-modal" style="flex:1;background:var(--verde-lima);color:#333;border-color:var(--verde-lima);font-weight:bold;" onclick="confirmarOferta()">🔨 Confirmar</button>
+            </div>
+            <div id="oferta-msg" style="font-size:0.82em;margin-top:8px;text-align:center;min-height:18px;"></div>
+        </div>
+    </div>
+
     <!-- Modal calificación -->
     <div class="modal-overlay" id="modal-calificacion">
         <div class="modal-cal-box">
@@ -933,13 +949,7 @@
                 } else if (yaTermino) {
                     boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
                 } else {
-                    boton = `
-                        <div style="display:flex;gap:5px;flex-wrap:wrap;">
-                            <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 500)">+$500</button>
-                            <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 1000)">+$1.000</button>
-                            <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 5000)">+$5.000</button>
-                            <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 10000)">+$10.000</button>
-                        </div>`;
+                    boton = `<button class="btn-oferta" onclick="abrirModalOfertar('${art.id}', ${art.precio_actual || art.precio_base || 0})">🔨 Ofertar</button>`;
                 }
             }
 
@@ -1227,13 +1237,7 @@
                     } else if (yaTermino) {
                         boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
                     } else {
-                        boton = `
-                            <div style="display:flex;gap:5px;flex-wrap:wrap;">
-                                <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 500)">+$500</button>
-                                <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 1000)">+$1.000</button>
-                                <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 5000)">+$5.000</button>
-                                <button class="btn-oferta" style="flex:1;font-size:0.8em;padding:10px 5px;" onclick="ofertar('${art.id}', 10000)">+$10.000</button>
-                            </div>`;
+                        boton = `<button class="btn-oferta" onclick="abrirModalOfertar('${art.id}', ${art.precio_actual || art.precio_base || 0})">🔨 Ofertar</button>`;
                     }
                     const div = document.createElement('div');
                     div.className = 'tarjeta';
@@ -1274,17 +1278,47 @@
             }, 1000);
         }
 
-        async function ofertar(id, monto = 500) {
+        let ofertaArticuloId = null;
+        let ofertaPrecioActual = 0;
+
+        function abrirModalOfertar(id, precioActual) {
+            ofertaArticuloId = id;
+            ofertaPrecioActual = precioActual;
+            const minimo = precioActual + 1000;
+            document.getElementById('oferta-precio-actual').innerText = `Precio actual: $${precioActual.toLocaleString('es-AR')}`;
+            document.getElementById('oferta-minimo').innerText = `Mínimo: $${minimo.toLocaleString('es-AR')}`;
+            document.getElementById('oferta-monto-input').value = '';
+            document.getElementById('oferta-monto-input').min = minimo;
+            document.getElementById('oferta-msg').innerText = '';
+            document.getElementById('modal-ofertar').classList.add('activo');
+            setTimeout(() => document.getElementById('oferta-monto-input').focus(), 150);
+        }
+
+        function cerrarModalOfertar() {
+            document.getElementById('modal-ofertar').classList.remove('activo');
+        }
+
+        async function confirmarOferta() {
+            const msg = document.getElementById('oferta-msg');
+            const monto = parseFloat(document.getElementById('oferta-monto-input').value);
+            if (!monto || monto < ofertaPrecioActual + 1000) {
+                msg.style.color = 'red';
+                msg.innerText = `⚠️ La oferta mínima es $${(ofertaPrecioActual + 1000).toLocaleString('es-AR')}`;
+                return;
+            }
             const { data: { user } } = await _supabase.auth.getUser();
-            if (!user) { alert("⚠️ Tenés que ingresar para ofertar."); window.location.href = 'login.html'; return; }
-            const { data: art } = await _supabase.from('articulos').select('finaliza_en, perfil_id').eq('id', id).maybeSingle();
-            if (art && art.perfil_id === user.id) { alert("⚠️ No podés ofertar en tu propia publicación."); return; }
-            if (art && new Date(art.finaliza_en).getTime() < Date.now()) { alert("🛑 Esta subasta ya terminó."); return; }
-            const span = document.getElementById(`precio-${id}`);
-            const nuevo = parseFloat(span.innerText.replace(/\./g,'').replace(',','.')) + monto;
-            const { error } = await _supabase.from('articulos').update({ precio_actual: nuevo, ganador_id: user.id }).eq('id', id);
-            if (error) { alert("Error al ofertar: " + error.message); return; }
-            await _supabase.from('ofertas').insert([{ articulo_id: id, perfil_id: user.id, monto: nuevo }]);
+            if (!user) { cerrarModalOfertar(); window.location.href = 'login.html'; return; }
+            const { data: art } = await _supabase.from('articulos').select('finaliza_en, perfil_id, precio_actual').eq('id', ofertaArticuloId).maybeSingle();
+            if (!art) return;
+            if (art.perfil_id === user.id) { msg.style.color='red'; msg.innerText='⚠️ No podés ofertar en tu propia publicación.'; return; }
+            if (new Date(art.finaliza_en).getTime() < Date.now()) { msg.style.color='red'; msg.innerText='🛑 Esta subasta ya terminó.'; return; }
+            if (monto <= art.precio_actual) { msg.style.color='red'; msg.innerText=`⚠️ Otro usuario ya ofertó más. El precio actual es $${art.precio_actual.toLocaleString('es-AR')}`; return; }
+            msg.style.color='blue'; msg.innerText='⏳ Enviando oferta...';
+            const { error } = await _supabase.from('articulos').update({ precio_actual: monto, ganador_id: user.id }).eq('id', ofertaArticuloId);
+            if (error) { msg.style.color='red'; msg.innerText='❌ Error: ' + error.message; return; }
+            await _supabase.from('ofertas').insert([{ articulo_id: ofertaArticuloId, perfil_id: user.id, monto }]);
+            msg.style.color='green'; msg.innerText='✅ ¡Oferta enviada!';
+            setTimeout(cerrarModalOfertar, 1200);
         }
 
         _supabase.channel('cambios').on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'articulos' }, payload => {
