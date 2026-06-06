@@ -7,8 +7,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#43a047">
-    <link rel="apple-touch-icon" href="logo.jpg">
+<meta name="theme-color" content="#43a047">
+<link rel="apple-touch-icon" href="logo.jpg">
     <title>Vidriera Quiéndamas</title>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
@@ -53,6 +53,11 @@
         .barra-busqueda input:focus { box-shadow: 0 0 0 2px var(--rosa); }
         .barra-busqueda button { background: var(--rosa); color: white; border: none; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 0.9em; cursor: pointer; }
 
+        .filtro-venta { display: flex; gap: 8px; margin-bottom: 10px; justify-content: center; flex-wrap: wrap; }
+        .btn-fv { background: white; border: 2px solid #ddd; color: #666; padding: 7px 16px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.82em; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
+        .btn-fv:hover { border-color: var(--rosa); color: var(--rosa); }
+        .btn-fv.activo { border-color: var(--rosa); color: var(--rosa); background: #fce4ec; }
+        .btn-fv.activo-verde { border-color: #43a047; color: #2e7d32; background: #e8f5e9; }
         .selector-tipo { display: flex; gap: 10px; margin-bottom: 10px; justify-content: center; }
         .btn-tipo { flex: 1; max-width: 180px; padding: 10px; border: 2px solid var(--rosa); border-radius: 25px; background: white; color: var(--rosa); font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; transition: all 0.2s; }
         .btn-tipo.activo { background: var(--rosa); color: white; border-color: transparent; box-shadow: 0 3px 10px rgba(224,72,145,0.35); }
@@ -73,6 +78,16 @@
         .filtros-arrow.der { right: 2px; }
         @media (hover: hover) { .filtros-arrow { display: flex; } }
 
+        /* ── PANEL DESPLEGABLE SUBCATEGORÍAS ── */
+        #wrapper-subcats { animation: panelBaja 0.22s ease; }
+        @keyframes panelBaja {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .filtros.sub { background: white; border-radius: 14px; padding: 10px 42px; box-shadow: 0 6px 20px rgba(0,0,0,0.12); border: 2px solid var(--lila); }
+        .btn-filtro.cat[data-sub]::after { content: ' ▾'; font-size: 0.75em; opacity: 0.65; }
+        .btn-filtro.cat.activo[data-sub]::after { content: ' ▲'; font-size: 0.75em; opacity: 1; }
+
         .contenedor { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; justify-items: center; }
         .tarjeta { background: white; border-radius: 16px; padding: 15px; width: 90%; max-width: 320px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; border-top: 4px solid var(--verde-lima); transition: transform 0.2s, box-shadow 0.2s; }
         .tarjeta:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.13); }
@@ -85,7 +100,7 @@
         .foto-art { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; cursor: pointer; }
         .foto-art:hover { opacity: 0.92; }
         .titulo { font-size: 1.1em; font-weight: bold; color: #222; }
-        .apodo-art { font-size: 0.78em; color: var(--rosa); margin-top: 2px; margin-bottom: 5px; font-weight: 600; }
+        .apodo-art { font-size: 0.78em; color: var(--rosa); margin-top: 2px; margin-bottom: 5px; font-weight: 600; cursor: pointer; text-decoration: underline dotted; }
         .descripcion { font-size: 0.85em; color: #666; margin: 8px 0; min-height: 38px; line-height: 1.4; }
         .precio { font-size: 1.6em; color: var(--rosa); margin: 8px 0; font-weight: bold; }
         .reloj { font-size: 0.85em; font-weight: bold; color: #555; background: var(--verde-suave); padding: 8px; border-radius: 8px; text-align: center; margin-bottom: 10px; }
@@ -97,8 +112,8 @@
         .btn-compartir:hover { background: var(--lila); }
         .btn-preguntar { background: white; border: 2px solid var(--rosa); color: var(--rosa); padding: 8px; border-radius: 10px; cursor: pointer; font-size: 0.8em; font-weight: bold; width: 100%; margin-top: 6px; transition: all 0.2s; }
         .btn-preguntar:hover { background: var(--rosa); color: white; }
-        .btn-eliminar { background: white; border: 2px solid #e53935; color: #e53935; padding: 8px; border-radius: 10px; cursor: pointer; font-size: 0.8em; font-weight: bold; width: 100%; margin-top: 6px; transition: all 0.2s; }
-        .btn-eliminar:hover { background: #e53935; color: white; }
+.btn-eliminar { background: white; border: 2px solid #e53935; color: #e53935; padding: 8px; border-radius: 10px; cursor: pointer; font-size: 0.8em; font-weight: bold; width: 100%; margin-top: 6px; transition: all 0.2s; }
+.btn-eliminar:hover { background: #e53935; color: white; }
         .sin-resultados { text-align: center; width: 100%; color: #999; padding: 30px; font-size: 1em; }
         .badge-fotos { position: absolute; top: 10px; left: 10px; background: var(--rosa); color: white; font-size: 0.72em; padding: 3px 8px; border-radius: 10px; pointer-events: none; }
 
@@ -123,6 +138,7 @@
         .carrusel-contador { color: white; font-size: 0.95em; font-weight: bold; min-width: 50px; text-align: center; }
         .carrusel-cerrar { position: absolute; top: 15px; right: 18px; background: var(--lila); color: #6a0050; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2em; cursor: pointer; font-weight: bold; }
         .badge-preguntas { background: #e53935; color: white; border-radius: 50%; font-size: 0.75em; padding: 1px 6px; margin-left: 4px; }
+        /* ── MODAL PREGUNTAS ── */
         .modal-preguntas-box { background: white; border-radius: 20px; padding: 22px; max-width: 420px; width: 93%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.18); border-top: 5px solid var(--lila); }
         .modal-preguntas-box h2 { color: var(--rosa); margin-top: 0; font-size: 1.2em; text-align: center; }
         .pregunta-item { background: var(--rosa-claro); border-radius: 12px; padding: 12px; margin-bottom: 10px; text-align: left; }
@@ -137,46 +153,52 @@
         .btn-responder:hover { background: #43a047; color: white; }
         .input-respuesta { width: 100%; padding: 7px 10px; border: 1px solid #c8e6c9; border-radius: 8px; font-size: 0.82em; outline: none; margin-top: 5px; }
 
-        .modal-perfil-box { border-radius: 20px; overflow: hidden; max-width: 340px; width: 93%; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
-        .perfil-header { background: linear-gradient(135deg, #43a047, #2e7d32); padding: 28px 20px 22px; text-align: center; }
-        .perfil-avatar { width: 70px; height: 70px; border-radius: 50%; background: white; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 2em; border: 3px solid var(--verde-lima); overflow: hidden; }
-        .perfil-apodo { color: white; font-size: 1.2em; font-weight: bold; margin: 0 0 3px; }
-        .perfil-desde { color: #c8e6c9; font-size: 0.8em; margin: 0; }
-        .perfil-body { background: white; padding: 18px; }
-        .perfil-estrellas { text-align: center; margin-bottom: 16px; }
-        .perfil-estrellas .martillos { font-size: 1.4em; letter-spacing: 3px; }
-        .perfil-estrellas .puntaje { font-size: 0.8em; color: #888; margin-top: 4px; }
-        .perfil-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-        .perfil-stat { border-radius: 12px; padding: 12px; text-align: center; }
-        .perfil-stat.ventas { background: #e8f5e9; }
-        .perfil-stat.compras { background: #fce4ec; }
-        .perfil-stat .num { font-size: 1.6em; font-weight: bold; }
-        .perfil-stat.ventas .num { color: #2e7d32; }
-        .perfil-stat.compras .num { color: #c2185b; }
-        .perfil-stat .label { font-size: 0.75em; margin-top: 2px; }
-        .perfil-stat.ventas .label { color: #4caf50; }
-        .perfil-stat.compras .label { color: #e91e63; }
-        .perfil-resenas { background: #f9f9f9; border-radius: 12px; padding: 12px; margin-bottom: 14px; }
-        .perfil-resenas .titulo-resenas { font-size: 0.75em; color: #aaa; font-weight: bold; margin-bottom: 10px; }
-        .resena-item { border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 8px; }
-        .resena-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .resena-item .r-martillos { font-size: 0.9em; }
-        .resena-item .r-texto { font-size: 0.8em; color: #555; margin-top: 3px; }
-        .apodo-art { cursor: pointer; }
-        .apodo-art:hover { text-decoration: underline; }
-
-        .modal-miperfil-box { background: white; border-radius: 20px; overflow: hidden; max-width: 340px; width: 93%; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
-        .miperfil-header { background: linear-gradient(135deg, #E04891, #E1B7ED); padding: 28px 20px 22px; text-align: center; }
-        .miperfil-avatar-wrap { position: relative; width: 80px; margin: 0 auto 10px; cursor: pointer; }
-        .miperfil-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid white; background: white; display: block; }
-        .miperfil-avatar-edit { position: absolute; bottom: 0; right: 0; background: var(--verde-lima); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.85em; border: 2px solid white; }
-        .miperfil-nombre { color: white; font-size: 1.1em; font-weight: bold; margin: 0 0 2px; }
-        .miperfil-email { color: rgba(255,255,255,0.8); font-size: 0.8em; margin: 0; }
+        /* ── MODAL MI PERFIL ── */
+        .modal-miperfil-box { background: white; border-radius: 20px; overflow: hidden; max-width: 360px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.18); }
+        .miperfil-header { background: linear-gradient(135deg, var(--rosa), #c2185b); padding: 28px 20px; text-align: center; }
+        .miperfil-avatar-wrap { position: relative; display: inline-block; cursor: pointer; }
+        .miperfil-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 3px 10px rgba(0,0,0,0.2); }
+        .miperfil-avatar-edit { position: absolute; bottom: 0; right: 0; background: white; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.85em; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+        .miperfil-nombre { margin: 10px 0 2px; font-weight: 800; font-size: 1.1em; color: white; }
+        .miperfil-email { margin: 0; font-size: 0.78em; color: rgba(255,255,255,0.8); }
         .miperfil-body { padding: 18px; }
         .miperfil-dato { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.88em; }
         .miperfil-dato:last-of-type { border-bottom: none; }
-        .miperfil-dato .etiqueta { color: #aaa; font-size: 0.85em; }
-        .miperfil-dato .valor { color: #333; font-weight: 600; }
+        .miperfil-dato .etiqueta { color: #999; font-weight: 600; }
+        .miperfil-dato .valor { color: #333; font-weight: 700; text-align: right; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        /* ── MODAL PERFIL VENDEDOR ── */
+        .modal-perfil-box { background: white; border-radius: 20px; overflow: hidden; max-width: 380px; width: 92%; max-height: 88vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.18); }
+        .perfil-header { background: linear-gradient(135deg, #43a047, #2e7d32); padding: 28px 20px; text-align: center; }
+        .perfil-avatar { font-size: 4em; line-height: 1; }
+        .perfil-apodo { margin: 8px 0 2px; font-weight: 800; font-size: 1.1em; color: white; }
+        .perfil-desde { margin: 0; font-size: 0.78em; color: rgba(255,255,255,0.75); }
+        .perfil-body { padding: 18px; }
+        .perfil-estrellas { text-align: center; margin-bottom: 16px; }
+        .martillos { font-size: 1.4em; margin-bottom: 4px; }
+        .puntaje { font-size: 0.82em; color: #888; }
+        .perfil-stats { display: flex; gap: 16px; margin-bottom: 20px; }
+        .perfil-stat { flex: 1; text-align: center; border-radius: 12px; padding: 14px 8px; }
+        .perfil-stat.ventas { background: #e8f5e9; }
+        .perfil-stat.compras { background: var(--rosa-claro); }
+        .perfil-stat .num { font-size: 1.8em; font-weight: 800; }
+        .perfil-stat.ventas .num { color: #2e7d32; }
+        .perfil-stat.compras .num { color: var(--rosa); }
+        .perfil-stat .label { font-size: 0.78em; color: #888; font-weight: 600; margin-top: 2px; }
+        .perfil-resenas { margin-bottom: 16px; }
+        .titulo-resenas { font-size: 0.72em; font-weight: 800; color: #aaa; letter-spacing: 1px; margin-bottom: 10px; }
+        .resena-item { background: var(--rosa-claro); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; }
+        .r-martillos { font-size: 0.9em; margin-bottom: 3px; }
+        .r-texto { font-size: 0.82em; color: #555; font-style: italic; }
+
+        /* ── MODAL CALIFICACIÓN ── */
+        .modal-cal-box { background: white; border-radius: 20px; padding: 28px; max-width: 360px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.18); text-align: center; border-top: 5px solid var(--verde-lima); }
+        .martillo-selector { display: flex; justify-content: center; gap: 10px; margin: 16px 0 6px; }
+        .martillo-btn { background: none; border: none; cursor: pointer; opacity: 0.18; transition: all 0.15s; padding: 4px; border-radius: 8px; }
+        .martillo-btn img { width: 42px; height: 42px; display: block; }
+        .martillo-btn.activo { opacity: 1; transform: scale(1.15); filter: drop-shadow(0 2px 5px rgba(0,0,0,0.25)); }
+        .martillo-btn:hover { opacity: 0.7; }
+        .cal-label { font-size: 0.9em; font-weight: bold; color: var(--rosa); min-height: 22px; margin-bottom: 12px; }
     </style>
 </head>
 <body>
@@ -297,6 +319,26 @@
         </div>
     </div>
 
+    <!-- Modal calificación -->
+    <div class="modal-overlay" id="modal-calificacion">
+        <div class="modal-cal-box">
+            <img src="mazo.svg" style="width:58px;height:58px;display:block;margin:0 auto 6px;">
+            <h2 style="color:var(--rosa);margin-top:6px;">Calificar al vendedor</h2>
+            <p style="color:#666;font-size:0.88em;margin-top:0;">¿Cómo fue tu experiencia de compra?</p>
+            <div class="martillo-selector">
+                <button class="martillo-btn" onclick="seleccionarMartillo(1)"><img src="mazo.svg" alt="1"></button>
+                <button class="martillo-btn" onclick="seleccionarMartillo(2)"><img src="mazo.svg" alt="2"></button>
+                <button class="martillo-btn" onclick="seleccionarMartillo(3)"><img src="mazo.svg" alt="3"></button>
+                <button class="martillo-btn" onclick="seleccionarMartillo(4)"><img src="mazo.svg" alt="4"></button>
+                <button class="martillo-btn" onclick="seleccionarMartillo(5)"><img src="mazo.svg" alt="5"></button>
+            </div>
+            <div class="cal-label" id="cal-label"></div>
+            <textarea class="input-pregunta" id="cal-comentario" rows="3" placeholder="Comentario opcional... ¿Cómo fue la entrega, el producto, el trato?"></textarea>
+            <button class="btn-enviar-pregunta" onclick="enviarCalificacion()">✅ Enviar calificación</button>
+            <button class="btn-cerrar-modal" style="width:100%;margin-top:8px;" onclick="cerrarModalCalificacion()">Cancelar</button>
+        </div>
+    </div>
+
     <div class="modal-carrusel" id="modal-carrusel">
         <button class="carrusel-cerrar" onclick="cerrarCarrusel()">✕</button>
         <img class="carrusel-img" id="carrusel-img" src="" alt="foto">
@@ -310,7 +352,7 @@
     <div class="barra-superior">
         <div class="barra-superior-izq">
             <img src="logo.jpg" alt="Logo Quiéndamas">
-            <h1>🛍️ quiendamas</h1>
+            <h1><img src="mazo.svg" style="width:30px;height:30px;vertical-align:middle;margin-right:4px;"> quiendamas</h1>
         </div>
         <div class="barra-superior-der">
             <span id="usuario-nombre" onclick="abrirModalMiPerfil()" style="cursor:pointer;" title="Ver mi perfil">Cargando...</span>
@@ -331,6 +373,12 @@
         <button onclick="buscarArticulos()">Buscar</button>
     </div>
 
+    <div class="filtro-venta" id="filtro-venta">
+        <button class="btn-fv activo" id="fv-todos"    onclick="cambiarFiltroVenta(null)">📦 Todos</button>
+        <button class="btn-fv"        id="fv-subasta"  onclick="cambiarFiltroVenta('subasta')"><img src="mazo.svg" style="width:16px;height:16px;"> Subastas</button>
+        <button class="btn-fv"        id="fv-venta"    onclick="cambiarFiltroVenta('venta')">💲 Venta directa</button>
+    </div>
+
     <div class="selector-tipo">
         <button class="btn-tipo activo" id="btn-productos" onclick="cambiarTipo('productos')">🛍️ Productos</button>
         <button class="btn-tipo" id="btn-servicios" onclick="cambiarTipo('servicios')">🛠️ Servicios</button>
@@ -343,13 +391,13 @@
             <button class="btn-filtro cat activo" id="cat-btn-Todos"          onclick="filtrarCategoria('Todos')">📦 Todos</button>
             <button class="btn-filtro cat"        id="cat-btn-Autos"          onclick="filtrarCategoria('Autos')">🚗 Autos</button>
             <button class="btn-filtro cat"        id="cat-btn-Motos"          onclick="filtrarCategoria('Motos')">🏍️ Motos</button>
-            <button class="btn-filtro cat"        id="cat-btn-Tecnologia"     onclick="filtrarCategoria('Tecnologia')">📱 Tecnología</button>
-            <button class="btn-filtro cat"        id="cat-btn-Moda"           onclick="filtrarCategoria('Moda')">👗 Moda</button>
+            <button class="btn-filtro cat" data-sub id="cat-btn-Tecnologia"   onclick="filtrarCategoria('Tecnologia')">📱 Tecnología</button>
+            <button class="btn-filtro cat" data-sub id="cat-btn-Moda"         onclick="filtrarCategoria('Moda')">👗 Moda</button>
             <button class="btn-filtro cat"        id="cat-btn-Joyas"          onclick="filtrarCategoria('Joyas')">⌚ Joyas</button>
             <button class="btn-filtro cat"        id="cat-btn-Belleza"        onclick="filtrarCategoria('Belleza')">💄 Belleza</button>
-            <button class="btn-filtro cat"        id="cat-btn-Construccion"   onclick="filtrarCategoria('Construccion')">🏗️ Construcción</button>
-            <button class="btn-filtro cat"        id="cat-btn-Antiguedades"   onclick="filtrarCategoria('Antiguedades')">🏺 Antigüedades</button>
-            <button class="btn-filtro cat"        id="cat-btn-Vivero"         onclick="filtrarCategoria('Vivero')">🌿 Vivero</button>
+            <button class="btn-filtro cat" data-sub id="cat-btn-Construccion" onclick="filtrarCategoria('Construccion')">🏗️ Construcción</button>
+            <button class="btn-filtro cat" data-sub id="cat-btn-Antiguedades" onclick="filtrarCategoria('Antiguedades')">🏺 Antigüedades</button>
+            <button class="btn-filtro cat" data-sub id="cat-btn-Vivero"       onclick="filtrarCategoria('Vivero')">🌿 Vivero</button>
             <button class="btn-filtro cat"        id="cat-btn-Hogar"          onclick="filtrarCategoria('Hogar')">🏠 Hogar</button>
             <button class="btn-filtro cat"        id="cat-btn-Electro"        onclick="filtrarCategoria('Electro')">🔌 Electrodomésticos</button>
             <button class="btn-filtro cat"        id="cat-btn-Otros"          onclick="filtrarCategoria('Otros')">📦 Otros</button>
@@ -368,14 +416,13 @@
         <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-servicios', -200)">‹</button>
         <div class="filtros" id="filtros-servicios" style="display:none;">
             <button class="btn-filtro" onclick="cargarArticulos('Todos-Servicios')">🌟 Todos</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Belleza-Estetica')">💅 Belleza y estética</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Peluqueria')">✂️ Peluquería</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Hogar-Reparaciones')">🏠 Hogar y reparaciones</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Plomeria-Electricidad')">🔧 Plomería y electricidad</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Tecnologia-Soporte')">💻 Tecnología</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Clases-Tutorias')">📚 Clases y tutorías</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Diseno-Creatividad')">🎨 Diseño</button>
-            <button class="btn-filtro" onclick="cargarArticulos('Servicios-Profesionales')">⚖️ Profesionales</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Profesionales-Administrativos')">💼 Profesionales y administrativos</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Tecnologia-Digital')">💻 Tecnología y servicios digitales</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Mantenimiento-Oficios')">🔧 Mantenimiento y oficios</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Estetica-Belleza')">💄 Estética y belleza</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Terapia-Salud')">🌿 Terapia y salud</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Diseno-Paisajismo')">🎨 Diseño y paisajismo</button>
+            <button class="btn-filtro" onclick="cargarArticulos('Hospitalidad-Turismo')">🏔️ Hospitalidad y experiencias turísticas</button>
             <button class="btn-filtro" onclick="cargarArticulos('Otros-Servicios')">📦 Otros</button>
         </div>
         <button class="filtros-arrow der" onclick="scrollFiltros('filtros-servicios', 200)">›</button>
@@ -384,13 +431,32 @@
     <div id="articulos-lista" class="contenedor"></div>
 
     <script>
+        function escapeHtml(str) {
+            return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        }
+
         let usuarioActualId = null;
         let tipoActual = 'productos';
         let categoriaActual = 'Todos';
+        let filtroVenta = null; // null = todos, 'subasta', 'venta'
+
+        function cambiarFiltroVenta(tipo) {
+            filtroVenta = tipo;
+            document.getElementById('fv-todos').className   = 'btn-fv' + (tipo === null     ? ' activo' : '');
+            document.getElementById('fv-subasta').className = 'btn-fv' + (tipo === 'subasta' ? ' activo' : '');
+            document.getElementById('fv-venta').className   = 'btn-fv' + (tipo === 'venta'   ? ' activo-verde' : '');
+            cargarArticulos(categoriaActual);
+        }
         let articuloPreguntaActual = null;
         let vendedorPreguntaActual = null;
 
-        const CATEGORIAS_SERVICIOS = ['Belleza-Estetica','Peluqueria','Hogar-Reparaciones','Plomeria-Electricidad','Tecnologia-Soporte','Clases-Tutorias','Diseno-Creatividad','Servicios-Profesionales','Otros-Servicios'];
+        const CATEGORIAS_SERVICIOS = [
+            'Profesionales-Administrativos','Tecnologia-Digital','Mantenimiento-Oficios',
+            'Estetica-Belleza','Terapia-Salud','Diseno-Paisajismo','Hospitalidad-Turismo','Otros-Servicios',
+            // legacy (para no romper publicaciones ya existentes en BD)
+            'Belleza-Estetica','Peluqueria','Hogar-Reparaciones','Plomeria-Electricidad',
+            'Tecnologia-Soporte','Clases-Tutorias','Diseno-Creatividad','Servicios-Profesionales',
+        ];
 
         // ─────────────────────────────────────────────────────────────
         // VALORES_CAT: todos los valores de BD que agrupa cada categoría
@@ -403,36 +469,26 @@
                 'Celulares','Computacion',
                 'Tech-ComponentesPC','Tech-Conectividad',
                 'Tech-Tablets','Tech-Accesorios','Tech-Consolas',
+                // valores legacy que ya existían en la BD
                 'AudioVideo',
             ],
 
             // ── VIVERO ────────────────────────────────────────────────
             'Vivero': [
                 'Vivero',
-                // Plantas exterior y sus subtipos
+                'Plantas-Aromaticas','Plantas-Arbustos','Plantas-Frutales','Plantas-Herbaceas',
+                'Plantas-Bulbosas','Plantas-Trepadoras','Plantas-Cubresuelos','Plantas-Nativas',
+                'Plantas-Interior','Plantas-Huerta','Plantas-Suculentas',
+                'Plantas-Coleccion',   // antes: Plantas-Raras
                 'Plantas-Exterior',
-                'Plantas-Gramineas','Plantas-Herbaceas','Plantas-Bulbosas',
-                'Plantas-Arbustos','Plantas-Cubresuelos','Plantas-Aromaticas',
-                'Plantas-Trepadoras','Plantas-Huerta','Plantas-Nativas',
-                'Plantas-Helechos',
-                'Arboles-Frutales','Arboles-Ornamentales',
-                // Otras plantas
-                'Plantas-Interior',
-                'Plantas-Suculentas',
-                'Plantas-Coleccion',
-                // Insumos y accesorios
+                'Arboles-Frutales','Arboles-Ornamentales',   // nueva cat Árboles
                 'Semillas',
+                'Fertilizantes-Organicos','Fertilizantes-Inorganicos',
                 'Macetas-Barro','Macetas-Plastico','Macetas-Ceramica',
                 'Riego',
-                'Sustratos',
-                'Fertilizantes-Organicos','Fertilizantes-Inorganicos',
-                'Herramientas-Jardin','Herramientas-Jardin-Manuales','Herramientas-Jardin-Maquinas',
-                'Indumentaria-Jardin',
-                'Decoracion',
-                // valores legacy (publicaciones viejas en la BD)
-                'Plantas-Frutales',
+                // valores legacy por si había publicaciones anteriores
                 'Riego-Goteo','Riego-Aspersores','Riego-Mangueras','Riego-Automatizacion','Riego-Bombas',
-                'Plantas-Raras',
+                'Decoracion',
             ],
 
             // ── MODA ──────────────────────────────────────────────────
@@ -448,6 +504,7 @@
                 'Construccion',
                 'Construccion-Herramientas','Construccion-Materiales',
                 'Construccion-Maquinas','Construccion-Pinturas','Construccion-Otros',
+                // valores legacy
                 'Herramientas',
             ],
 
@@ -477,35 +534,27 @@
 
             // ── VIVERO ────────────────────────────────────────────────
             'Vivero': [
-                // Plantas
-                { value: 'Plantas-Exterior',          label: '🌳 Plantas exterior' },
-                { value: 'Plantas-Interior',          label: '🏠 Plantas interior' },
-                { value: 'Plantas-Suculentas',        label: '🌵 Suculentas y cactus' },
-                { value: 'Plantas-Coleccion',         label: '⭐ De colección' },
-                // Subtipos exterior
-                { value: 'Plantas-Gramineas',         label: '🌾 Gramíneas' },
-                { value: 'Plantas-Herbaceas',         label: '🌿 Herbáceas' },
-                { value: 'Plantas-Bulbosas',          label: '🌷 Bulbosas' },
-                { value: 'Plantas-Arbustos',          label: '🌳 Arbustos' },
-                { value: 'Plantas-Cubresuelos',       label: '🍀 Cubresuelos' },
                 { value: 'Plantas-Aromaticas',        label: '🌸 Aromáticas' },
+                { value: 'Plantas-Arbustos',          label: '🌿 Arbustos' },
+                { value: 'Plantas-Frutales',          label: '🍎 Frutales' },
+                { value: 'Plantas-Herbaceas',         label: '🌾 Herbáceas' },
+                { value: 'Plantas-Bulbosas',          label: '🌷 Bulbosas' },
                 { value: 'Plantas-Trepadoras',        label: '🌱 Trepadoras' },
+                { value: 'Plantas-Cubresuelos',       label: '🍀 Cubresuelos' },
+                { value: 'Plantas-Nativas',           label: '🌳 Nativas' },
+                { value: 'Plantas-Interior',          label: '🏠 Interior' },
                 { value: 'Plantas-Huerta',            label: '🥕 Huerta' },
-                { value: 'Plantas-Nativas',           label: '🌲 Nativas' },
-                { value: 'Plantas-Helechos',          label: '🌿 Helechos' },
+                { value: 'Plantas-Suculentas',        label: '🌵 Suculentas' },
+                { value: 'Plantas-Coleccion',         label: '⭐ De colección' },
                 { value: 'Arboles-Frutales',          label: '🍊 Árboles frutales' },
                 { value: 'Arboles-Ornamentales',      label: '🌲 Árboles ornamentales' },
-                // Insumos
                 { value: 'Semillas',                  label: '🌱 Semillas' },
+                { value: 'Fertilizantes-Organicos',   label: '🌿 Fertiliz. Org.' },
+                { value: 'Fertilizantes-Inorganicos', label: '🧪 Fertiliz. Inorg.' },
                 { value: 'Macetas-Barro',             label: '🪴 Macetas barro' },
                 { value: 'Macetas-Plastico',          label: '🪣 Macetas plástico' },
                 { value: 'Macetas-Ceramica',          label: '🏺 Macetas cerámica' },
-                { value: 'Riego',                     label: '💧 Riego' },
-                { value: 'Sustratos',                 label: '🌍 Sustratos' },
-                { value: 'Fertilizantes-Organicos',   label: '🌿 Fertiliz. Org.' },
-                { value: 'Fertilizantes-Inorganicos', label: '🧪 Fertiliz. Inorg.' },
-                { value: 'Herramientas-Jardin',       label: '🛠️ Herramientas jardín' },
-                { value: 'Indumentaria-Jardin',       label: '👒 Indumentaria' },
+                { value: 'Riego',                     label: '💧 Materiales para riego' },
                 { value: 'Decoracion',                label: '✨ Decoración' },
             ],
 
@@ -561,42 +610,25 @@
             'Tech-Tablets':        'Tablets',
             'Tech-Accesorios':     'Accesorios tech',
             'Tech-Consolas':       'Consolas',
-            // Vivero — plantas
-            'Plantas-Exterior':        'Exterior',
-            'Plantas-Interior':        'Interior',
-            'Plantas-Suculentas':      'Suculentas',
-            'Plantas-Coleccion':       'De colección',
-            'Plantas-Raras':           'De colección',
-            'Plantas-Gramineas':       'Gramíneas',
-            'Plantas-Herbaceas':       'Herbáceas',
-            'Plantas-Bulbosas':        'Bulbosas',
-            'Plantas-Arbustos':        'Arbustos',
-            'Plantas-Cubresuelos':     'Cubresuelos',
-            'Plantas-Aromaticas':      'Aromáticas',
-            'Plantas-Trepadoras':      'Trepadoras',
-            'Plantas-Huerta':          'Huerta',
-            'Plantas-Nativas':         'Nativas',
-            'Plantas-Helechos':        'Helechos',
-            'Plantas-Frutales':        'Frutales',
-            'Arboles-Frutales':        'Árboles frutales',
-            'Arboles-Ornamentales':    'Árboles ornamentales',
-            // Vivero — insumos
-            'Semillas':                'Semillas',
-            'Macetas-Barro':           'Macetas barro',
-            'Macetas-Plastico':        'Macetas plástico',
-            'Macetas-Ceramica':        'Macetas cerámica',
-            'Riego':                   'Riego',
-            'Riego-Goteo':             'Riego', 'Riego-Aspersores': 'Riego',
-            'Riego-Mangueras':         'Riego', 'Riego-Automatizacion': 'Riego',
-            'Riego-Bombas':            'Riego',
-            'Sustratos':               'Sustratos',
-            'Fertilizantes-Organicos': 'Fertiliz. Org.',
-            'Fertilizantes-Inorganicos':'Fertiliz. Inorg.',
-            'Herramientas-Jardin':          'Herramientas jardín',
-            'Herramientas-Jardin-Manuales': 'Herramientas manuales',
-            'Herramientas-Jardin-Maquinas': 'Máquinas jardín',
-            'Indumentaria-Jardin':          'Indumentaria jardín',
-            'Decoracion':              'Decoración',
+            // Vivero subcats
+            'Plantas-Aromaticas': 'Aromáticas', 'Plantas-Arbustos': 'Arbustos',
+            'Plantas-Frutales': 'Frutales', 'Plantas-Herbaceas': 'Herbáceas',
+            'Plantas-Bulbosas': 'Bulbosas', 'Plantas-Trepadoras': 'Trepadoras',
+            'Plantas-Cubresuelos': 'Cubresuelos', 'Plantas-Nativas': 'Nativas',
+            'Plantas-Interior': 'Interior', 'Plantas-Huerta': 'Huerta',
+            'Plantas-Suculentas': 'Suculentas',
+            'Plantas-Coleccion': 'De colección',
+            'Plantas-Raras': 'De colección',     // legacy → mismo label
+            'Plantas-Exterior': 'Exterior',
+            'Arboles-Frutales': 'Árboles frutales',
+            'Arboles-Ornamentales': 'Árboles ornamentales',
+            'Fertilizantes-Organicos': 'Fertiliz. Org.', 'Fertilizantes-Inorganicos': 'Fertiliz. Inorg.',
+            'Macetas-Barro': 'Macetas barro', 'Macetas-Plastico': 'Macetas plástico',
+            'Macetas-Ceramica': 'Macetas cerámica',
+            'Riego': 'Materiales para riego',
+            'Riego-Goteo': 'Riego', 'Riego-Aspersores': 'Riego',
+            'Riego-Mangueras': 'Riego', 'Riego-Automatizacion': 'Riego',
+            'Riego-Bombas': 'Riego', 'Semillas': 'Semillas', 'Decoracion': 'Decoración',
             // Moda subcats
             'Moda-RopaInterior': 'Ropa interior', 'Moda-RopaDeportiva': 'Ropa deportiva',
             'Moda-Calzado': 'Calzado', 'Moda-ValijasMochilas': 'Valijas y mochilas',
@@ -608,12 +640,20 @@
             'Construccion-Otros': 'Otros',
             // Antigüedades subcats
             'Antiguedades-Coleccionables': 'Coleccionables',
-            // Servicios
+            // Servicios (nuevas categorías)
+            'Profesionales-Administrativos': 'Profesionales y administrativos',
+            'Tecnologia-Digital': 'Tecnología y servicios digitales',
+            'Mantenimiento-Oficios': 'Mantenimiento y oficios',
+            'Estetica-Belleza': 'Estética y belleza',
+            'Terapia-Salud': 'Terapia y salud',
+            'Diseno-Paisajismo': 'Diseño y paisajismo',
+            'Hospitalidad-Turismo': 'Hospitalidad y turismo',
+            'Otros-Servicios': 'Otros servicios',
+            // Servicios legacy (compatibilidad con publicaciones anteriores)
             'Belleza-Estetica': 'Belleza y estética', 'Peluqueria': 'Peluquería',
             'Hogar-Reparaciones': 'Hogar y reparaciones', 'Plomeria-Electricidad': 'Plomería y electricidad',
             'Tecnologia-Soporte': 'Tecnología', 'Clases-Tutorias': 'Clases y tutorías',
             'Diseno-Creatividad': 'Diseño', 'Servicios-Profesionales': 'Profesionales',
-            'Otros-Servicios': 'Otros servicios',
         };
 
         function labelCat(cat) {
@@ -621,19 +661,30 @@
         }
 
         function filtrarCategoria(cat) {
+            const wrapperSub = document.getElementById('wrapper-subcats');
+            const filtrosSub = document.getElementById('filtros-subcats');
+
+            // Toggle: si ya está activa y el panel está abierto, solo lo cierra
+            if (categoriaActual === cat && SUBCATS_FILTRO[cat] && wrapperSub.style.display !== 'none') {
+                wrapperSub.style.display = 'none';
+                filtrosSub.innerHTML = '';
+                return;
+            }
+
             categoriaActual = cat;
             document.querySelectorAll('#filtros-productos .btn-filtro.cat').forEach(b => b.classList.remove('activo'));
             const btn = document.getElementById('cat-btn-' + cat);
             if (btn) btn.classList.add('activo');
-            const wrapperSub = document.getElementById('wrapper-subcats');
-            const filtrosSub = document.getElementById('filtros-subcats');
+
             if (SUBCATS_FILTRO[cat]) {
                 filtrosSub.innerHTML =
                     `<button class="btn-filtro subcat activo" onclick="cargarArticulos('${cat}', this)">Todas</button>` +
                     SUBCATS_FILTRO[cat].map(s =>
                         `<button class="btn-filtro subcat" onclick="cargarArticulos('${s.value}', this)">${s.label}</button>`
                     ).join('');
-                wrapperSub.style.display = 'block';
+                // Re-lanzar animación
+                wrapperSub.style.display = 'none';
+                requestAnimationFrame(() => { wrapperSub.style.display = 'block'; });
             } else {
                 wrapperSub.style.display = 'none';
                 filtrosSub.innerHTML = '';
@@ -643,6 +694,13 @@
 
         function cambiarTipo(tipo) {
             tipoActual = tipo;
+            // Resetear filtro de venta al cambiar de tipo
+            filtroVenta = null;
+            document.getElementById('fv-todos').className   = 'btn-fv activo';
+            document.getElementById('fv-subasta').className = 'btn-fv';
+            document.getElementById('fv-venta').className   = 'btn-fv';
+            // El filtro de venta solo aplica a productos
+            document.getElementById('filtro-venta').style.display = tipo === 'productos' ? 'flex' : 'none';
             document.getElementById('btn-productos').classList.toggle('activo', tipo === 'productos');
             document.getElementById('btn-servicios').classList.toggle('activo', tipo === 'servicios');
             const wrapperProd = document.getElementById('wrapper-productos');
@@ -674,7 +732,8 @@
                 } else {
                     consulta = consulta.eq('categoria', filtro);
                 }
-                const { data: articulos, error } = await consulta;
+                if (filtroVenta) consulta = consulta.eq('tipo_venta', filtroVenta);
+                const { data: articulos, error } = await consulta.order('created_at', { ascending: false }).limit(80);
                 if (error) throw error;
                 const lista = document.getElementById('articulos-lista');
                 lista.innerHTML = '';
@@ -707,8 +766,7 @@
         }
 
         function gestionarSesion() {
-            const btn = document.getElementById('btn-sesion');
-            if (btn.innerText === "🚪 Salir") {
+            if (usuarioActualId) {
                 _supabase.auth.signOut().then(() => window.location.reload());
             } else {
                 window.location.href = 'login.html';
@@ -719,7 +777,9 @@
             const termino = document.getElementById('input-busqueda').value.trim();
             if (!termino) { cargarArticulos('Todos'); return; }
             try {
-                const { data: articulos, error } = await _supabase.from('articulos').select('*').ilike('Titulo', `%${termino}%`);
+                let qBuscar = _supabase.from('articulos').select('*').ilike('Titulo', `%${termino}%`);
+                if (filtroVenta) qBuscar = qBuscar.eq('tipo_venta', filtroVenta);
+                const { data: articulos, error } = await qBuscar.order('created_at', { ascending: false }).limit(80);
                 if (error) throw error;
                 const lista = document.getElementById('articulos-lista');
                 lista.innerHTML = '';
@@ -745,6 +805,7 @@
             const pagoConfirmado = art.pago_confirmado;
 
             let boton = '';
+            let btnCalificar = '';
             let badgeTipo = '';
             let relojHtml = '';
 
@@ -807,6 +868,11 @@
                 }
             }
 
+            // Botón calificar: solo para el comprador/ganador, después de pago confirmado
+            if (pagoConfirmado && usuarioActualId && (soyComprador || soyGanador)) {
+                btnCalificar = `<button class="btn-preguntar" style="background:var(--verde-suave);color:#333;border-color:var(--verde-lima);display:flex;align-items:center;justify-content:center;gap:6px;" id="btn-cal-${art.id}" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')"><img src="mazo.svg" style="width:18px;height:18px;"> Calificar al vendedor</button>`;
+            }
+
             const todasFotos = [art.foto_url].concat(art.fotos_extra || []).filter(Boolean);
             const badgeFotos = todasFotos.length > 1 ? `<span class="badge-fotos">📷 ${todasFotos.length}</span>` : '';
             const precioDisplay = esVentaDirecta
@@ -814,23 +880,24 @@
                 : `<div class="precio">$<span id="precio-${art.id}">${art.precio_actual || art.precio_base}</span></div>`;
 
             div.innerHTML = `
-                <span class="tag-cat">${labelCat(art.categoria)}</span>
+                <span class="tag-cat">${escapeHtml(labelCat(art.categoria))}</span>
                 ${badgeTipo}
-                <img src="${art.foto_url || ''}" class="foto-art" data-fotos-id="${art.id}" style="cursor:pointer;">
+                <img src="${escapeHtml(art.foto_url || '')}" class="foto-art" data-fotos-id="${art.id}" style="cursor:pointer;">
                 ${badgeFotos}
-                <div class="titulo">${art.Titulo}</div>
+                <div class="titulo">${escapeHtml(art.Titulo)}</div>
                 <div class="apodo-art" id="apodo-${art.id}" onclick="abrirModalPerfil('${art.perfil_id}')">👤 Cargando...</div>
-                <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
+                <div class="descripcion">${escapeHtml(art.descripcion || 'Sin detalles adicionales')}</div>
                 ${precioDisplay}
                 ${relojHtml}
                 ${boton}
+                ${btnCalificar}
                 <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">❓ Preguntas</button>
-                ${esMia && !art.comprador_id && (art.tipo_venta === 'venta' || (art.precio_actual || art.precio_base) === art.precio_base) ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ Eliminar publicación</button>` : ''}
-                <button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 Compartir</button>
+            ${esMia && !art.comprador_id && (art.tipo_venta === 'venta' || (art.precio_actual || art.precio_base) === art.precio_base) ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ Eliminar publicación</button>` : ''}
+<button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 Compartir</button>   
             `;
             lista.appendChild(div);
 
-            _supabase.from('perfiles').select('apodo, nombre_completo, created_at, avatar_url').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
+            _supabase.from('perfiles').select('apodo, nombre_completo').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
                 const apodoEl = document.getElementById('apodo-' + art.id);
                 if (apodoEl && perfil) apodoEl.innerText = '👤 ' + (perfil.apodo || perfil.nombre_completo || 'Usuario');
             });
@@ -842,6 +909,35 @@
             }
 
             if (!esVentaDirecta) iniciarReloj(art.id, art.finaliza_en);
+
+            // Chequeo asíncrono del botón calificar: 15 días + no haber calificado antes
+            if (pagoConfirmado && usuarioActualId && (soyComprador || soyGanador)) {
+                const confirmadoEn = art.confirmado_en;
+                _supabase.from('calificaciones')
+                    .select('id').eq('articulo_id', art.id).eq('comprador_id', usuarioActualId)
+                    .maybeSingle()
+                    .then(({ data: calExistente }) => {
+                        const btnCal = document.getElementById('btn-cal-' + art.id);
+                        if (!btnCal) return;
+                        if (calExistente) {
+                            btnCal.disabled = true;
+                            btnCal.innerText = '✅ Ya calificaste esta compra';
+                            btnCal.style.background = '#e8f5e9';
+                            btnCal.style.color = '#2e7d32';
+                            btnCal.style.borderColor = '#a5d6a7';
+                            return;
+                        }
+                        if (confirmadoEn) {
+                            const diasPasados = (Date.now() - new Date(confirmadoEn).getTime()) / 86400000;
+                            if (diasPasados < 15) {
+                                const diasRestantes = Math.ceil(15 - diasPasados);
+                                btnCal.disabled = true;
+                                btnCal.innerText = `⏳ Podrás calificar en ${diasRestantes} día${diasRestantes !== 1 ? 's' : ''}`;
+                                btnCal.style.opacity = '0.6';
+                            }
+                        }
+                    });
+            }
         }
 
         // ── PREGUNTAS ───────────────────────────────────────────────
@@ -849,8 +945,10 @@
             articuloPreguntaActual = articuloId;
             vendedorPreguntaActual = vendedorId;
             document.getElementById('texto-pregunta').value = '';
+
             const seccion = document.getElementById('seccion-nueva-pregunta');
             seccion.style.display = usuarioActualId === vendedorId ? 'none' : 'block';
+
             await cargarPreguntas(articuloId, vendedorId);
             document.getElementById('modal-preguntas').classList.add('activo');
         }
@@ -927,6 +1025,55 @@
             document.getElementById('modal-preguntas').classList.remove('activo');
             articuloPreguntaActual = null;
             vendedorPreguntaActual = null;
+        }
+
+        // ── CALIFICACIONES ───────────────────────────────────────────────
+        let calArticuloId = null;
+        let calVendedorId = null;
+        let calPuntaje = 0;
+        const CAL_LABELS = ['', '😞 Muy malo', '😐 Regular', '😊 Bueno', '😄 Muy bueno', '🌟 ¡Excelente!'];
+
+        function abrirModalCalificar(articuloId, vendedorId) {
+            calArticuloId = articuloId;
+            calVendedorId = vendedorId;
+            calPuntaje = 0;
+            document.getElementById('cal-comentario').value = '';
+            document.getElementById('cal-label').innerText = '';
+            document.querySelectorAll('.martillo-btn').forEach(b => b.classList.remove('activo'));
+            document.getElementById('modal-calificacion').classList.add('activo');
+        }
+
+        function seleccionarMartillo(n) {
+            calPuntaje = n;
+            document.querySelectorAll('.martillo-btn').forEach((b, i) => b.classList.toggle('activo', i < n));
+            document.getElementById('cal-label').innerText = CAL_LABELS[n];
+        }
+
+        async function enviarCalificacion() {
+            if (!calPuntaje) { alert('⚠️ Elegí una calificación con los martillos antes de enviar.'); return; }
+            const comentario = document.getElementById('cal-comentario').value.trim();
+            const { error } = await _supabase.from('calificaciones').insert([{
+                articulo_id: calArticuloId,
+                comprador_id: usuarioActualId,
+                vendedor_id: calVendedorId,
+                puntaje: calPuntaje,
+                comentario: comentario || null,
+            }]);
+            if (error) { alert('Error al enviar: ' + error.message); return; }
+            cerrarModalCalificacion();
+            const btn = document.getElementById('btn-cal-' + calArticuloId);
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = '✅ ¡Gracias por calificar!';
+                btn.style.background = '#e8f5e9';
+                btn.style.color = '#2e7d32';
+                btn.style.borderColor = '#a5d6a7';
+            }
+        }
+
+        function cerrarModalCalificacion() {
+            document.getElementById('modal-calificacion').classList.remove('activo');
+            calArticuloId = null; calVendedorId = null; calPuntaje = 0;
         }
 
         // ── COMPRAR AHORA ───────────────────────────────────────────
@@ -1060,10 +1207,9 @@
             if (art && new Date(art.finaliza_en).getTime() < Date.now()) { alert("🛑 Esta subasta ya terminó."); return; }
             const span = document.getElementById(`precio-${id}`);
             const nuevo = parseFloat(span.innerText.replace(/\./g,'').replace(',','.')) + monto;
-            const { error } = await _supabase.from('articulos').update({ "precio_actual": nuevo }).eq('id', id);
+            const { error } = await _supabase.from('articulos').update({ precio_actual: nuevo, ganador_id: user.id }).eq('id', id);
             if (error) { alert("Error al ofertar: " + error.message); return; }
             await _supabase.from('ofertas').insert([{ articulo_id: id, perfil_id: user.id, monto: nuevo }]);
-            await _supabase.from('articulos').update({ ganador_id: user.id }).eq('id', id);
         }
 
         _supabase.channel('cambios').on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'articulos' }, payload => {
@@ -1117,6 +1263,20 @@
             document.getElementById('modal-carrusel').classList.add('activo');
         }
         function cerrarCarrusel() { document.getElementById('modal-carrusel').classList.remove('activo'); }
+
+        async function compartir(titulo, id) {
+            const url = window.location.href.split('?')[0] + '?art=' + id;
+            if (navigator.share) {
+                try { await navigator.share({ title: titulo, text: '¡Mirá esta publicación en Quiéndamas!', url }); } catch(e) {}
+            } else {
+                try {
+                    await navigator.clipboard.writeText(url);
+                    alert('✅ ¡Link copiado al portapapeles!');
+                } catch(e) {
+                    alert('📋 Copiá este link:\n' + url);
+                }
+            }
+        }
         function cambiarFoto(dir) {
             carruselIndex = (carruselIndex + dir + carruselFotos.length) % carruselFotos.length;
             actualizarCarrusel();
@@ -1129,13 +1289,13 @@
             if (e.target === this) cerrarCarrusel();
         });
 
-        async function eliminarPublicacion(id) {
-            const confirmar = confirm("¿Seguro que querés eliminar esta publicación?");
-            if (!confirmar) return;
-            const { error } = await _supabase.from('articulos').delete().eq('id', id);
-            if (error) { alert("Error al eliminar: " + error.message); return; }
-            filtrarMisPublicaciones();
-        }
+async function eliminarPublicacion(id) {
+    const confirmar = confirm("¿Seguro que querés eliminar esta publicación?");
+    if (!confirmar) return;
+    const { error } = await _supabase.from('articulos').delete().eq('id', id);
+    if (error) { alert("Error al eliminar: " + error.message); return; }
+    filtrarMisPublicaciones();
+}
 
         // ── MI PERFIL ────────────────────────────────────────────────
         async function abrirModalMiPerfil() {
@@ -1153,7 +1313,6 @@
             }
             if (user) document.getElementById('miperfil-email').innerText = user.email || '';
         }
-
         async function subirAvatar(input) {
             if (!input.files[0]) return;
             const msg = document.getElementById('miperfil-msg');
@@ -1169,12 +1328,10 @@
             document.getElementById('miperfil-avatar-img').src = avatarUrl;
             msg.style.color = 'green'; msg.innerText = '✅ ¡Foto actualizada!';
         }
-
         function cerrarModalMiPerfil() {
             document.getElementById('modal-miperfil').classList.remove('activo');
             document.getElementById('miperfil-msg').innerText = '';
         }
-
         // ── PERFIL VENDEDOR ─────────────────────────────────────────
         async function abrirModalPerfil(vendedorId) {
             document.getElementById('perfil-avatar-container').innerHTML = '👤';
@@ -1186,7 +1343,6 @@
             document.getElementById('perfil-puntaje').innerText = 'Cargando...';
             document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Cargando...</div>';
             document.getElementById('modal-perfil').classList.add('activo');
-
             const { data: perfil } = await _supabase.from('perfiles').select('apodo, nombre_completo, created_at, avatar_url').eq('id', vendedorId).maybeSingle();
             if (perfil) {
                 document.getElementById('perfil-apodo').innerText = perfil.apodo || perfil.nombre_completo || 'Usuario';
@@ -1196,26 +1352,24 @@
                 const avatarEl = document.getElementById('perfil-avatar-container');
                 if (perfil.avatar_url) {
                     avatarEl.innerHTML = `<img src="${perfil.avatar_url}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">`;
-                } else {
-                    avatarEl.innerHTML = '👤';
-                }
+                } else { avatarEl.innerHTML = '👤'; }
             }
-
             const { count: ventas } = await _supabase.from('articulos').select('id', { count: 'exact', head: true }).eq('perfil_id', vendedorId).not('comprador_id', 'is', null);
             const { count: compras } = await _supabase.from('articulos').select('id', { count: 'exact', head: true }).eq('comprador_id', vendedorId);
             document.getElementById('perfil-ventas').innerText = ventas || 0;
             document.getElementById('perfil-compras').innerText = compras || 0;
-
             const { data: cals } = await _supabase.from('calificaciones').select('*').eq('vendedor_id', vendedorId).order('created_at', { ascending: false }).limit(5);
             if (cals && cals.length > 0) {
                 const promedio = (cals.reduce((s, c) => s + c.puntaje, 0) / cals.length).toFixed(1);
-                const martillos = '🔨'.repeat(Math.round(promedio)) + '🪓'.repeat(5 - Math.round(promedio));
-                document.getElementById('perfil-martillos').innerText = martillos;
+                const n = Math.round(promedio);
+                const mazoFull  = `<img src="mazo.svg" style="width:22px;height:22px;display:inline-block;">`;
+                const mazoEmpty = `<img src="mazo.svg" style="width:22px;height:22px;display:inline-block;opacity:0.15;filter:grayscale(1)">`;
+                document.getElementById('perfil-martillos').innerHTML = mazoFull.repeat(n) + mazoEmpty.repeat(5 - n);
                 document.getElementById('perfil-puntaje').innerText = `${promedio} · basado en ${cals.length} calificación${cals.length > 1 ? 'es' : ''}`;
                 document.getElementById('perfil-resenas-lista').innerHTML = cals.map(c => `
                     <div class="resena-item">
-                        <div class="r-martillos">${'🔨'.repeat(c.puntaje)}</div>
-                        ${c.comentario ? `<div class="r-texto">"${c.comentario}"</div>` : ''}
+                        <div class="r-martillos">${`<img src="mazo.svg" style="width:16px;height:16px;display:inline-block;">`.repeat(c.puntaje)}</div>
+                        ${c.comentario ? `<div class="r-texto">"${escapeHtml(c.comentario)}"</div>` : ''}
                     </div>`).join('');
             } else {
                 document.getElementById('perfil-martillos').innerText = '—';
@@ -1223,20 +1377,16 @@
                 document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Sin reseñas todavía</div>';
             }
         }
-
-        function cerrarModalPerfil() {
-            document.getElementById('modal-perfil').classList.remove('activo');
-        }
+        function cerrarModalPerfil() { document.getElementById('modal-perfil').classList.remove('activo'); }
 
         revisarSesion();
         cargarArticulos('Todos');
     </script>
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
-        }
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+      }
     </script>
-</body>
 
     <!-- FOOTER REGIONAL -->
     <footer style="
@@ -1283,4 +1433,5 @@
         </div>
     </footer>
 
+</body>
 </html>
