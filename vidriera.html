@@ -39,6 +39,10 @@
             .btn-top { padding: 6px 12px; font-size: 0.8em; }
             .barra-superior-der span { width: 100%; text-align: right; margin-bottom: 2px; }
             .barra-superior-der { justify-content: flex-end; }
+            /* Barra de búsqueda en mobile: ocultar texto "Buscar", solo ícono */
+            .barra-busqueda .btn-buscar-texto { display: none; }
+            .barra-busqueda button:first-of-type { padding: 9px 13px; }
+            .menu-filtro-venta { right: 0; left: auto; min-width: 180px; }
         }
 
         .btn-filtro { background: white; border: 2px solid var(--rosa); color: var(--rosa); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85em; white-space: nowrap; transition: all 0.2s; }
@@ -395,7 +399,7 @@
 
     <div class="barra-busqueda">
         <input type="text" id="input-busqueda" placeholder="🔍 Buscar por título..." onkeydown="if(event.key==='Enter') buscarArticulos()">
-        <button onclick="buscarArticulos()">Buscar</button>
+        <button onclick="buscarArticulos()">🔍<span class="btn-buscar-texto"> Buscar</span></button>
         <button class="btn-hamburguesa" id="btn-hamburguesa" onclick="toggleMenuFiltro()" title="Filtrar por tipo">☰</button>
         <div class="menu-filtro-venta" id="menu-filtro-venta">
             <div class="menu-fv-titulo">Filtrar por tipo</div>
