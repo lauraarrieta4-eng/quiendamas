@@ -503,6 +503,7 @@
             <button class="btn-filtro cat" data-sub id="cat-btn-Vivero"       onclick="filtrarCategoria('Vivero')">🌿 Vivero</button>
             <button class="btn-filtro cat"        id="cat-btn-Hogar"          onclick="filtrarCategoria('Hogar')">🏠 Hogar</button>
             <button class="btn-filtro cat"        id="cat-btn-Electro"        onclick="filtrarCategoria('Electro')">🔌 Electrodomésticos</button>
+            <button class="btn-filtro cat" data-sub id="cat-btn-Alimentos"    onclick="filtrarCategoria('Alimentos')">🛒 Alimentos y Bebidas</button>
             <button class="btn-filtro cat"        id="cat-btn-Otros"          onclick="filtrarCategoria('Otros')">📦 Otros</button>
         </div>
         <button class="filtros-arrow der" onclick="scrollFiltros('filtros-productos', 200)">›</button>
@@ -642,6 +643,14 @@
                 'Antiguedades',
                 'Antiguedades-Coleccionables', // legacy
             ],
+
+            // ── ALIMENTOS Y BEBIDAS ───────────────────────────────────
+            'Alimentos': [
+                'Alimentos',
+                'Alimentos-Almacen',
+                'Alimentos-Bebidas',
+                'Alimentos-Gourmet',
+            ],
         };
 
         // ─────────────────────────────────────────────────────────────
@@ -708,6 +717,13 @@
             ],
 
             // Antigüedades ya no tiene subcategorías
+
+            // ── ALIMENTOS Y BEBIDAS ───────────────────────────────────
+            'Alimentos': [
+                { value: 'Alimentos-Almacen',  label: '🧺 Almacén' },
+                { value: 'Alimentos-Bebidas',  label: '🥤 Bebidas' },
+                { value: 'Alimentos-Gourmet',  label: '🍷 Productos Gourmet' },
+            ],
         };
 
         // ─────────────────────────────────────────────────────────────
@@ -765,6 +781,11 @@
             'Construccion-Otros': 'Otros',
             // Antigüedades legacy (artículos ya publicados con esta subcat)
             'Antiguedades-Coleccionables': 'Antigüedades y col.',
+            // Alimentos y Bebidas
+            'Alimentos': 'Alimentos y Bebidas',
+            'Alimentos-Almacen':  'Almacén',
+            'Alimentos-Bebidas':  'Bebidas',
+            'Alimentos-Gourmet':  'Productos Gourmet',
             // Servicios (nuevas categorías)
             'Profesionales-Administrativos': 'Profesionales y administrativos',
             'Tecnologia-Digital': 'Tecnología y servicios digitales',
