@@ -493,14 +493,13 @@
         <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-productos', -200)">‹</button>
         <div class="filtros" id="filtros-productos">
             <button class="btn-filtro cat activo" id="cat-btn-Todos"          onclick="filtrarCategoria('Todos')">📦 Todos</button>
-            <button class="btn-filtro cat"        id="cat-btn-Autos"          onclick="filtrarCategoria('Autos')">🚗 Autos</button>
-            <button class="btn-filtro cat"        id="cat-btn-Motos"          onclick="filtrarCategoria('Motos')">🏍️ Motos</button>
+            <button class="btn-filtro cat"        id="cat-btn-Vehiculos"      onclick="filtrarCategoria('Vehiculos')">🚗 Vehículos</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Tecnologia"   onclick="filtrarCategoria('Tecnologia')">📱 Tecnología</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Moda"         onclick="filtrarCategoria('Moda')">👗 Moda</button>
             <button class="btn-filtro cat"        id="cat-btn-Joyas"          onclick="filtrarCategoria('Joyas')">⌚ Joyas</button>
             <button class="btn-filtro cat"        id="cat-btn-Belleza"        onclick="filtrarCategoria('Belleza')">💄 Belleza</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Construccion" onclick="filtrarCategoria('Construccion')">🏗️ Construcción</button>
-            <button class="btn-filtro cat" data-sub id="cat-btn-Antiguedades" onclick="filtrarCategoria('Antiguedades')">🏺 Antigüedades</button>
+            <button class="btn-filtro cat"        id="cat-btn-Antiguedades" onclick="filtrarCategoria('Antiguedades')">🏺 Antigüedades y col.</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Vivero"       onclick="filtrarCategoria('Vivero')">🌿 Vivero</button>
             <button class="btn-filtro cat"        id="cat-btn-Hogar"          onclick="filtrarCategoria('Hogar')">🏠 Hogar</button>
             <button class="btn-filtro cat"        id="cat-btn-Electro"        onclick="filtrarCategoria('Electro')">🔌 Electrodomésticos</button>
@@ -586,6 +585,13 @@
         // ─────────────────────────────────────────────────────────────
         const VALORES_CAT = {
 
+            // ── VEHÍCULOS ─────────────────────────────────────────────
+            'Vehiculos': [
+                'Vehiculos',
+                // legacy: antes eran dos categorías separadas
+                'Autos', 'Motos',
+            ],
+
             // ── TECNOLOGÍA ────────────────────────────────────────────
             'Tecnologia': [
                 'Tecnologia',
@@ -607,7 +613,7 @@
                 'Arboles-Frutales','Arboles-Ornamentales',   // nueva cat Árboles
                 'Semillas',
                 'Fertilizantes-Organicos','Fertilizantes-Inorganicos',
-                'Macetas-Barro','Macetas-Plastico','Macetas-Ceramica',
+                'Macetas','Macetas-Barro','Macetas-Plastico','Macetas-Ceramica', // legacy
                 'Riego',
                 // valores legacy por si había publicaciones anteriores
                 'Riego-Goteo','Riego-Aspersores','Riego-Mangueras','Riego-Automatizacion','Riego-Bombas',
@@ -634,7 +640,7 @@
             // ── ANTIGÜEDADES ──────────────────────────────────────────
             'Antiguedades': [
                 'Antiguedades',
-                'Antiguedades-Coleccionables',
+                'Antiguedades-Coleccionables', // legacy
             ],
         };
 
@@ -674,9 +680,7 @@
                 { value: 'Semillas',                  label: '🌱 Semillas' },
                 { value: 'Fertilizantes-Organicos',   label: '🌿 Fertiliz. Org.' },
                 { value: 'Fertilizantes-Inorganicos', label: '🧪 Fertiliz. Inorg.' },
-                { value: 'Macetas-Barro',             label: '🪴 Macetas barro' },
-                { value: 'Macetas-Plastico',          label: '🪣 Macetas plástico' },
-                { value: 'Macetas-Ceramica',          label: '🏺 Macetas cerámica' },
+                { value: 'Macetas',                   label: '🪴 Macetas' },
                 { value: 'Riego',                     label: '💧 Materiales para riego' },
                 { value: 'Decoracion',                label: '✨ Decoración' },
             ],
@@ -703,17 +707,15 @@
                 { value: 'Construccion-Otros',        label: '📦 Otros' },
             ],
 
-            // ── ANTIGÜEDADES ──────────────────────────────────────────
-            'Antiguedades': [
-                { value: 'Antiguedades-Coleccionables', label: '🏅 Coleccionables' },
-            ],
+            // Antigüedades ya no tiene subcategorías
         };
 
         // ─────────────────────────────────────────────────────────────
         // LABEL_CAT: etiqueta legible para mostrar en la tarjeta
         // ─────────────────────────────────────────────────────────────
         const LABEL_CAT = {
-            'Autos': 'Autos', 'Motos': 'Motos',
+            'Vehiculos': 'Vehículos',
+            'Autos': 'Vehículos', 'Motos': 'Vehículos', // legacy → mismo label
             'Computacion': 'PC y notebooks',
             'Celulares': 'Celulares',
             'AudioVideo': 'Audio y Video',
@@ -721,7 +723,7 @@
             'Moda': 'Moda',
             'Joyas': 'Joyas', 'Belleza': 'Belleza',
             'Construccion': 'Construcción',
-            'Antiguedades': 'Antigüedades',
+            'Antiguedades': 'Antigüedades y col.',
             'Vivero': 'Vivero',
             'Hogar': 'Hogar',
             'Herramientas': 'Herramientas',
@@ -746,8 +748,8 @@
             'Arboles-Frutales': 'Árboles frutales',
             'Arboles-Ornamentales': 'Árboles ornamentales',
             'Fertilizantes-Organicos': 'Fertiliz. Org.', 'Fertilizantes-Inorganicos': 'Fertiliz. Inorg.',
-            'Macetas-Barro': 'Macetas barro', 'Macetas-Plastico': 'Macetas plástico',
-            'Macetas-Ceramica': 'Macetas cerámica',
+            'Macetas': 'Macetas',
+            'Macetas-Barro': 'Macetas', 'Macetas-Plastico': 'Macetas', 'Macetas-Ceramica': 'Macetas', // legacy
             'Riego': 'Materiales para riego',
             'Riego-Goteo': 'Riego', 'Riego-Aspersores': 'Riego',
             'Riego-Mangueras': 'Riego', 'Riego-Automatizacion': 'Riego',
@@ -761,8 +763,8 @@
             'Construccion-Herramientas': 'Herramientas', 'Construccion-Materiales': 'Materiales',
             'Construccion-Maquinas': 'Máquinas', 'Construccion-Pinturas': 'Pinturas',
             'Construccion-Otros': 'Otros',
-            // Antigüedades subcats
-            'Antiguedades-Coleccionables': 'Coleccionables',
+            // Antigüedades legacy (artículos ya publicados con esta subcat)
+            'Antiguedades-Coleccionables': 'Antigüedades y col.',
             // Servicios (nuevas categorías)
             'Profesionales-Administrativos': 'Profesionales y administrativos',
             'Tecnologia-Digital': 'Tecnología y servicios digitales',
