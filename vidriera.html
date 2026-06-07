@@ -458,6 +458,7 @@
                     </div>
                     <div id="lista-notif"><div class="notif-vacia">Sin notificaciones nuevas</div></div>
                 </div>
+                <button id="btn-instalar-pwa" onclick="instalarPWA()" class="btn-top" style="display:none;" title="Instalar la app en tu dispositivo">📲 Instalar</button>
                 <button id="btn-sesion" onclick="gestionarSesion()" class="btn-top primario">🔑 Ingresar</button>
                 <button onclick="window.location.href='publicar.html'" class="btn-top">➕ Publicar</button>
             </div>
@@ -1672,6 +1673,32 @@ async function eliminarPublicacion(id) {
         cargarArticulos('Todos');
     </script>
     <script>
+      // ── PWA: captura el prompt de instalación ──────────────────────
+      let _deferredInstall = null;
+
+      window.addEventListener('beforeinstallprompt', e => {
+        e.preventDefault();
+        _deferredInstall = e;
+        const btn = document.getElementById('btn-instalar-pwa');
+        if (btn) btn.style.display = 'flex';
+      });
+
+      window.addEventListener('appinstalled', () => {
+        _deferredInstall = null;
+        const btn = document.getElementById('btn-instalar-pwa');
+        if (btn) btn.style.display = 'none';
+      });
+
+      async function instalarPWA() {
+        if (!_deferredInstall) return;
+        _deferredInstall.prompt();
+        const { outcome } = await _deferredInstall.userChoice;
+        _deferredInstall = null;
+        const btn = document.getElementById('btn-instalar-pwa');
+        if (btn) btn.style.display = 'none';
+      }
+
+      // ── Service Worker ─────────────────────────────────────────────
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js');
       }
