@@ -117,19 +117,30 @@
         .tarjeta { background: white; border-radius: 16px; padding: 15px; width: 90%; max-width: 320px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; border-top: 4px solid var(--verde-lima); transition: transform 0.2s, box-shadow 0.2s; }
         @media (max-width: 600px) {
             .contenedor { grid-template-columns: repeat(2, 1fr); gap: 8px; justify-items: stretch; }
-            .tarjeta { width: 100%; max-width: none; padding: 9px; border-radius: 12px; }
-            .foto-art { height: 130px; border-radius: 8px; margin-bottom: 6px; }
-            .titulo { font-size: 0.82em; }
+            .tarjeta { width: 100%; max-width: none; padding: 8px; border-radius: 12px; }
+            .foto-art { height: 110px; border-radius: 8px; margin-bottom: 5px; }
+            .titulo { font-size: 0.8em; }
             .descripcion { display: none; }
-            .precio { font-size: 1.1em; margin: 4px 0; }
-            .reloj { font-size: 0.72em; padding: 5px; margin-bottom: 6px; }
-            .tag-cat { font-size: 0.6em; padding: 2px 6px; max-width: 80px; }
-            .badge-fotos { font-size: 0.62em; padding: 2px 5px; }
-            .btn-oferta, .btn-comprar, .btn-vendedor, .btn-ganador,
-            .btn-compartir, .btn-preguntar, .btn-eliminar, .btn-calificar {
+            .precio { font-size: 1.05em; margin: 3px 0; }
+            .reloj { font-size: 0.68em; padding: 4px; margin-bottom: 4px; }
+            .tag-cat { font-size: 0.58em; padding: 2px 5px; max-width: 80px; }
+            .badge-fotos { font-size: 0.6em; padding: 2px 4px; }
+            .btn-oferta, .btn-comprar, .btn-vendedor, .btn-ganador, .btn-calificar {
                 font-size: 0.72em; padding: 7px 4px; border-radius: 8px; gap: 3px; margin-top: 4px;
             }
-            .apodo-art { font-size: 0.75em; }
+            .apodo-art { font-size: 0.72em; margin-bottom: 2px; }
+            /* Botones secundarios como iconos en fila */
+            .acciones-sec { display: flex; gap: 5px; align-items: center; margin-top: 4px; }
+            .acciones-sec .btn-preguntar,
+            .acciones-sec .btn-compartir {
+                width: 34px; height: 34px; min-width: 34px;
+                border-radius: 50%; padding: 0; font-size: 1.05em;
+                margin-top: 0; flex-shrink: 0;
+            }
+            .acciones-sec .btn-eliminar {
+                flex: 1; font-size: 0.65em; padding: 5px 2px; margin-top: 0; border-radius: 8px;
+            }
+            .btn-txt { display: none; }
         }
         .tarjeta:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.13); }
         .tag-cat { position: absolute; top: 10px; right: 10px; background: var(--lila); font-size: 0.7em; padding: 3px 10px; border-radius: 12px; color: #6a0050; font-weight: bold; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1065,9 +1076,11 @@
                 ${relojHtml}
                 ${boton}
                 ${btnCalificar}
-                <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">❓ Preguntas</button>
-            ${esMia && !art.comprador_id && (art.tipo_venta === 'venta' || (art.precio_actual || art.precio_base) === art.precio_base) ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ Eliminar publicación</button>` : ''}
-<button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 Compartir</button>   
+                <div class="acciones-sec">
+                    <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">❓ <span class="btn-txt">Preguntas</span></button>
+                    <button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 <span class="btn-txt">Compartir</span></button>
+                    ${esMia && !art.comprador_id && (art.tipo_venta === 'venta' || (art.precio_actual || art.precio_base) === art.precio_base) ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ <span class="btn-txt">Eliminar</span></button>` : ''}
+                </div>
             `;
             lista.appendChild(div);
 
