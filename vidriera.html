@@ -834,7 +834,7 @@
                 btnEl.classList.add('activo');
             }
             try {
-                let consulta = _supabase.from('articulos').select('*');
+                let consulta = _supabase.from('articulos').select('*').eq('activo', true);
                 if (filtro === 'Todos') {
                     consulta = consulta.not('categoria', 'in', `(${CATEGORIAS_SERVICIOS.join(',')})`);
                 } else if (filtro === 'Todos-Servicios') {
@@ -957,7 +957,7 @@
             const termino = document.getElementById('input-busqueda').value.trim();
             if (!termino) { cargarArticulos('Todos'); return; }
             try {
-                let qBuscar = _supabase.from('articulos').select('*').ilike('Titulo', `%${termino}%`);
+                let qBuscar = _supabase.from('articulos').select('*').eq('activo', true).ilike('Titulo', `%${termino}%`);
                 if (filtroVenta) qBuscar = qBuscar.eq('tipo_venta', filtroVenta);
                 const { data: articulos, error } = await qBuscar.order('created_at', { ascending: false }).limit(80);
                 if (error) throw error;
@@ -1281,12 +1281,43 @@
             if (!usuarioActualId) return;
             document.getElementById('input-busqueda').value = '';
             try {
-                const { data: articulos, error } = await _supabase.from('articulos').select('*').eq('perfil_id', usuarioActualId);
+                const { data: articulos, error } = await _supabase.from('articulos').select('*')
+                    .eq('perfil_id', usuarioActualId).order('created_at', { ascending: false });
                 if (error) throw error;
                 const lista = document.getElementById('articulos-lista');
                 lista.innerHTML = articulos.length ? "" : "<div class='sin-resultados'>No publicaste nada todavía.</div>";
-                articulos.forEach(art => renderTarjeta(art, lista, true));
+                articulos.forEach(art => {
+                    if (!art.activo) {
+                        // Tarjeta simplificada para inactivas
+                        const div = document.createElement('div');
+                        div.className = 'tarjeta';
+                        div.style.opacity = '0.55';
+                        div.style.border = '2px dashed #ccc';
+                        div.innerHTML = `
+                            <div style="font-size:0.72em;background:#eee;color:#999;border-radius:8px;padding:3px 8px;display:inline-block;margin-bottom:6px;">INACTIVA</div>
+                            <div class="titulo">${escapeHtml(art.Titulo)}</div>
+                            <div style="font-size:0.82em;color:#aaa;margin:6px 0;">$${(art.precio_base||0).toLocaleString('es-AR')}</div>
+                            <button class="btn-compartir" style="border-color:#43a047;color:#2e7d32;" onclick="reactivarPublicacion(${art.id})">♻️ Republicar</button>
+                        `;
+                        lista.appendChild(div);
+                    } else {
+                        renderTarjeta(art, lista, true);
+                    }
+                });
             } catch (e) { console.error(e); }
+        }
+
+        async function reactivarPublicacion(id) {
+            const confirmar = confirm("¿Querés volver a publicar este artículo en la vidriera?");
+            if (!confirmar) return;
+            const { error } = await _supabase.from('articulos').update({
+                activo: true,
+                ganador_id: null,
+                comprador_id: null,
+                precio_actual: null
+            }).eq('id', id);
+            if (error) { alert("Error: " + error.message); return; }
+            filtrarMisPublicaciones();
         }
 
         async function verDatosComprador(ganadorId) {
@@ -1496,10 +1527,10 @@
         });
 
 async function eliminarPublicacion(id) {
-    const confirmar = confirm("¿Seguro que querés eliminar esta publicación?");
+    const confirmar = confirm("¿Seguro que querés dar de baja esta publicación? El historial se conserva.");
     if (!confirmar) return;
-    const { error } = await _supabase.from('articulos').delete().eq('id', id);
-    if (error) { alert("Error al eliminar: " + error.message); return; }
+    const { error } = await _supabase.from('articulos').update({ activo: false }).eq('id', id);
+    if (error) { alert("Error: " + error.message); return; }
     filtrarMisPublicaciones();
 }
 
