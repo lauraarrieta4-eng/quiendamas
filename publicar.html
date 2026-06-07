@@ -89,17 +89,17 @@
     <div id="cats-producto">
         <label>Categoría:</label>
         <select id="cat-principal" onchange="actualizarSubcat()">
-            <option value="Autos">🚗 Autos</option>
-            <option value="Motos">🏍️ Motos</option>
+            <option value="Vehiculos">🚗 Vehículos</option>
             <option value="Tecnologia">📱 Tecnología</option>
             <option value="Moda">👗 Moda</option>
             <option value="Joyas">⌚ Joyas y Relojes</option>
             <option value="Belleza">💄 Belleza y Salud</option>
             <option value="Construccion">🏗️ Construcción</option>
-            <option value="Antiguedades">🏺 Antigüedades</option>
+            <option value="Antiguedades">🏺 Antigüedades y coleccionables</option>
             <option value="Vivero">🌿 Vivero y Jardín</option>
             <option value="Hogar">🏠 Hogar y Muebles</option>
             <option value="Electro">🔌 Electrodomésticos</option>
+            <option value="Alimentos">🛒 Alimentos y Bebidas</option>
             <option value="Otros">📦 Otros</option>
         </select>
 
@@ -122,15 +122,14 @@
     <div id="cats-servicio" style="display:none;">
         <label>Categoría de servicio:</label>
         <select id="categoria-servicio">
-            <option value="Belleza-Estetica">💅 Belleza y estética</option>
-            <option value="Peluqueria">✂️ Peluquería</option>
-            <option value="Hogar-Reparaciones">🏠 Hogar y reparaciones</option>
-            <option value="Plomeria-Electricidad">🔧 Plomería y electricidad</option>
-            <option value="Tecnologia-Soporte">💻 Tecnología y soporte</option>
-            <option value="Clases-Tutorias">📚 Clases y tutorías</option>
-            <option value="Diseno-Creatividad">🎨 Diseño y creatividad</option>
-            <option value="Servicios-Profesionales">⚖️ Servicios profesionales</option>
-            <option value="Otros-Servicios">📦 Otros servicios</option>
+            <option value="Profesionales-Administrativos">💼 Profesionales y administrativos</option>
+            <option value="Tecnologia-Digital">💻 Tecnología y servicios digitales</option>
+            <option value="Mantenimiento-Oficios">🔧 Mantenimiento y oficios</option>
+            <option value="Estetica-Belleza">💄 Estética y belleza</option>
+            <option value="Terapia-Salud">🌿 Terapia y salud</option>
+            <option value="Diseno-Paisajismo">🎨 Diseño y paisajismo</option>
+            <option value="Hospitalidad-Turismo">🏔️ Hospitalidad y experiencias turísticas</option>
+            <option value="Otros-Servicios">📦 Otros</option>
         </select>
     </div>
 
@@ -219,8 +218,13 @@
         ],
 
         // ── ANTIGÜEDADES ──────────────────────────────────────────────
-        'Antiguedades': [
-            { value: 'Antiguedades-Coleccionables', label: '🏅 Coleccionables' },
+        'Antiguedades': [],
+
+        // ── ALIMENTOS Y BEBIDAS ───────────────────────────────────────
+        'Alimentos': [
+            { value: 'Alimentos-Almacen', label: '🧺 Almacén' },
+            { value: 'Alimentos-Bebidas', label: '🥤 Bebidas' },
+            { value: 'Alimentos-Gourmet', label: '🍷 Productos Gourmet' },
         ],
 
         // ── VIVERO ────────────────────────────────────────────────────
@@ -231,9 +235,7 @@
             { value: 'Plantas-Suculentas',        label: '🌵 Suculentas y cactus' },
             { value: 'Plantas-Coleccion',         label: '⭐ Plantas de colección' },
             { value: 'Semillas',                  label: '🌱 Semillas' },
-            { value: 'Macetas-Barro',             label: '🪴 Macetas de barro' },
-            { value: 'Macetas-Plastico',          label: '🪣 Macetas de plástico' },
-            { value: 'Macetas-Ceramica',          label: '🏺 Macetas de cerámica' },
+            { value: 'Macetas',                   label: '🪴 Macetas' },
             { value: 'Riego',                     label: '💧 Riego' },
             { value: 'Sustratos',                 label: '🌍 Sustratos' },
             { value: 'Fertilizantes-Organicos',   label: '🌿 Fertilizantes orgánicos' },
@@ -325,6 +327,19 @@
         document.getElementById('btn-servicio').classList.toggle('activo', tipo === 'servicio');
         document.getElementById('cats-producto').style.display = tipo === 'producto' ? 'block' : 'none';
         document.getElementById('cats-servicio').style.display = tipo === 'servicio' ? 'block' : 'none';
+
+        const btnSubasta = document.getElementById('btn-subasta');
+        if (tipo === 'servicio') {
+            // Los servicios solo pueden ser venta directa
+            cambiarModoVenta('venta');
+            btnSubasta.disabled = true;
+            btnSubasta.style.opacity = '0.35';
+            btnSubasta.title = 'Los servicios no admiten subasta';
+        } else {
+            btnSubasta.disabled = false;
+            btnSubasta.style.opacity = '';
+            btnSubasta.title = '';
+        }
     }
 
     // ── FOTOS ─────────────────────────────────────────────────────────
