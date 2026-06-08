@@ -185,6 +185,7 @@
         .btn-eliminar:hover  { background: #e53935; color: white; }
         .btn-calificar { border-color: #43a047; color: #2e7d32; }
         .btn-calificar:hover { background: #e8f5e9; }
+        .badge-verificado { display: inline-block; font-size: 0.8em; background: #e8f5e9; color: #2e7d32; border-radius: 10px; padding: 1px 6px; margin-left: 4px; font-weight: bold; vertical-align: middle; }
         .sin-resultados { text-align: center; width: 100%; color: #999; padding: 30px; font-size: 1em; }
         .badge-fotos { position: absolute; top: 10px; left: 10px; background: var(--rosa); color: white; font-size: 0.72em; padding: 3px 8px; border-radius: 10px; pointer-events: none; }
 
@@ -343,7 +344,7 @@
             </div>
             <div class="miperfil-body">
                 <div class="miperfil-dato"><span class="etiqueta">Apodo</span><input class="miperfil-input" id="miperfil-apodo" placeholder="Tu apodo público"></div>
-                <div class="miperfil-dato"><span class="etiqueta">DNI</span><input class="miperfil-input" id="miperfil-dni" placeholder="Número de DNI"></div>
+                <div class="miperfil-dato"><span class="etiqueta">CUIL</span><input class="miperfil-input" id="miperfil-dni" readonly style="background:#f5f5f5;color:#aaa;cursor:not-allowed;"></div>
                 <div class="miperfil-dato"><span class="etiqueta">Teléfono</span><input class="miperfil-input" id="miperfil-telefono" type="tel" placeholder="Ej: 11 1234-5678"></div>
                 <div class="miperfil-dato"><span class="etiqueta">Dirección</span><input class="miperfil-input" id="miperfil-direccion" placeholder="Tu dirección"></div>
                 <div class="miperfil-dato"><span class="etiqueta">Ciudad</span>
@@ -1118,12 +1119,13 @@
             `;
             lista.appendChild(div);
 
-            _supabase.from('perfiles').select('apodo, nombre_completo, ciudad').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
+            _supabase.from('perfiles').select('apodo, nombre_completo, ciudad, verificado').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
                 const apodoEl = document.getElementById('apodo-' + art.id);
                 if (apodoEl && perfil) {
                     const nombre = perfil.apodo || perfil.nombre_completo || 'Usuario';
                     const ciudad = perfil.ciudad ? ' · 📍 ' + perfil.ciudad : '';
-                    apodoEl.innerText = '👤 ' + nombre + ciudad;
+                    const badgeVerif = perfil.verificado ? ' <span class="badge-verificado">✅ Verificado</span>' : '';
+                    apodoEl.innerHTML = '👤 ' + nombre + ciudad + badgeVerif;
                 }
             });
 
@@ -1632,7 +1634,7 @@ async function eliminarPublicacion(id) {
             const ciudad   = document.getElementById('miperfil-ciudad').value;
             if (!apodo) { msg.style.color = 'red'; msg.innerText = '⚠️ El apodo no puede estar vacío.'; return; }
             msg.style.color = 'blue'; msg.innerText = '⏳ Guardando...';
-            const { error } = await _supabase.from('perfiles').update({ apodo, dni, telefono, direccion, ciudad }).eq('id', usuarioActualId);
+            const { error } = await _supabase.from('perfiles').update({ apodo, telefono, direccion, ciudad }).eq('id', usuarioActualId);
             if (error) { msg.style.color = 'red'; msg.innerText = '❌ Error: ' + error.message; return; }
             msg.style.color = 'green'; msg.innerText = '✅ ¡Datos actualizados!';
             // actualizar apodo en el header
@@ -1668,9 +1670,11 @@ async function eliminarPublicacion(id) {
             document.getElementById('perfil-puntaje').innerText = 'Cargando...';
             document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Cargando...</div>';
             document.getElementById('modal-perfil').classList.add('activo');
-            const { data: perfil } = await _supabase.from('perfiles').select('apodo, nombre_completo, created_at, avatar_url, ciudad').eq('id', vendedorId).maybeSingle();
+            const { data: perfil } = await _supabase.from('perfiles').select('apodo, nombre_completo, created_at, avatar_url, ciudad, verificado').eq('id', vendedorId).maybeSingle();
             if (perfil) {
-                document.getElementById('perfil-apodo').innerText = perfil.apodo || perfil.nombre_completo || 'Usuario';
+                const badgeVerif = perfil.verificado ? ' <span class="badge-verificado">✅ Verificado</span>' : '';
+                const apodoEl = document.getElementById('perfil-apodo');
+                apodoEl.innerHTML = (perfil.apodo || perfil.nombre_completo || 'Usuario') + badgeVerif;
                 const fecha = new Date(perfil.created_at);
                 const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
                 const ciudadTexto = perfil.ciudad ? ` · 📍 ${perfil.ciudad}` : '';
