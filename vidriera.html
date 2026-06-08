@@ -346,6 +346,16 @@
                 <div class="miperfil-dato"><span class="etiqueta">DNI</span><input class="miperfil-input" id="miperfil-dni" placeholder="Número de DNI"></div>
                 <div class="miperfil-dato"><span class="etiqueta">Teléfono</span><input class="miperfil-input" id="miperfil-telefono" type="tel" placeholder="Ej: 11 1234-5678"></div>
                 <div class="miperfil-dato"><span class="etiqueta">Dirección</span><input class="miperfil-input" id="miperfil-direccion" placeholder="Tu dirección"></div>
+                <div class="miperfil-dato"><span class="etiqueta">Ciudad</span>
+                    <select class="miperfil-input" id="miperfil-ciudad">
+                        <option value="">Sin especificar</option>
+                        <option value="Bariloche">Bariloche</option>
+                        <option value="Dinahuapi">Dinahuapi</option>
+                        <option value="Villa La Angostura">Villa La Angostura</option>
+                        <option value="El Bolsón">El Bolsón</option>
+                        <option value="Otra">Otra localidad</option>
+                    </select>
+                </div>
                 <div id="miperfil-msg" style="text-align:center;font-size:0.82em;margin:8px 0;min-height:20px;"></div>
                 <div style="display:flex;gap:8px;margin-top:4px;">
                     <button class="btn-cerrar-modal" style="flex:1;" onclick="cerrarModalMiPerfil()">Cerrar</button>
@@ -1108,9 +1118,13 @@
             `;
             lista.appendChild(div);
 
-            _supabase.from('perfiles').select('apodo, nombre_completo').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
+            _supabase.from('perfiles').select('apodo, nombre_completo, ciudad').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
                 const apodoEl = document.getElementById('apodo-' + art.id);
-                if (apodoEl && perfil) apodoEl.innerText = '👤 ' + (perfil.apodo || perfil.nombre_completo || 'Usuario');
+                if (apodoEl && perfil) {
+                    const nombre = perfil.apodo || perfil.nombre_completo || 'Usuario';
+                    const ciudad = perfil.ciudad ? ' · 📍 ' + perfil.ciudad : '';
+                    apodoEl.innerText = '👤 ' + nombre + ciudad;
+                }
             });
 
             fotosCache[art.id] = todasFotos;
@@ -1584,6 +1598,7 @@ async function eliminarPublicacion(id) {
                 document.getElementById('miperfil-dni').value = perfil.dni || '';
                 document.getElementById('miperfil-telefono').value = perfil.telefono || '';
                 document.getElementById('miperfil-direccion').value = perfil.direccion || '';
+                document.getElementById('miperfil-ciudad').value = perfil.ciudad || '';
                 if (perfil.avatar_url) document.getElementById('miperfil-avatar-img').src = perfil.avatar_url;
             }
             if (user) document.getElementById('miperfil-email').innerText = user.email || '';
@@ -1595,9 +1610,10 @@ async function eliminarPublicacion(id) {
             const dni      = document.getElementById('miperfil-dni').value.trim();
             const telefono = document.getElementById('miperfil-telefono').value.trim();
             const direccion = document.getElementById('miperfil-direccion').value.trim();
+            const ciudad   = document.getElementById('miperfil-ciudad').value;
             if (!apodo) { msg.style.color = 'red'; msg.innerText = '⚠️ El apodo no puede estar vacío.'; return; }
             msg.style.color = 'blue'; msg.innerText = '⏳ Guardando...';
-            const { error } = await _supabase.from('perfiles').update({ apodo, dni, telefono, direccion }).eq('id', usuarioActualId);
+            const { error } = await _supabase.from('perfiles').update({ apodo, dni, telefono, direccion, ciudad }).eq('id', usuarioActualId);
             if (error) { msg.style.color = 'red'; msg.innerText = '❌ Error: ' + error.message; return; }
             msg.style.color = 'green'; msg.innerText = '✅ ¡Datos actualizados!';
             // actualizar apodo en el header
@@ -1633,12 +1649,13 @@ async function eliminarPublicacion(id) {
             document.getElementById('perfil-puntaje').innerText = 'Cargando...';
             document.getElementById('perfil-resenas-lista').innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;">Cargando...</div>';
             document.getElementById('modal-perfil').classList.add('activo');
-            const { data: perfil } = await _supabase.from('perfiles').select('apodo, nombre_completo, created_at, avatar_url').eq('id', vendedorId).maybeSingle();
+            const { data: perfil } = await _supabase.from('perfiles').select('apodo, nombre_completo, created_at, avatar_url, ciudad').eq('id', vendedorId).maybeSingle();
             if (perfil) {
                 document.getElementById('perfil-apodo').innerText = perfil.apodo || perfil.nombre_completo || 'Usuario';
                 const fecha = new Date(perfil.created_at);
                 const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-                document.getElementById('perfil-desde').innerText = `Miembro desde ${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
+                const ciudadTexto = perfil.ciudad ? ` · 📍 ${perfil.ciudad}` : '';
+                document.getElementById('perfil-desde').innerText = `Miembro desde ${meses[fecha.getMonth()]} ${fecha.getFullYear()}${ciudadTexto}`;
                 const avatarEl = document.getElementById('perfil-avatar-container');
                 if (perfil.avatar_url) {
                     avatarEl.innerHTML = `<img src="${perfil.avatar_url}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">`;
