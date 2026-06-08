@@ -309,7 +309,7 @@
         </div>
 
         <!-- Video -->
-        <video id="bienvenida-video" playsinline style="
+        <video id="bienvenida-video" playsinline preload="auto" style="
             display: none;
             max-width: 100%;
             max-height: 100vh;
@@ -351,18 +351,16 @@
             const video = document.getElementById('bienvenida-video');
             const saltar = document.getElementById('bienvenida-saltar');
 
+            document.getElementById('bienvenida-tap').style.display = 'none';
             video.style.display = 'block';
             saltar.style.display = 'block';
-            document.getElementById('bienvenida-tap').style.display = 'none';
 
-            video.addEventListener('ended', cerrarBienvenida);
-            video.addEventListener('error', cerrarBienvenida);
-
-            video.load();
-            const promise = video.play();
-            if (promise !== undefined) {
-                promise.catch(() => cerrarBienvenida());
-            }
+            // play() debe llamarse directo sin load() para mantener el permiso de audio del gesto
+            video.play()
+                .then(() => {
+                    video.addEventListener('ended', cerrarBienvenida);
+                })
+                .catch(() => cerrarBienvenida());
         }
 
         function cerrarBienvenida() {
