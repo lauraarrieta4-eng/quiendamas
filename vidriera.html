@@ -1315,6 +1315,16 @@
             if (!confirmar) return;
             const { error } = await _supabase.from('articulos').update({ comprador_id: user.id, ganador_id: user.id }).eq('id', id);
             if (error) { alert("Error al procesar la compra: " + error.message); return; }
+
+            // Notificar al vendedor (campanita + email vía trigger)
+            const { data: compradorPerfil } = await _supabase.from('perfiles').select('apodo, nombre_completo').eq('id', user.id).maybeSingle();
+            const nombreComprador = compradorPerfil ? (compradorPerfil.apodo || compradorPerfil.nombre_completo || 'Un usuario') : 'Un usuario';
+            await _supabase.from('notificaciones').insert([{
+                usuario_id: art.perfil_id,
+                mensaje: `🎉 ¡Vendiste "${art.Titulo}"! ${nombreComprador} lo compró por $${(art.precio_base || 0).toLocaleString('es-AR')}. Revisá "Mis Pubs" para ver los datos del comprador.`,
+                articulo_id: id
+            }]);
+
             document.getElementById('modal-compra-ok').classList.add('activo');
             cargarArticulos(categoriaActual);
         }
@@ -1344,11 +1354,15 @@
                         div.className = 'tarjeta';
                         div.style.opacity = '0.55';
                         div.style.border = '2px dashed #ccc';
+                        const esSubastaCerrada = art.tipo_venta === 'subasta';
+                        const accionBtn = esSubastaCerrada
+                            ? `<div style="font-size:0.78em;color:#aaa;margin-top:6px;">🔒 Subasta cerrada — no se puede republicar</div>`
+                            : `<button class="btn-compartir" style="border-color:#43a047;color:#2e7d32;" onclick="reactivarPublicacion(${art.id})">♻️ Republicar</button>`;
                         div.innerHTML = `
-                            <div style="font-size:0.72em;background:#eee;color:#999;border-radius:8px;padding:3px 8px;display:inline-block;margin-bottom:6px;">INACTIVA</div>
+                            <div style="font-size:0.72em;background:#eee;color:#999;border-radius:8px;padding:3px 8px;display:inline-block;margin-bottom:6px;">${esSubastaCerrada ? 'SUBASTA CERRADA' : 'INACTIVA'}</div>
                             <div class="titulo">${escapeHtml(art.Titulo)}</div>
                             <div style="font-size:0.82em;color:#aaa;margin:6px 0;">$${(art.precio_base||0).toLocaleString('es-AR')}</div>
-                            <button class="btn-compartir" style="border-color:#43a047;color:#2e7d32;" onclick="reactivarPublicacion(${art.id})">♻️ Republicar</button>
+                            ${accionBtn}
                         `;
                         lista.appendChild(div);
                     } else {
@@ -1359,6 +1373,11 @@
         }
 
         async function reactivarPublicacion(id) {
+            const { data: art } = await _supabase.from('articulos').select('tipo_venta').eq('id', id).maybeSingle();
+            if (art && art.tipo_venta === 'subasta') {
+                alert("⚠️ Las subastas cerradas no pueden republicarse.");
+                return;
+            }
             const confirmar = confirm("¿Querés volver a publicar este artículo en la vidriera?");
             if (!confirmar) return;
             const { error } = await _supabase.from('articulos').update({
