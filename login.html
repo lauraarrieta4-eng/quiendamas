@@ -40,6 +40,8 @@
         .terminos { margin-top: 15px; font-size: 0.8em; color: #444; background: var(--rosa-claro); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--lila); }
         #mensaje { margin-top: 15px; text-align: center; font-size: 0.9em; font-weight: bold; line-height: 1.4; }
         .hint { font-size: 0.75em; color: #999; margin-top: 3px; }
+        select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid var(--lila); border-radius: 10px; box-sizing: border-box; font-size: 16px; outline: none; transition: border 0.2s; background: white; color: #333; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+        select:focus { border-color: var(--rosa); box-shadow: 0 0 0 2px rgba(224,72,145,0.1); }
 
         /* ── SOLO ESTO CAMBIÓ: logo redondo con nombre ── */
         .logo-login { text-align: center; margin-bottom: 15px; }
@@ -79,6 +81,16 @@
                 <input type="text" id="direccion" placeholder="Calle, número, ciudad">
                 <label>Teléfono:</label>
                 <input type="text" id="telefono" placeholder="Ej: 2944123456">
+                <!-- NUEVO: campo ciudad -->
+                <label>Ciudad / Localidad:</label>
+                <select id="ciudad">
+                    <option value="">Seleccioná tu ciudad</option>
+                    <option value="Bariloche">Bariloche</option>
+                    <option value="Dinahuapi">Dinahuapi</option>
+                    <option value="Villa La Angostura">Villa La Angostura</option>
+                    <option value="El Bolsón">El Bolsón</option>
+                    <option value="Otra">Otra localidad</option>
+                </select>
                 <div class="terminos">
                     <input type="checkbox" id="acepto_terminos" style="width:auto;">
                     Acepto los <a href="terminos.html" target="_blank" style="color:var(--rosa);font-weight:bold;">Términos y Condiciones</a> de Quiéndamas.
@@ -170,9 +182,10 @@
                 const dni = document.getElementById('dni').value;
                 const dir = document.getElementById('direccion').value;
                 const tel = document.getElementById('telefono').value;
+                const ciudad = document.getElementById('ciudad').value;
                 const acepto = document.getElementById('acepto_terminos').checked;
 
-                if (!nombre || !apodo || !dni || !dir || !tel || !acepto) {
+                if (!nombre || !apodo || !dni || !dir || !tel || !ciudad || !acepto) {
                     msg.style.color = "red";
                     msg.innerText = "⚠️ Todos los campos son obligatorios y debés aceptar los términos.";
                     return;
@@ -196,12 +209,11 @@
                 const { data, error } = await _supabase.auth.signUp({
                     email, password,
                     options: {
-                        data: { nombre_completo: nombre, apodo, dni, direccion: dir, telefono: tel },
+                        data: { nombre_completo: nombre, apodo, dni, direccion: dir, telefono: tel, ciudad },
                         emailRedirectTo: 'https://quiendamasapp.com.ar/login.html'
                     }
                 });
 
-                // AQUÍ ESTÁ LA ÚNICA CORRECCIÓN:
                 if (error) { msg.style.color = "red"; msg.innerText = "❌ " + error.message; return; }
 
                 if (!error) {
@@ -209,6 +221,7 @@
                     msg.innerHTML = `<div style="padding:12px;background:#e8f5e9;border-radius:8px;border:1px solid #c8e6c9;text-align:center;"><span style="font-size:2rem;">📩</span><br><b style="color:#2e7d32;">¡Cuenta creada!</b><br><p style="margin:8px 0 0;color:#333;font-size:0.95em;">Revisá tu casilla y también el SPAM para confirmar tu cuenta.</p></div>`;
                     ['email','password','nombre','apodo','dni','direccion','telefono'].forEach(id => document.getElementById(id).value = "");
                     document.getElementById('acepto_terminos').checked = false;
+                    document.getElementById('ciudad').value = "";
                 }
 
             } else {
@@ -227,7 +240,8 @@
                         apodo: meta.apodo || meta.nombre_completo || "Usuario",
                         dni: meta.dni || "",
                         direccion: meta.direccion || "",
-                        telefono: meta.telefono || ""
+                        telefono: meta.telefono || "",
+                        ciudad: meta.ciudad || ""
                     }]);
                 }
 
