@@ -316,7 +316,7 @@
             width: 100%;
             object-fit: contain;
         ">
-            <source src="video%20comienzo.mp4" type="video/mp4">
+            <source src="video-comienzo.mp4" type="video/mp4">
         </video>
 
         <!-- Botón saltar (aparece al iniciar el video) -->
@@ -348,13 +348,21 @@
         })();
 
         function iniciarVideo() {
-            document.getElementById('bienvenida-tap').style.display = 'none';
             const video = document.getElementById('bienvenida-video');
             const saltar = document.getElementById('bienvenida-saltar');
+
             video.style.display = 'block';
             saltar.style.display = 'block';
-            video.play();
+            document.getElementById('bienvenida-tap').style.display = 'none';
+
             video.addEventListener('ended', cerrarBienvenida);
+            video.addEventListener('error', cerrarBienvenida);
+
+            video.load();
+            const promise = video.play();
+            if (promise !== undefined) {
+                promise.catch(() => cerrarBienvenida());
+            }
         }
 
         function cerrarBienvenida() {
