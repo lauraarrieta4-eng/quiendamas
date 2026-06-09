@@ -479,6 +479,7 @@
     <div class="barra-interacciones" id="bloque-interacciones" style="display: none;">
         <button class="btn-interaccion" onclick="filtrarMisPublicaciones()">📝 Mis Pubs</button>
         <button class="btn-interaccion" onclick="filtrarMisOfertas()">💰 Mis Ofertas</button>
+        <button class="btn-interaccion" onclick="filtrarMisCompras()">🛒 Mis Compras</button>
     </div>
 
     <div class="busqueda-wrap">
@@ -920,7 +921,8 @@
             } else {
                 lista.innerHTML = data.map(n => {
                     const hace = tiempoRelativo(n.created_at);
-                    return `<div class="notif-item${n.leida ? '' : ' nueva'}" onclick="irAArticulo('${n.articulo_id}')">
+                    const esPreguntas = n.mensaje.startsWith('❓');
+                    return `<div class="notif-item${n.leida ? '' : ' nueva'}" onclick="abrirNotificacion('${n.articulo_id}', ${esPreguntas})">
                         ${escapeHtml(n.mensaje)}
                         <div class="notif-tiempo">${hace}</div>
                     </div>`;
@@ -950,9 +952,12 @@
             cargarNotificaciones();
         }
 
-        function irAArticulo(articuloId) {
+        async function abrirNotificacion(articuloId, esPreguntas) {
             document.getElementById('panel-notif').classList.remove('abierto');
-            if (articuloId) window.location.href = window.location.pathname + '?art=' + articuloId;
+            await filtrarMisPublicaciones();
+            const tarjeta = document.getElementById('tarjeta-' + articuloId);
+            if (tarjeta) tarjeta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (esPreguntas && articuloId) abrirModalPreguntas(articuloId, usuarioActualId);
         }
 
         document.addEventListener('click', function(e) {
@@ -1019,6 +1024,7 @@
         function renderTarjeta(art, lista, esMia = false) {
             const div = document.createElement('div');
             div.className = 'tarjeta';
+            div.id = 'tarjeta-' + art.id;
             if (esMia) div.style.border = "2px solid var(--rosa)";
 
             const esVentaDirecta = art.tipo_venta === 'venta';
@@ -1139,8 +1145,10 @@
             // Chequeo asíncrono del botón calificar: 15 días + no haber calificado antes
             if (pagoConfirmado && usuarioActualId && (soyComprador || soyGanador)) {
                 const confirmadoEn = art.confirmado_en;
-                _supabase.from('calificaciones')
-                    .select('id').eq('articulo_id', art.id).eq('comprador_id', usuarioActualId)
+                let calQuery = _supabase.from('calificaciones')
+                    .select('id').eq('articulo_id', art.id).eq('comprador_id', usuarioActualId);
+                if (confirmadoEn) calQuery = calQuery.gte('created_at', confirmadoEn);
+                calQuery
                     .maybeSingle()
                     .then(({ data: calExistente }) => {
                         const btnCal = document.getElementById('btn-cal-' + art.id);
@@ -1349,6 +1357,7 @@
                         // Tarjeta simplificada para inactivas
                         const div = document.createElement('div');
                         div.className = 'tarjeta';
+                        div.id = 'tarjeta-' + art.id;
                         div.style.opacity = '0.55';
                         div.style.border = '2px dashed #ccc';
                         const esSubastaCerrada = art.tipo_venta === 'subasta';
@@ -1381,7 +1390,9 @@
                 activo: true,
                 ganador_id: null,
                 comprador_id: null,
-                precio_actual: null
+                precio_actual: null,
+                pago_confirmado: false,
+                confirmado_en: null
             }).eq('id', id);
             if (error) { alert("Error: " + error.message); return; }
             filtrarMisPublicaciones();
@@ -1443,6 +1454,65 @@
                     iniciarReloj(art.id, art.finaliza_en);
                 });
             } catch (e) { console.error("Error en Mis Ofertas:", e); }
+        }
+
+        async function filtrarMisCompras() {
+            if (!usuarioActualId) return;
+            document.getElementById('input-busqueda').value = '';
+            try {
+                const { data: articulos, error } = await _supabase.from('articulos').select('*')
+                    .or(`comprador_id.eq.${usuarioActualId},ganador_id.eq.${usuarioActualId}`)
+                    .order('created_at', { ascending: false });
+                if (error) throw error;
+                const misCompras = (articulos || []).filter(art => {
+                    if (art.tipo_venta === 'venta') return art.comprador_id === usuarioActualId;
+                    const yaTermino = art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
+                    return yaTermino && art.ganador_id === usuarioActualId;
+                });
+                const lista = document.getElementById('articulos-lista');
+                if (misCompras.length === 0) {
+                    lista.innerHTML = "<div class='sin-resultados'>🛒 Todavía no realizaste ninguna compra.</div>";
+                    return;
+                }
+                lista.innerHTML = '';
+                misCompras.forEach(art => {
+                    const esVentaDirecta = art.tipo_venta === 'venta';
+                    const pagoConfirmado = art.pago_confirmado;
+                    const precio = esVentaDirecta ? art.precio_base : (art.precio_actual || art.precio_base);
+                    const estadoHtml = pagoConfirmado
+                        ? `<div style="background:#e8f5e9;border-radius:10px;padding:10px;font-size:0.82em;color:#2e7d32;text-align:center;margin-top:8px;">✅ <b>Compra confirmada</b><br>El vendedor se pondrá en contacto con vos.</div>`
+                        : `<div style="background:#fff8e1;border-radius:10px;padding:10px;font-size:0.82em;color:#e65100;text-align:center;margin-top:8px;">⏳ Esperando que el vendedor confirme y coordine la entrega.</div>`;
+                    const div = document.createElement('div');
+                    div.className = 'tarjeta';
+                    div.style.border = '2px solid #43a047';
+                    div.innerHTML = `
+                        <span class="tag-cat">${labelCat(art.categoria)}</span>
+                        <span class="tag-tipo ${esVentaDirecta ? 'venta' : 'subasta'}">${esVentaDirecta ? '💲 Venta directa' : '🔨 Subasta'}</span>
+                        <img src="${art.foto_url || ''}" class="foto-art">
+                        <div class="titulo">${escapeHtml(art.Titulo)}</div>
+                        <div class="descripcion">${escapeHtml(art.descripcion || '')}</div>
+                        <div class="precio">$${(precio || 0).toLocaleString('es-AR')}</div>
+                        ${estadoHtml}
+                        ${pagoConfirmado ? `<button class="btn-calificar" id="btn-cal-${art.id}" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')"><img src="martillo.png" style="width:16px;height:16px;"> Calificar al vendedor</button>` : ''}
+                    `;
+                    lista.appendChild(div);
+                    if (pagoConfirmado) {
+                        let calQuery = _supabase.from('calificaciones').select('id').eq('articulo_id', art.id).eq('comprador_id', usuarioActualId);
+                        if (art.confirmado_en) calQuery = calQuery.gte('created_at', art.confirmado_en);
+                        calQuery.maybeSingle().then(({ data: calExistente }) => {
+                            const btn = document.getElementById('btn-cal-' + art.id);
+                            if (!btn) return;
+                            if (calExistente) {
+                                btn.disabled = true;
+                                btn.innerText = '✅ Ya calificaste esta compra';
+                                btn.style.background = '#e8f5e9';
+                                btn.style.color = '#2e7d32';
+                                btn.style.borderColor = '#a5d6a7';
+                            }
+                        });
+                    }
+                });
+            } catch (e) { console.error("Error en Mis Compras:", e); }
         }
 
         function iniciarReloj(id, fecha) {
