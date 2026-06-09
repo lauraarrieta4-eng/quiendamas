@@ -1318,7 +1318,7 @@
             const precio = (art.precio_base || 0).toLocaleString('es-AR');
             const confirmar = confirm(`¿Confirmás la compra de "${art.Titulo}" por $${precio}?`);
             if (!confirmar) return;
-            const { error } = await _supabase.from('articulos').update({ comprador_id: user.id, ganador_id: user.id }).eq('id', id);
+            const { error } = await _supabase.from('articulos').update({ comprador_id: user.id }).eq('id', id);
             if (error) { alert("Error al procesar la compra: " + error.message); return; }
 
             // Notificar al vendedor (campanita + email vía trigger)
@@ -1460,15 +1460,17 @@
             if (!usuarioActualId) return;
             document.getElementById('input-busqueda').value = '';
             try {
-                const { data: articulos, error } = await _supabase.from('articulos').select('*')
-                    .or(`comprador_id.eq.${usuarioActualId},ganador_id.eq.${usuarioActualId}`)
-                    .order('created_at', { ascending: false });
-                if (error) throw error;
-                const misCompras = (articulos || []).filter(art => {
-                    if (art.tipo_venta === 'venta') return art.comprador_id === usuarioActualId;
-                    const yaTermino = art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
-                    return yaTermino && art.ganador_id === usuarioActualId;
-                });
+                const [{ data: comprasDirect }, { data: comprasSubasta }] = await Promise.all([
+                    _supabase.from('articulos').select('*').eq('comprador_id', usuarioActualId),
+                    _supabase.from('articulos').select('*').eq('ganador_id', usuarioActualId)
+                ]);
+                const yaTerminoFn = art => art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
+                const idsVistos = new Set();
+                const misCompras = [
+                    ...(comprasDirect || []).filter(a => a.tipo_venta === 'venta'),
+                    ...(comprasSubasta || []).filter(a => a.tipo_venta !== 'venta' && yaTerminoFn(a))
+                ].filter(a => { if (idsVistos.has(a.id)) return false; idsVistos.add(a.id); return true; })
+                 .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                 const lista = document.getElementById('articulos-lista');
                 if (misCompras.length === 0) {
                     lista.innerHTML = "<div class='sin-resultados'>🛒 Todavía no realizaste ninguna compra.</div>";
@@ -1749,10 +1751,12 @@ async function eliminarPublicacion(id) {
                     avatarEl.innerHTML = `<img src="${perfil.avatar_url}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">`;
                 } else { avatarEl.innerHTML = '👤'; }
             }
-            const { count: ventas } = await _supabase.from('articulos').select('id', { count: 'exact', head: true }).eq('perfil_id', vendedorId).not('comprador_id', 'is', null);
-            const { count: compras } = await _supabase.from('articulos').select('id', { count: 'exact', head: true }).eq('comprador_id', vendedorId);
-            document.getElementById('perfil-ventas').innerText = ventas || 0;
-            document.getElementById('perfil-compras').innerText = compras || 0;
+            const [{ data: ventasData }, { data: comprasData }] = await Promise.all([
+                _supabase.from('articulos').select('id').eq('perfil_id', vendedorId).not('comprador_id', 'is', null),
+                _supabase.from('articulos').select('id').eq('comprador_id', vendedorId)
+            ]);
+            document.getElementById('perfil-ventas').innerText = ventasData ? ventasData.length : 0;
+            document.getElementById('perfil-compras').innerText = comprasData ? comprasData.length : 0;
             const { data: cals } = await _supabase.from('calificaciones').select('*').eq('vendedor_id', vendedorId).order('created_at', { ascending: false }).limit(5);
             if (cals && cals.length > 0) {
                 const promedio = (cals.reduce((s, c) => s + c.puntaje, 0) / cals.length).toFixed(1);
