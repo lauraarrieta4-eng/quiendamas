@@ -1676,7 +1676,7 @@ async function eliminarPublicacion(id) {
             if (perfil) {
                 document.getElementById('miperfil-nombre').innerText = perfil.nombre_completo || 'Usuario';
                 document.getElementById('miperfil-apodo').value = perfil.apodo || '';
-                document.getElementById('miperfil-dni').value = perfil.dni || '';
+                document.getElementById('miperfil-dni').value = perfil.cuil || '';
                 document.getElementById('miperfil-telefono').value = perfil.telefono || '';
                 document.getElementById('miperfil-direccion').value = perfil.direccion || '';
                 document.getElementById('miperfil-ciudad').value = perfil.ciudad || '';
