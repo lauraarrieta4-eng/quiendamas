@@ -1313,6 +1313,10 @@
             const { error } = await _supabase.from('articulos').update({ comprador_id: user.id }).eq('id', id);
             if (error) { alert("Error al procesar la compra: " + error.message); return; }
 
+            // Incrementar contador de ventas del vendedor
+            const { data: perfilVendedor } = await _supabase.from('perfiles').select('ventas_count').eq('id', art.perfil_id).maybeSingle();
+            await _supabase.from('perfiles').update({ ventas_count: (perfilVendedor?.ventas_count ?? 0) + 1 }).eq('id', art.perfil_id);
+
             // Notificar al vendedor (campanita + email vía trigger)
             const { data: compradorPerfil } = await _supabase.from('perfiles').select('apodo, nombre_completo').eq('id', user.id).maybeSingle();
             const nombreComprador = compradorPerfil ? (compradorPerfil.apodo || compradorPerfil.nombre_completo || 'Un usuario') : 'Un usuario';
@@ -1747,11 +1751,11 @@ async function eliminarPublicacion(id) {
                     avatarEl.innerHTML = `<img src="${perfil.avatar_url}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">`;
                 } else { avatarEl.innerHTML = '👤'; }
             }
-            const [{ data: ventasData }, { data: comprasData }] = await Promise.all([
-                _supabase.from('articulos').select('id').eq('perfil_id', vendedorId).not('comprador_id', 'is', null),
+            const [{ data: perfilVentas }, { data: comprasData }] = await Promise.all([
+                _supabase.from('perfiles').select('ventas_count').eq('id', vendedorId).maybeSingle(),
                 _supabase.from('articulos').select('id').eq('comprador_id', vendedorId)
             ]);
-            document.getElementById('perfil-ventas').innerText = ventasData ? ventasData.length : 0;
+            document.getElementById('perfil-ventas').innerText = perfilVentas?.ventas_count ?? 0;
             document.getElementById('perfil-compras').innerText = comprasData ? comprasData.length : 0;
             const { data: cals } = await _supabase.from('calificaciones').select('*').eq('vendedor_id', vendedorId).order('created_at', { ascending: false }).limit(5);
             if (cals && cals.length > 0) {
