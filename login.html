@@ -115,6 +115,10 @@
                     <input type="checkbox" id="acepto_terminos" style="width:auto;">
                     Acepto los <a href="terminos.html" target="_blank" style="color:var(--rosa);font-weight:bold;">Términos y Condiciones</a> de Quiéndamas.
                 </div>
+                <div class="terminos" style="margin-top:8px;">
+                    <input type="checkbox" id="acepto_mayoria" style="width:auto;">
+                    Declaro ser mayor de 18 años.
+                </div>
             </div>
 
             <button id="btn-principal" onclick="ejecutarAccion()">Entrar</button>
@@ -273,10 +277,13 @@
                 const tel = document.getElementById('telefono').value;
                 const ciudad = document.getElementById('ciudad').value;
                 const acepto = document.getElementById('acepto_terminos').checked;
+                const aceptaMayoria = document.getElementById('acepto_mayoria').checked;
 
-                if (!nombre || !apodo || !cuil || !dir || !tel || !ciudad || !acepto) {
+                if (!nombre || !apodo || !cuil || !dir || !tel || !ciudad || !acepto || !aceptaMayoria) {
                     msg.style.color = "red";
-                    msg.innerText = "⚠️ Todos los campos son obligatorios y debés aceptar los términos.";
+                    msg.innerText = !aceptaMayoria && nombre && apodo && cuil && dir && tel && ciudad && acepto
+                        ? "⚠️ Debés declarar ser mayor de 18 años para registrarte."
+                        : "⚠️ Todos los campos son obligatorios y debés aceptar los términos.";
                     return;
                 }
 
@@ -334,6 +341,7 @@
                 msg.innerHTML = `<div style="padding:12px;background:#e8f5e9;border-radius:8px;border:1px solid #c8e6c9;text-align:center;"><span style="font-size:2rem;">📩</span><br><b style="color:#2e7d32;">¡Cuenta creada!</b><br><p style="margin:8px 0 0;color:#333;font-size:0.95em;">Revisá tu casilla y también el SPAM para confirmar tu cuenta.</p></div>`;
                 ['email','password','nombre','apodo','cuil','direccion','telefono'].forEach(id => document.getElementById(id).value = "");
                 document.getElementById('acepto_terminos').checked = false;
+                document.getElementById('acepto_mayoria').checked = false;
                 document.getElementById('ciudad').value = "";
 
             } else {
