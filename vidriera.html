@@ -330,6 +330,20 @@
         </div>
     </div>
 
+    <!-- Modal datos comprador -->
+    <div class="modal-overlay" id="modal-datos-comprador">
+        <div class="modal-box" style="border-top-color:#1565c0; max-width:380px;">
+            <div style="font-size:2.5em;">👤</div>
+            <h2 style="color:#1565c0; margin:6px 0 16px;">Datos del comprador</h2>
+            <div id="datos-comprador-contenido" style="background:#f0f4ff; border-radius:12px; padding:16px; text-align:left; font-size:0.92em; line-height:2; color:#333;"></div>
+            <div style="display:flex; gap:8px; margin-top:16px;">
+                <button class="btn-cerrar-modal" style="flex:1;" onclick="document.getElementById('modal-datos-comprador').classList.remove('activo')">Cerrar</button>
+                <button class="btn-cerrar-modal" style="flex:1; background:#1565c0; color:white; border-color:#1565c0;" onclick="imprimirDatosComprador()">🖨️ Imprimir</button>
+                <button class="btn-cerrar-modal" style="flex:1; background:#43a047; color:white; border-color:#43a047;" onclick="descargarDatosComprador()">⬇️ Descargar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal mi perfil -->
     <div class="modal-overlay" id="modal-miperfil">
         <div class="modal-miperfil-box">
@@ -1314,6 +1328,17 @@
             const { error } = await _supabase.from('articulos').update({ comprador_id: user.id }).eq('id', id);
             if (error) { alert("Error al procesar la compra: " + error.message); return; }
 
+            // Guardar historial permanente de compra
+            await _supabase.from('compras').insert([{
+                comprador_id: user.id,
+                vendedor_id: art.perfil_id,
+                articulo_id: art.id,
+                titulo: art.Titulo,
+                precio: art.precio_base,
+                tipo_venta: art.tipo_venta,
+                foto_url: art.foto_url
+            }]);
+
             // Incrementar contador de ventas del vendedor
             const { data: perfilVendedor } = await _supabase.from('perfiles').select('ventas_count').eq('id', art.perfil_id).maybeSingle();
             await _supabase.from('perfiles').update({ ventas_count: (perfilVendedor?.ventas_count ?? 0) + 1 }).eq('id', art.perfil_id);
@@ -1395,14 +1420,61 @@
             filtrarMisPublicaciones();
         }
 
+        let _datosBuyerActual = '';
+
         async function verDatosComprador(ganadorId) {
             const { data: perfil } = await _supabase.from('perfiles').select('nombre_completo, telefono, direccion, ciudad, provincia').eq('id', ganadorId).maybeSingle();
-            if (perfil) {
-                const ubicacion = [perfil.ciudad, perfil.provincia].filter(Boolean).join(', ');
-                alert(`👤 Datos del comprador:\n\nNombre: ${perfil.nombre_completo}\nTeléfono: ${perfil.telefono}\nDirección: ${perfil.direccion}\nCiudad/Provincia: ${ubicacion || 'No especificado'}`);
-            } else {
-                alert('No se pudieron obtener los datos del comprador.');
-            }
+            if (!perfil) { alert('No se pudieron obtener los datos del comprador.'); return; }
+            const ubicacion = [perfil.ciudad, perfil.provincia].filter(Boolean).join(', ') || 'No especificado';
+            const filas = [
+                ['Nombre', perfil.nombre_completo],
+                ['Telefono', perfil.telefono],
+                ['Direccion', perfil.direccion],
+                ['Ciudad/Prov.', ubicacion]
+            ];
+            const contenido = document.getElementById('datos-comprador-contenido');
+            contenido.innerHTML = '';
+            filas.forEach(function(fila, i) {
+                var d = document.createElement('div');
+                d.style.cssText = 'display:flex;justify-content:space-between;padding:6px 0;' + (i < filas.length - 1 ? 'border-bottom:1px solid #d0d9f0;' : '');
+                var etq = document.createElement('span');
+                etq.style.cssText = 'color:#1565c0;font-weight:700;';
+                etq.textContent = fila[0];
+                var val = document.createElement('span');
+                val.textContent = fila[1] || 'No especificado';
+                d.appendChild(etq);
+                d.appendChild(val);
+                contenido.appendChild(d);
+            });
+            _datosBuyerActual = 'Datos del comprador\n' + '------------------------------\n' +
+                'Nombre:    ' + (perfil.nombre_completo || '-') + '\n' +
+                'Telefono:  ' + (perfil.telefono || '-') + '\n' +
+                'Direccion: ' + (perfil.direccion || '-') + '\n' +
+                'Ciudad:    ' + ubicacion + '\n';
+            document.getElementById('modal-datos-comprador').classList.add('activo');
+        }
+
+        function imprimirDatosComprador() {
+            var win = window.open('', '_blank', 'width=420,height=380');
+            win.document.title = 'Datos del comprador';
+            win.document.body.style.cssText = 'font-family:sans-serif;padding:24px;font-size:14px;';
+            var h2 = win.document.createElement('h2');
+            h2.style.color = '#1565c0';
+            h2.textContent = '👤 Datos del comprador';
+            win.document.body.appendChild(h2);
+            var src = document.getElementById('datos-comprador-contenido');
+            var clone = src.cloneNode(true);
+            win.document.body.appendChild(clone);
+            win.print();
+        }
+
+        function descargarDatosComprador() {
+            const blob = new Blob([_datosBuyerActual], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'datos-comprador.txt';
+            a.click();
+            URL.revokeObjectURL(url);
         }
 
         async function filtrarMisOfertas() {
@@ -1458,27 +1530,26 @@
             if (!usuarioActualId) return;
             document.getElementById('input-busqueda').value = '';
             try {
-                const [{ data: comprasDirect }, { data: comprasSubasta }] = await Promise.all([
-                    _supabase.from('articulos').select('*').eq('comprador_id', usuarioActualId),
-                    _supabase.from('articulos').select('*').eq('ganador_id', usuarioActualId)
-                ]);
-                const yaTerminoFn = art => art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
-                const idsVistos = new Set();
-                const misCompras = [
-                    ...(comprasDirect || []).filter(a => a.tipo_venta === 'venta'),
-                    ...(comprasSubasta || []).filter(a => a.tipo_venta !== 'venta' && yaTerminoFn(a))
-                ].filter(a => { if (idsVistos.has(a.id)) return false; idsVistos.add(a.id); return true; })
-                 .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                const { data: historial, error } = await _supabase
+                    .from('compras').select('*').eq('comprador_id', usuarioActualId)
+                    .order('created_at', { ascending: false });
+                if (error) throw error;
                 const lista = document.getElementById('articulos-lista');
-                if (misCompras.length === 0) {
+                if (!historial || historial.length === 0) {
                     lista.innerHTML = "<div class='sin-resultados'>🛒 Todavía no realizaste ninguna compra.</div>";
                     return;
                 }
+                // Traer estado actual de los artículos para pago_confirmado y confirmado_en
+                const idsArticulos = [...new Set(historial.map(c => c.articulo_id).filter(Boolean))];
+                const { data: articulosActuales } = await _supabase.from('articulos').select('id, pago_confirmado, confirmado_en, perfil_id').in('id', idsArticulos);
+                const artMap = Object.fromEntries((articulosActuales || []).map(a => [a.id, a]));
                 lista.innerHTML = '';
-                misCompras.forEach(art => {
-                    const esVentaDirecta = art.tipo_venta === 'venta';
-                    const pagoConfirmado = art.pago_confirmado;
-                    const precio = esVentaDirecta ? art.precio_base : (art.precio_actual || art.precio_base);
+                historial.forEach(compra => {
+                    const artActual = artMap[compra.articulo_id] || {};
+                    const pagoConfirmado = artActual.pago_confirmado || false;
+                    const confirmadoEn = artActual.confirmado_en || null;
+                    const vendedorId = artActual.perfil_id || compra.vendedor_id;
+                    const esVentaDirecta = compra.tipo_venta === 'venta';
                     const estadoHtml = pagoConfirmado
                         ? `<div style="background:#e8f5e9;border-radius:10px;padding:10px;font-size:0.82em;color:#2e7d32;text-align:center;margin-top:8px;">✅ <b>Compra confirmada</b><br>El vendedor se pondrá en contacto con vos.</div>`
                         : `<div style="background:#fff8e1;border-radius:10px;padding:10px;font-size:0.82em;color:#e65100;text-align:center;margin-top:8px;">⏳ Esperando que el vendedor confirme y coordine la entrega.</div>`;
@@ -1486,30 +1557,29 @@
                     div.className = 'tarjeta';
                     div.style.border = '2px solid #43a047';
                     div.innerHTML = `
-                        <span class="tag-cat">${labelCat(art.categoria)}</span>
                         <span class="tag-tipo ${esVentaDirecta ? 'venta' : 'subasta'}">${esVentaDirecta ? '💲 Venta directa' : '🔨 Subasta'}</span>
-                        <img src="${art.foto_url || ''}" class="foto-art">
-                        <div class="titulo">${escapeHtml(art.Titulo)}</div>
-                        <div class="descripcion">${escapeHtml(art.descripcion || '')}</div>
-                        <div class="precio">$${(precio || 0).toLocaleString('es-AR')}</div>
+                        <img src="${compra.foto_url || ''}" class="foto-art">
+                        <div class="titulo">${escapeHtml(compra.titulo || '')}</div>
+                        <div class="precio">$${(compra.precio || 0).toLocaleString('es-AR')}</div>
                         ${estadoHtml}
-                        ${pagoConfirmado ? `<button class="btn-calificar" id="btn-cal-${art.id}" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')"><img src="martillo.png" style="width:16px;height:16px;"> Calificar al vendedor</button>` : ''}
+                        ${pagoConfirmado ? `<button class="btn-calificar" id="btn-cal-${compra.id}" onclick="abrirModalCalificar('${compra.articulo_id}', '${vendedorId}')"><img src="martillo.png" style="width:16px;height:16px;"> Calificar al vendedor</button>` : ''}
                     `;
                     lista.appendChild(div);
-                    if (pagoConfirmado && art.confirmado_en) {
-                        let calQuery = _supabase.from('calificaciones').select('id').eq('articulo_id', art.id).eq('comprador_id', usuarioActualId)
-                            .gte('created_at', art.confirmado_en);
-                        calQuery.maybeSingle().then(({ data: calExistente }) => {
-                            const btn = document.getElementById('btn-cal-' + art.id);
-                            if (!btn) return;
-                            if (calExistente) {
-                                btn.disabled = true;
-                                btn.innerText = '✅ Ya calificaste esta compra';
-                                btn.style.background = '#e8f5e9';
-                                btn.style.color = '#2e7d32';
-                                btn.style.borderColor = '#a5d6a7';
-                            }
-                        });
+                    if (pagoConfirmado && confirmadoEn) {
+                        _supabase.from('calificaciones').select('id')
+                            .eq('articulo_id', compra.articulo_id).eq('comprador_id', usuarioActualId)
+                            .gte('created_at', confirmadoEn)
+                            .maybeSingle().then(({ data: calExistente }) => {
+                                const btn = document.getElementById('btn-cal-' + compra.id);
+                                if (!btn) return;
+                                if (calExistente) {
+                                    btn.disabled = true;
+                                    btn.innerText = '✅ Ya calificaste esta compra';
+                                    btn.style.background = '#e8f5e9';
+                                    btn.style.color = '#2e7d32';
+                                    btn.style.borderColor = '#a5d6a7';
+                                }
+                            });
                     }
                 });
             } catch (e) { console.error("Error en Mis Compras:", e); }
