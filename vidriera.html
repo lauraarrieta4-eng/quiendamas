@@ -1137,9 +1137,10 @@
             // Chequeo asíncrono del botón calificar: 15 días + no haber calificado antes
             if (pagoConfirmado && usuarioActualId && (soyComprador || soyGanador)) {
                 const confirmadoEn = art.confirmado_en;
+                if (!confirmadoEn) return; // sin fecha de confirmación no se puede determinar si es calificación vieja
                 let calQuery = _supabase.from('calificaciones')
-                    .select('id').eq('articulo_id', art.id).eq('comprador_id', usuarioActualId);
-                if (confirmadoEn) calQuery = calQuery.gte('created_at', confirmadoEn);
+                    .select('id').eq('articulo_id', art.id).eq('comprador_id', usuarioActualId)
+                    .gte('created_at', confirmadoEn);
                 calQuery
                     .maybeSingle()
                     .then(({ data: calExistente }) => {
@@ -1495,9 +1496,9 @@
                         ${pagoConfirmado ? `<button class="btn-calificar" id="btn-cal-${art.id}" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')"><img src="martillo.png" style="width:16px;height:16px;"> Calificar al vendedor</button>` : ''}
                     `;
                     lista.appendChild(div);
-                    if (pagoConfirmado) {
-                        let calQuery = _supabase.from('calificaciones').select('id').eq('articulo_id', art.id).eq('comprador_id', usuarioActualId);
-                        if (art.confirmado_en) calQuery = calQuery.gte('created_at', art.confirmado_en);
+                    if (pagoConfirmado && art.confirmado_en) {
+                        let calQuery = _supabase.from('calificaciones').select('id').eq('articulo_id', art.id).eq('comprador_id', usuarioActualId)
+                            .gte('created_at', art.confirmado_en);
                         calQuery.maybeSingle().then(({ data: calExistente }) => {
                             const btn = document.getElementById('btn-cal-' + art.id);
                             if (!btn) return;
