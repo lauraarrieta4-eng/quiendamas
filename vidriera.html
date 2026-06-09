@@ -477,7 +477,7 @@
     </div>
 
     <div class="barra-interacciones" id="bloque-interacciones" style="display: none;">
-        <button class="btn-interaccion" onclick="filtrarMisPublicaciones()">📝 Mis Pubs <span id="badge-pubs"></span></button>
+        <button class="btn-interaccion" onclick="filtrarMisPublicaciones()">📝 Mis Pubs</button>
         <button class="btn-interaccion" onclick="filtrarMisOfertas()">💰 Mis Ofertas</button>
     </div>
 
@@ -974,7 +974,6 @@
                 display.innerText = "Hola, " + (perfil && (perfil.apodo || perfil.nombre_completo) ? (perfil.apodo || perfil.nombre_completo) : "Usuario");
                 btn.innerText = "🚪 Salir";
                 bloqueInteracciones.style.display = "flex";
-                contarPreguntasSinResponder();
                 // campanita
                 document.getElementById('btn-campana').style.display = 'flex';
                 cargarNotificaciones();
@@ -1053,7 +1052,7 @@
                     }
                 } else if (soyComprador) {
                     if (pagoConfirmado) {
-                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
+                        boton = `<div style="background:#e8f5e9; border-radius:10px; padding:12px; font-size:0.82em; color:#2e7d32; text-align:center; line-height:1.5;">✅ <b>¡Compra confirmada!</b><br>El vendedor se pondrá en contacto con vos para coordinar la entrega.</div>`;
                     } else {
                         boton = `<div style="background:#e8f5e9; border-radius:10px; padding:12px; font-size:0.82em; color:#2e7d32; text-align:center; line-height:1.5;">✅ <b>¡Compra confirmada!</b><br>Cuando el vendedor abone la comisión se pondrá en contacto con vos para coordinar la entrega.</div>`;
                     }
@@ -1077,7 +1076,7 @@
                     }
                 } else if (soyGanador) {
                     if (pagoConfirmado) {
-                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
+                        boton = `<div style="background:#e8f5e9; border-radius:10px; padding:12px; font-size:0.82em; color:#2e7d32; text-align:center; line-height:1.5;">🏆 <b>¡Ganaste la subasta!</b><br>El vendedor se pondrá en contacto con vos para coordinar la entrega.</div>`;
                     } else {
                         boton = `<button class="btn-ganador">🏆 ¡Felicitaciones, ganaste! Esperá que el vendedor coordine la entrega.</button>`;
                     }
@@ -1114,7 +1113,7 @@
                 <div class="acciones-sec">
                     <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">❓ <span class="btn-txt">Preguntas</span></button>
                     <button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 <span class="btn-txt">Compartir</span></button>
-                    ${esMia && !art.comprador_id && (art.tipo_venta === 'venta' || (art.precio_actual || art.precio_base) === art.precio_base) ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ <span class="btn-txt">Eliminar</span></button>` : ''}
+                    ${esMia ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ <span class="btn-txt">Eliminar</span></button>` : ''}
                 </div>
             `;
             lista.appendChild(div);
@@ -1192,8 +1191,13 @@
                 lista.innerHTML = '<div style="text-align:center;color:#aaa;font-size:0.85em;padding:10px;">Todavía no hay preguntas.</div>';
                 return;
             }
+            const ids = [...new Set(preguntas.map(p => p.comprador_id).filter(Boolean))];
+            const { data: perfilesData } = await _supabase.from('perfiles').select('id, apodo, nombre_completo').in('id', ids);
+            const perfilesMap = Object.fromEntries((perfilesData || []).map(p => [p.id, p]));
             lista.innerHTML = preguntas.map(p => {
                 const esVendedor = usuarioActualId === vendedorId;
+                const perfil = perfilesMap[p.comprador_id];
+                const usuario = perfil ? (perfil.apodo || perfil.nombre_completo || 'Usuario') : 'Usuario';
                 const respuestaHtml = p.respuesta
                     ? `<div class="a">💬 ${p.respuesta}</div>`
                     : esVendedor
@@ -1201,7 +1205,7 @@
                            <button class="btn-responder" onclick="responderPregunta('${p.id}')">Responder</button>`
                         : `<div class="sin-resp">Sin respuesta aún</div>`;
                 return `<div class="pregunta-item">
-                    <div class="q">❓ ${p.pregunta}</div>
+                    <div class="q">❓ <span style="font-size:0.78em;color:#e04891;font-weight:700;">@${escapeHtml(usuario)}</span> ${escapeHtml(p.pregunta)}</div>
                     ${respuestaHtml}
                 </div>`;
             }).join('');
@@ -1217,6 +1221,14 @@
                 pregunta: texto
             }]);
             if (error) { alert("Error al enviar: " + error.message); return; }
+            const { data: artData } = await _supabase.from('articulos').select('Titulo').eq('id', articuloPreguntaActual).single();
+            const tituloArt = artData?.Titulo || 'tu publicación';
+            const preview = texto.length > 60 ? texto.substring(0, 60) + '...' : texto;
+            await _supabase.from('notificaciones').insert([{
+                usuario_id: vendedorPreguntaActual,
+                mensaje: `❓ Nueva pregunta en "${tituloArt}": "${preview}"`,
+                articulo_id: articuloPreguntaActual
+            }]);
             document.getElementById('texto-pregunta').value = '';
             await cargarPreguntas(articuloPreguntaActual, vendedorPreguntaActual);
         }
@@ -1230,23 +1242,6 @@
             await cargarPreguntas(articuloPreguntaActual, vendedorPreguntaActual);
         }
 
-        async function contarPreguntasSinResponder() {
-            if (!usuarioActualId) return;
-            const { data: misArticulos } = await _supabase
-                .from('articulos').select('id').eq('perfil_id', usuarioActualId);
-            if (!misArticulos || misArticulos.length === 0) return;
-            const ids = misArticulos.map(a => a.id);
-            const { data: sinResponder } = await _supabase
-                .from('preguntas').select('id')
-                .in('articulo_id', ids)
-                .is('respuesta', null);
-            const badge = document.getElementById('badge-pubs');
-            if (badge) {
-                badge.innerHTML = sinResponder && sinResponder.length > 0
-                    ? `<span class="badge-preguntas">${sinResponder.length}</span>`
-                    : '';
-            }
-        }
 
         function cerrarModalPreguntas() {
             document.getElementById('modal-preguntas').classList.remove('activo');
