@@ -80,7 +80,7 @@
     </div>
 
     <div class="nav-center">
-        <a href="javascript:window.close()" class="nav-btn">← Volver al registro</a>
+        <a href="javascript:history.back()" class="nav-btn">← Volver al inicio</a>
     </div>
 
     <div class="contenido">
@@ -102,11 +102,11 @@
 
             <h3>Para comprar (subasta):</h3>
             <ol class="pasos">
-                <li>Registrate gratuitamente con tu nombre, apodo, DNI, dirección y teléfono.</li>
+                <li>Registrate gratuitamente con tu nombre, apodo, CUIL, dirección y teléfono. Debés ser mayor de 18 años.</li>
                 <li>Explorá los artículos disponibles en la vidriera.</li>
                 <li>Ofertá en los que te interesen eligiendo el monto de tu oferta.</li>
                 <li>Si sos el mayor ofertante cuando cierra la subasta, ¡ganás!</li>
-                <li>Una vez que el vendedor abona la comisión del 5%, recibís sus datos para coordinar la entrega.</li>
+                <li>Una vez que el vendedor abona la comisión del 5%, se liberan los datos de contacto del <strong>comprador</strong> para que el vendedor pueda coordinar la entrega. <strong>Los datos del vendedor no se comparten con el comprador.</strong></li>
             </ol>
 
             <h3>Para comprar (venta directa):</h3>
@@ -114,7 +114,7 @@
                 <li>Registrate o ingresá a tu cuenta.</li>
                 <li>Encontrá el artículo que querés y tocá "Comprar ahora".</li>
                 <li>Confirmá la compra al precio indicado.</li>
-                <li>Una vez que el vendedor abona la comisión, se pone en contacto con vos para coordinar la entrega.</li>
+                <li>Una vez que el vendedor abona la comisión, recibe los datos del comprador y se pone en contacto para coordinar la entrega. <strong>Los datos del vendedor no se comparten con el comprador.</strong></li>
             </ol>
 
             <h3>Para vender:</h3>
@@ -139,8 +139,8 @@
                 <li>Comisión: 5% del precio final, a cargo del vendedor.</li>
                 <li>El monto exacto se muestra automáticamente al finalizar la venta.</li>
                 <li>El pago se realiza por transferencia bancaria a la cuenta indicada en la plataforma.</li>
-                <li>Una vez confirmado el pago, se liberan los datos de contacto del comprador.</li>
-                <li>El comprador recibe los datos del vendedor una vez confirmado el pago.</li>
+                <li>Una vez confirmado el pago, se liberan los datos de contacto del <strong>comprador</strong> al vendedor para coordinar la entrega.</li>
+                <li><strong>Los datos del vendedor no se comparten con el comprador.</strong> Es el vendedor quien toma contacto con el comprador una vez abonada la comisión.</li>
                 <li>La comisión no es reembolsable una vez que los datos fueron entregados.</li>
             </ul>
         </div>
@@ -192,33 +192,29 @@
 
             <h3>🛍️ Productos</h3>
             <ul>
-                <li><strong>Autos:</strong> vehículos, repuestos y accesorios.</li>
-                <li><strong>Motos:</strong> motos, repuestos y accesorios.</li>
-                <li><strong>Computación:</strong> computadoras, notebooks, periféricos y accesorios.</li>
-                <li><strong>Celulares:</strong> teléfonos, tablets y accesorios.</li>
-                <li><strong>Audio y Video:</strong> televisores, equipos de sonido, home theater.</li>
-                <li><strong>Electrodomésticos:</strong> heladeras, lavarropas, cocinas y similares.</li>
-                <li><strong>Moda y Accesorios:</strong> ropa, calzado, carteras, accesorios.</li>
+                <li><strong>Vehículos:</strong> autos, motos, bicicletas, repuestos y accesorios.</li>
+                <li><strong>Tecnología:</strong> celulares, computadoras, notebooks, tablets, componentes PC, conectividad, consolas, audio y video, y accesorios.</li>
+                <li><strong>Moda:</strong> ropa interior, ropa deportiva, calzado, valijas y mochilas, abrigo, pantalones, remeras, buzos y accesorios.</li>
                 <li><strong>Joyas y Relojes:</strong> joyas, bijouterie y relojes.</li>
                 <li><strong>Belleza y Salud:</strong> cosméticos, perfumes, equipos de salud.</li>
-                <li><strong>Construcción:</strong> materiales, herramientas de obra, sanitarios.</li>
-                <li><strong>Antigüedades:</strong> objetos vintage, coleccionables, antigüedades.</li>
-                <li><strong>Vivero y Jardín:</strong> plantas, semillas, macetas, herramientas de jardín, riego, fertilizantes y decoración.</li>
-                <li><strong>Hogar y Muebles:</strong> muebles, decoración, iluminación, textiles.</li>
-                <li><strong>Herramientas:</strong> herramientas manuales, eléctricas y maquinaria.</li>
+                <li><strong>Construcción:</strong> herramientas, materiales, máquinas, pinturas y otros insumos de obra.</li>
+                <li><strong>Antigüedades y Coleccionables:</strong> objetos vintage, coleccionables, antigüedades.</li>
+                <li><strong>🌿 Vivero:</strong> plantas aromáticas, arbustos, frutales, herbáceas, bulbosas, trepadoras, cubresuelos, nativas, de interior, de huerta, suculentas, de colección, árboles frutales y ornamentales, semillas, fertilizantes orgánicos e inorgánicos, macetas, materiales para riego y decoración.</li>
+                <li><strong>Hogar:</strong> muebles, decoración, iluminación, textiles.</li>
+                <li><strong>Electrodomésticos:</strong> heladeras, lavarropas, cocinas y similares.</li>
+                <li><strong>Alimentos y Bebidas:</strong> almacén, bebidas y productos gourmet.</li>
                 <li><strong>Otros:</strong> cualquier artículo no clasificado en las categorías anteriores.</li>
             </ul>
 
             <h3>🛠️ Servicios</h3>
             <ul>
-                <li>Belleza y estética.</li>
-                <li>Peluquería.</li>
-                <li>Hogar y reparaciones.</li>
-                <li>Plomería y electricidad.</li>
-                <li>Tecnología y soporte.</li>
-                <li>Clases y tutorías.</li>
-                <li>Diseño y creatividad.</li>
-                <li>Servicios profesionales.</li>
+                <li>Profesionales y administrativos.</li>
+                <li>Tecnología y servicios digitales.</li>
+                <li>Mantenimiento y oficios.</li>
+                <li>Estética y belleza.</li>
+                <li>Terapia y salud.</li>
+                <li>Diseño y paisajismo.</li>
+                <li>Hospitalidad y experiencias turísticas.</li>
                 <li>Otros servicios.</li>
             </ul>
 
@@ -236,9 +232,10 @@
 
         <div class="seccion">
             <h2>🔒 Registro y privacidad</h2>
-            <p>Para usar la plataforma es obligatorio registrarse con datos reales. Los datos personales son necesarios para facilitar las transacciones entre usuarios.</p>
+            <p>Para usar la plataforma es obligatorio registrarse con datos reales. <strong>El uso de Quiéndamas está reservado exclusivamente a mayores de 18 años.</strong> Al registrarte declarás tener la mayoría de edad requerida.</p>
             <ul>
-                <li>Los datos personales solo se comparten entre comprador y vendedor tras confirmar el pago de la comisión.</li>
+                <li>El registro requiere nombre completo, apodo, CUIL, dirección, teléfono y ciudad.</li>
+                <li><strong>Los datos personales del comprador</strong> solo se comparten con el vendedor tras confirmar el pago de la comisión. Los datos del vendedor no se comparten con el comprador.</li>
                 <li>No compartimos tus datos con terceros con fines comerciales.</li>
                 <li>Podés solicitar la eliminación de tu cuenta escribiendo a nuestro correo de contacto.</li>
                 <li>Al registrarte aceptás recibir notificaciones relacionadas con tus publicaciones.</li>
@@ -249,6 +246,7 @@
             <h2>📋 Condiciones generales de uso</h2>
             <ul>
                 <li>El uso de la plataforma implica la aceptación de estos términos y condiciones.</li>
+                <li><strong>El uso de Quiéndamas está reservado exclusivamente a personas mayores de 18 años.</strong> Los menores de edad no pueden registrarse ni realizar transacciones en la plataforma.</li>
                 <li>Quiéndamas se reserva el derecho de modificar estos términos con previo aviso.</li>
                 <li>Las compras confirmadas son vinculantes: si comprás o ganás una subasta, tenés la obligación de coordinar la entrega.</li>
                 <li>Quiéndamas puede suspender cuentas que incumplan las normas de uso.</li>
@@ -267,7 +265,7 @@
 
     <div class="footer">
         © 2026 Quiéndamas — Todos los derechos reservados.<br>
-        Última actualización: Mayo 2026
+        Última actualización: Junio 2026
     </div>
 
 </body>
