@@ -1537,7 +1537,7 @@
                 // Leer compras directamente de articulos (comprador_id o ganador_id)
                 const [{ data: comprasDirectas }, { data: comprasSubasta }] = await Promise.all([
                     _supabase.from('articulos').select('*').eq('comprador_id', usuarioActualId).order('created_at', { ascending: false }),
-                    _supabase.from('articulos').select('*').eq('ganador_id', usuarioActualId).order('created_at', { ascending: false })
+                    _supabase.from('articulos').select('*').eq('ganador_id', usuarioActualId).lt('finaliza_en', new Date().toISOString()).order('created_at', { ascending: false })
                 ]);
                 const vistos = new Set();
                 const articulos = [...(comprasDirectas || []), ...(comprasSubasta || [])].filter(a => {
