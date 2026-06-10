@@ -1507,10 +1507,16 @@
             const lista = document.getElementById('articulos-lista');
             try {
                 const ahora = new Date().toISOString();
-                const [{ data: vDirectas }, { data: vSubasta }] = await Promise.all([
+                const [{ data: vDirectas }, { data: vSubasta }, { data: calDb }] = await Promise.all([
                     _supabase.from('articulos').select('id,Titulo,precio_base,foto_url,tipo_venta,perfil_id,pago_confirmado').eq('comprador_id', usuarioActualId),
-                    _supabase.from('articulos').select('id,Titulo,precio_base,foto_url,tipo_venta,perfil_id,pago_confirmado').eq('ganador_id', usuarioActualId).lt('finaliza_en', ahora)
+                    _supabase.from('articulos').select('id,Titulo,precio_base,foto_url,tipo_venta,perfil_id,pago_confirmado').eq('ganador_id', usuarioActualId).lt('finaliza_en', ahora),
+                    _supabase.from('calificaciones').select('articulo_id').eq('comprador_id', usuarioActualId)
                 ]);
+
+                // Fuente de verdad: lo que está en la BD
+                const calificadasDb = new Set((calDb || []).map(c => String(c.articulo_id)));
+                // Sincronizar localStorage con lo que dice la BD
+                localStorage.setItem(calKey(), JSON.stringify([...calificadasDb]));
 
                 // Deduplicar por id (por si aparece en ambas queries)
                 const vistas = new Set();
@@ -1525,12 +1531,11 @@
                 }
 
                 lista.innerHTML = '';
-                const calificadasLocales = getCalificadasLocales();
 
                 articulos.forEach(art => {
                     const esVentaDirecta = art.tipo_venta === 'venta';
                     const pagoConfirmado = art.pago_confirmado || false;
-                    const yaCalificado = calificadasLocales.has(String(art.id));
+                    const yaCalificado = calificadasDb.has(String(art.id));
 
                     const estadoHtml = pagoConfirmado
                         ? `<div style="background:#e8f5e9;border-radius:10px;padding:10px;font-size:0.82em;color:#2e7d32;text-align:center;margin-top:8px;">✅ <b>Compra confirmada</b><br>El vendedor se pondrá en contacto con vos.</div>`
@@ -1708,11 +1713,18 @@
 
 async function eliminarPublicacion(id) {
     const { data: art } = await _supabase.from('articulos').select('comprador_id, ganador_id, pago_confirmado').eq('id', id).maybeSingle();
-    if (art && (art.comprador_id || art.ganador_id) && !art.pago_confirmado) {
-        alert("⚠️ No podés eliminar esta publicación hasta abonar la comisión y desbloquear los datos del comprador.\n\nUna vez que el pago sea verificado podrás dar de baja la publicación.");
-        return;
+    if (art && (art.comprador_id || art.ganador_id)) {
+        if (!art.pago_confirmado) {
+            alert("⚠️ No podés eliminar esta publicación hasta abonar la comisión y desbloquear los datos del comprador.\n\nUna vez que el pago sea verificado podrás dar de baja la publicación.");
+            return;
+        }
+        const { data: cal } = await _supabase.from('calificaciones').select('id').eq('articulo_id', id).maybeSingle();
+        if (!cal) {
+            alert("⚠️ El comprador todavía no te calificó.\n\nPodrás dar de baja la publicación una vez que recibas la calificación.");
+            return;
+        }
     }
-    const confirmar = confirm("¿Seguro que querés dar de baja esta publicación? El historial se conserva.");
+    const confirmar = confirm("¿Seguro que querés dar de baja esta publicación?");
     if (!confirmar) return;
     const { error } = await _supabase.from('articulos').update({ activo: false }).eq('id', id);
     if (error) { alert("Error: " + error.message); return; }
