@@ -1542,13 +1542,22 @@
                 const artVivos = [...(vDirectas || []), ...(vSubasta || [])];
                 const artVivosMap = Object.fromEntries(artVivos.map(a => [a.id, a]));
 
-                // Combinar: historial + artículos vivos no registrados en historial
-                const idsEnHistorial = new Set((historial || []).map(c => c.articulo_id));
+                // Deduplicar historial: una sola entrada por articulo_id (la más reciente)
+                const historialUnico = Object.values(
+                    (historial || []).reduce((acc, c) => {
+                        if (!acc[c.articulo_id] || c.created_at > acc[c.articulo_id].created_at)
+                            acc[c.articulo_id] = c;
+                        return acc;
+                    }, {})
+                );
+
+                // Agregar artículos vivos que no están en historial (compras sin registro)
+                const idsEnHistorial = new Set(historialUnico.map(c => c.articulo_id));
                 const extras = artVivos.filter(a => !idsEnHistorial.has(a.id)).map(a => ({
                     articulo_id: a.id, titulo: a.Titulo, precio: a.precio_base,
                     foto_url: a.foto_url, tipo_venta: a.tipo_venta, vendedor_id: a.perfil_id
                 }));
-                const todas = [...(historial || []), ...extras];
+                const todas = [...historialUnico, ...extras];
 
                 if (todas.length === 0) {
                     lista.innerHTML = "<div class='sin-resultados'>🛒 Todavía no realizaste ninguna compra.</div>";
