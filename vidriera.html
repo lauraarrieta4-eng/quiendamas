@@ -1381,14 +1381,10 @@
                         div.style.opacity = '0.55';
                         div.style.border = '2px dashed #ccc';
                         const esSubastaCerrada = art.tipo_venta === 'subasta';
-                        const accionBtn = esSubastaCerrada
-                            ? `<div style="font-size:0.78em;color:#aaa;margin-top:6px;">🔒 Subasta cerrada — no se puede republicar</div>`
-                            : `<button class="btn-compartir" style="border-color:#43a047;color:#2e7d32;" onclick="reactivarPublicacion(${art.id})">♻️ Republicar</button>`;
                         div.innerHTML = `
-                            <div style="font-size:0.72em;background:#eee;color:#999;border-radius:8px;padding:3px 8px;display:inline-block;margin-bottom:6px;">${esSubastaCerrada ? 'SUBASTA CERRADA' : 'INACTIVA'}</div>
+                            <div style="font-size:0.72em;background:#eee;color:#999;border-radius:8px;padding:3px 8px;display:inline-block;margin-bottom:6px;">${esSubastaCerrada ? '🔒 SUBASTA CERRADA' : '🔒 PUBLICACIÓN CERRADA'}</div>
                             <div class="titulo">${escapeHtml(art.Titulo)}</div>
                             <div style="font-size:0.82em;color:#aaa;margin:6px 0;">$${(art.precio_base||0).toLocaleString('es-AR')}</div>
-                            ${accionBtn}
                         `;
                         lista.appendChild(div);
                     } else {
@@ -1398,26 +1394,6 @@
             } catch (e) { console.error(e); }
         }
 
-        async function reactivarPublicacion(id) {
-            const { data: art } = await _supabase.from('articulos').select('tipo_venta').eq('id', id).maybeSingle();
-            if (art && art.tipo_venta === 'subasta') {
-                alert("⚠️ Las subastas cerradas no pueden republicarse.");
-                return;
-            }
-            const confirmar = confirm("¿Querés volver a publicar este artículo en la vidriera?");
-            if (!confirmar) return;
-            const { error } = await _supabase.from('articulos').update({
-                activo: true,
-                ganador_id: null,
-                comprador_id: null,
-                precio_actual: null,
-                pago_confirmado: false,
-                confirmado_en: null
-            }).eq('id', id);
-            if (error) { alert("Error: " + error.message); return; }
-            borrarCalificadaLocal(id);
-            filtrarMisPublicaciones();
-        }
 
         let _datosBuyerActual = '';
 
@@ -1530,36 +1506,20 @@
             document.getElementById('input-busqueda').value = '';
             const lista = document.getElementById('articulos-lista');
             try {
-                // Fuente primaria: tabla compras (historial permanente)
-                const { data: historial } = await _supabase.from('compras').select('*')
-                    .eq('comprador_id', usuarioActualId).order('created_at', { ascending: false });
-
-                // Fallback: articulos donde sigue siendo comprador (por si compras está vacía)
+                const ahora = new Date().toISOString();
                 const [{ data: vDirectas }, { data: vSubasta }] = await Promise.all([
-                    _supabase.from('articulos').select('id,Titulo,precio_base,foto_url,tipo_venta,perfil_id,pago_confirmado,confirmado_en').eq('comprador_id', usuarioActualId),
-                    _supabase.from('articulos').select('id,Titulo,precio_base,foto_url,tipo_venta,perfil_id,pago_confirmado,confirmado_en').eq('ganador_id', usuarioActualId).lt('finaliza_en', new Date().toISOString())
+                    _supabase.from('articulos').select('id,Titulo,precio_base,foto_url,tipo_venta,perfil_id,pago_confirmado').eq('comprador_id', usuarioActualId),
+                    _supabase.from('articulos').select('id,Titulo,precio_base,foto_url,tipo_venta,perfil_id,pago_confirmado').eq('ganador_id', usuarioActualId).lt('finaliza_en', ahora)
                 ]);
-                const artVivos = [...(vDirectas || []), ...(vSubasta || [])];
-                const artVivosMap = Object.fromEntries(artVivos.map(a => [a.id, a]));
 
-                // Deduplicar historial: una sola entrada por articulo_id (la más reciente)
-                const historialUnico = Object.values(
-                    (historial || []).reduce((acc, c) => {
-                        if (!acc[c.articulo_id] || c.created_at > acc[c.articulo_id].created_at)
-                            acc[c.articulo_id] = c;
-                        return acc;
-                    }, {})
-                );
+                // Deduplicar por id (por si aparece en ambas queries)
+                const vistas = new Set();
+                const articulos = [...(vDirectas || []), ...(vSubasta || [])].filter(a => {
+                    if (vistas.has(a.id)) return false;
+                    vistas.add(a.id); return true;
+                });
 
-                // Agregar artículos vivos que no están en historial (compras sin registro)
-                const idsEnHistorial = new Set(historialUnico.map(c => c.articulo_id));
-                const extras = artVivos.filter(a => !idsEnHistorial.has(a.id)).map(a => ({
-                    articulo_id: a.id, titulo: a.Titulo, precio: a.precio_base,
-                    foto_url: a.foto_url, tipo_venta: a.tipo_venta, vendedor_id: a.perfil_id
-                }));
-                const todas = [...historialUnico, ...extras];
-
-                if (todas.length === 0) {
+                if (articulos.length === 0) {
                     lista.innerHTML = "<div class='sin-resultados'>🛒 Todavía no realizaste ninguna compra.</div>";
                     return;
                 }
@@ -1567,47 +1527,31 @@
                 lista.innerHTML = '';
                 const calificadasLocales = getCalificadasLocales();
 
-                todas.forEach(compra => {
-                    const artActual = artVivosMap[compra.articulo_id] || null;
-                    // El artículo fue republicado si ya no tiene este usuario como comprador
-                    const republicado = !artActual;
-                    const pagoConfirmado = artActual ? (artActual.pago_confirmado || false) : false;
-                    const vendedorId = artActual ? artActual.perfil_id : compra.vendedor_id;
-                    const esVentaDirecta = compra.tipo_venta === 'venta';
+                articulos.forEach(art => {
+                    const esVentaDirecta = art.tipo_venta === 'venta';
+                    const pagoConfirmado = art.pago_confirmado || false;
+                    const yaCalificado = calificadasLocales.has(String(art.id));
+
+                    const estadoHtml = pagoConfirmado
+                        ? `<div style="background:#e8f5e9;border-radius:10px;padding:10px;font-size:0.82em;color:#2e7d32;text-align:center;margin-top:8px;">✅ <b>Compra confirmada</b><br>El vendedor se pondrá en contacto con vos.</div>`
+                        : `<div style="background:#fff8e1;border-radius:10px;padding:10px;font-size:0.82em;color:#e65100;text-align:center;margin-top:8px;">⏳ Esperando que el vendedor confirme y coordine la entrega.</div>`;
 
                     const div = document.createElement('div');
                     div.className = 'tarjeta';
-
-                    if (republicado) {
-                        // Tarjeta histórica en gris
-                        div.style.cssText = 'opacity:0.55; border:2px dashed #ccc;';
-                        div.innerHTML = `
-                            <span class="tag-tipo ${esVentaDirecta ? 'venta' : 'subasta'}" style="opacity:0.6;">${esVentaDirecta ? '💲 Venta directa' : '🔨 Subasta'}</span>
-                            <img src="${compra.foto_url || ''}" class="foto-art" style="filter:grayscale(1);">
-                            <div class="titulo">${escapeHtml(compra.titulo || '')}</div>
-                            <div class="precio">$${(compra.precio || 0).toLocaleString('es-AR')}</div>
-                            <div style="background:#f5f5f5;border-radius:10px;padding:10px;font-size:0.82em;color:#999;text-align:center;margin-top:8px;">📦 Esta publicación fue republicada por el vendedor</div>
-                        `;
-                    } else {
-                        div.style.border = '2px solid #43a047';
-                        const estadoHtml = pagoConfirmado
-                            ? `<div style="background:#e8f5e9;border-radius:10px;padding:10px;font-size:0.82em;color:#2e7d32;text-align:center;margin-top:8px;">✅ <b>Compra confirmada</b><br>El vendedor se pondrá en contacto con vos.</div>`
-                            : `<div style="background:#fff8e1;border-radius:10px;padding:10px;font-size:0.82em;color:#e65100;text-align:center;margin-top:8px;">⏳ Esperando que el vendedor confirme y coordine la entrega.</div>`;
-                        const yaCalificado = calificadasLocales.has(String(compra.articulo_id));
-                        div.innerHTML = `
-                            <span class="tag-tipo ${esVentaDirecta ? 'venta' : 'subasta'}">${esVentaDirecta ? '💲 Venta directa' : '🔨 Subasta'}</span>
-                            <img src="${compra.foto_url || ''}" class="foto-art">
-                            <div class="titulo">${escapeHtml(compra.titulo || '')}</div>
-                            <div class="precio">$${(compra.precio || 0).toLocaleString('es-AR')}</div>
-                            ${estadoHtml}
-                            ${pagoConfirmado ? `<button class="btn-calificar" id="btn-cal-${compra.articulo_id}" onclick="abrirModalCalificar('${compra.articulo_id}', '${vendedorId}')" ${yaCalificado ? 'disabled' : ''}><img src="martillo.png" style="width:16px;height:16px;"> ${yaCalificado ? '✅ Ya calificaste esta compra' : 'Calificar al vendedor'}</button>` : ''}
-                        `;
-                        if (pagoConfirmado && yaCalificado) {
-                            setTimeout(() => {
-                                const btn = document.getElementById('btn-cal-' + compra.articulo_id);
-                                if (btn) { btn.style.background='#e8f5e9'; btn.style.color='#2e7d32'; btn.style.borderColor='#a5d6a7'; }
-                            }, 0);
-                        }
+                    div.style.border = '2px solid #43a047';
+                    div.innerHTML = `
+                        <span class="tag-tipo ${esVentaDirecta ? 'venta' : 'subasta'}">${esVentaDirecta ? '💲 Venta directa' : '🔨 Subasta'}</span>
+                        <img src="${art.foto_url || ''}" class="foto-art">
+                        <div class="titulo">${escapeHtml(art.Titulo || '')}</div>
+                        <div class="precio">$${(art.precio_base || 0).toLocaleString('es-AR')}</div>
+                        ${estadoHtml}
+                        ${pagoConfirmado ? `<button class="btn-calificar" id="btn-cal-${art.id}" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')" ${yaCalificado ? 'disabled' : ''}><img src="martillo.png" style="width:16px;height:16px;"> ${yaCalificado ? '✅ Ya calificaste esta compra' : 'Calificar al vendedor'}</button>` : ''}
+                    `;
+                    if (pagoConfirmado && yaCalificado) {
+                        setTimeout(() => {
+                            const btn = document.getElementById('btn-cal-' + art.id);
+                            if (btn) { btn.style.background='#e8f5e9'; btn.style.color='#2e7d32'; btn.style.borderColor='#a5d6a7'; }
+                        }, 0);
                     }
                     lista.appendChild(div);
                 });
