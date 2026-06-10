@@ -1266,6 +1266,14 @@
 
         // ── CALIFICACIONES ───────────────────────────────────────────────
         let calArticuloId = null;
+        function getCalificadasLocales() {
+            try { return new Set(JSON.parse(localStorage.getItem('qdm_calificadas') || '[]')); } catch { return new Set(); }
+        }
+        function guardarCalificadaLocal(articuloId) {
+            const set = getCalificadasLocales();
+            set.add(String(articuloId));
+            localStorage.setItem('qdm_calificadas', JSON.stringify([...set]));
+        }
         let calVendedorId = null;
         let calPuntaje = 0;
         const CAL_LABELS = ['', '😞 Muy malo', '😐 Regular', '😊 Bueno', '😄 Muy bueno', '🌟 ¡Excelente!'];
@@ -1298,6 +1306,7 @@
             }]);
             if (error) { alert('Error al enviar: ' + error.message); return; }
             const artIdCalificado = calArticuloId;
+            guardarCalificadaLocal(artIdCalificado);
             cerrarModalCalificacion();
             await filtrarMisCompras();
             const btn = document.getElementById('btn-cal-' + artIdCalificado);
@@ -1571,20 +1580,15 @@
                     `;
                     lista.appendChild(div);
                     if (pagoConfirmado) {
-                        let calQ = _supabase.from('calificaciones').select('id')
-                            .eq('articulo_id', art.id).eq('comprador_id', usuarioActualId);
-                        if (confirmadoEn) calQ = calQ.gte('created_at', confirmadoEn);
-                        calQ.maybeSingle().then(({ data: calExistente }) => {
-                            const btn = document.getElementById('btn-cal-' + art.id);
-                            if (!btn) return;
-                            if (calExistente) {
-                                btn.disabled = true;
-                                btn.innerText = '✅ Ya calificaste esta compra';
-                                btn.style.background = '#e8f5e9';
-                                btn.style.color = '#2e7d32';
-                                btn.style.borderColor = '#a5d6a7';
-                            }
-                        });
+                        const calificadasLocales = getCalificadasLocales();
+                        const btn = document.getElementById('btn-cal-' + art.id);
+                        if (btn && calificadasLocales.has(String(art.id))) {
+                            btn.disabled = true;
+                            btn.innerText = '✅ Ya calificaste esta compra';
+                            btn.style.background = '#e8f5e9';
+                            btn.style.color = '#2e7d32';
+                            btn.style.borderColor = '#a5d6a7';
+                        }
                     }
                 });
             } catch (e) { console.error("Error en Mis Compras:", e); }
