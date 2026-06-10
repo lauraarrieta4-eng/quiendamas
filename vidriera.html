@@ -1763,6 +1763,11 @@
         });
 
 async function eliminarPublicacion(id) {
+    const { data: art } = await _supabase.from('articulos').select('comprador_id, ganador_id, pago_confirmado').eq('id', id).maybeSingle();
+    if (art && (art.comprador_id || art.ganador_id) && !art.pago_confirmado) {
+        alert("⚠️ No podés eliminar esta publicación hasta abonar la comisión y desbloquear los datos del comprador.\n\nUna vez que el pago sea verificado podrás dar de baja la publicación.");
+        return;
+    }
     const confirmar = confirm("¿Seguro que querés dar de baja esta publicación? El historial se conserva.");
     if (!confirmar) return;
     const { error } = await _supabase.from('articulos').update({ activo: false }).eq('id', id);
