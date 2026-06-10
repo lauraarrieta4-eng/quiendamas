@@ -1157,26 +1157,6 @@
                     btnCal.style.background = '#e8f5e9';
                     btnCal.style.color = '#2e7d32';
                     btnCal.style.borderColor = '#a5d6a7';
-                } else {
-                const confirmadoEn = art.confirmado_en;
-                let calQuery = _supabase.from('calificaciones')
-                    .select('id').eq('articulo_id', art.id).eq('comprador_id', usuarioActualId);
-                if (confirmadoEn) calQuery = calQuery.gte('created_at', confirmadoEn);
-                calQuery
-                    .maybeSingle()
-                    .then(({ data: calExistente }) => {
-                        const btnCal = document.getElementById('btn-cal-' + art.id);
-                        if (!btnCal) return;
-                        if (calExistente) {
-                            guardarCalificadaLocal(art.id);
-                            btnCal.disabled = true;
-                            btnCal.innerText = '✅ Ya calificaste esta compra';
-                            btnCal.style.background = '#e8f5e9';
-                            btnCal.style.color = '#2e7d32';
-                            btnCal.style.borderColor = '#a5d6a7';
-                            return;
-                        }
-                    });
                 }
             }
         }
@@ -1266,13 +1246,19 @@
 
         // ── CALIFICACIONES ───────────────────────────────────────────────
         let calArticuloId = null;
+        function calKey() { return 'qdm_cal_' + (usuarioActualId || 'anon'); }
         function getCalificadasLocales() {
-            try { return new Set(JSON.parse(localStorage.getItem('qdm_calificadas') || '[]')); } catch { return new Set(); }
+            try { return new Set(JSON.parse(localStorage.getItem(calKey()) || '[]')); } catch { return new Set(); }
         }
         function guardarCalificadaLocal(articuloId) {
             const set = getCalificadasLocales();
             set.add(String(articuloId));
-            localStorage.setItem('qdm_calificadas', JSON.stringify([...set]));
+            localStorage.setItem(calKey(), JSON.stringify([...set]));
+        }
+        function borrarCalificadaLocal(articuloId) {
+            const set = getCalificadasLocales();
+            set.delete(String(articuloId));
+            localStorage.setItem(calKey(), JSON.stringify([...set]));
         }
         let calVendedorId = null;
         let calPuntaje = 0;
@@ -1429,6 +1415,7 @@
                 confirmado_en: null
             }).eq('id', id);
             if (error) { alert("Error: " + error.message); return; }
+            borrarCalificadaLocal(id);
             filtrarMisPublicaciones();
         }
 
