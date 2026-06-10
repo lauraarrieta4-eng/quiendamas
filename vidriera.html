@@ -1148,19 +1148,27 @@
 
             if (!esVentaDirecta) iniciarReloj(art.id, art.finaliza_en);
 
-            // Chequeo asíncrono del botón calificar: 15 días + no haber calificado antes
+            // Chequeo botón calificar
             if (pagoConfirmado && usuarioActualId && (soyComprador || soyGanador)) {
+                const btnCal = document.getElementById('btn-cal-' + art.id);
+                if (btnCal && getCalificadasLocales().has(String(art.id))) {
+                    btnCal.disabled = true;
+                    btnCal.innerText = '✅ Ya calificaste esta compra';
+                    btnCal.style.background = '#e8f5e9';
+                    btnCal.style.color = '#2e7d32';
+                    btnCal.style.borderColor = '#a5d6a7';
+                } else {
                 const confirmadoEn = art.confirmado_en;
-                if (!confirmadoEn) return; // sin fecha de confirmación no se puede determinar si es calificación vieja
                 let calQuery = _supabase.from('calificaciones')
-                    .select('id').eq('articulo_id', art.id).eq('comprador_id', usuarioActualId)
-                    .gte('created_at', confirmadoEn);
+                    .select('id').eq('articulo_id', art.id).eq('comprador_id', usuarioActualId);
+                if (confirmadoEn) calQuery = calQuery.gte('created_at', confirmadoEn);
                 calQuery
                     .maybeSingle()
                     .then(({ data: calExistente }) => {
                         const btnCal = document.getElementById('btn-cal-' + art.id);
                         if (!btnCal) return;
                         if (calExistente) {
+                            guardarCalificadaLocal(art.id);
                             btnCal.disabled = true;
                             btnCal.innerText = '✅ Ya calificaste esta compra';
                             btnCal.style.background = '#e8f5e9';
@@ -1168,16 +1176,8 @@
                             btnCal.style.borderColor = '#a5d6a7';
                             return;
                         }
-                        if (confirmadoEn) {
-                            const diasPasados = (Date.now() - new Date(confirmadoEn).getTime()) / 86400000;
-                            if (diasPasados < 15) {
-                                const diasRestantes = Math.ceil(15 - diasPasados);
-                                btnCal.disabled = true;
-                                btnCal.innerText = `⏳ Podrás calificar en ${diasRestantes} día${diasRestantes !== 1 ? 's' : ''}`;
-                                btnCal.style.opacity = '0.6';
-                            }
-                        }
                     });
+                }
             }
         }
 
