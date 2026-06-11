@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conectando con Mercado Pago...</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #F5E1E2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            max-width: 360px;
+            width: 90%;
+            box-shadow: 0 6px 24px rgba(224,72,145,0.15);
+            border-top: 5px solid #009ee3;
+        }
+        .icono { font-size: 3rem; margin-bottom: 16px; }
+        .titulo { font-size: 1.2em; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .subtitulo { font-size: 0.9em; color: #777; }
+        .spinner {
+            width: 36px; height: 36px;
+            border: 4px solid #e0e0e0;
+            border-top-color: #009ee3;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div id="contenido">
+        <div class="spinner"></div>
+        <div class="titulo">Conectando con Mercado Pago...</div>
+        <div class="subtitulo">Por favor esperá un momento.</div>
+    </div>
+</div>
+
+<script>
+async function procesarOAuth() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const error = params.get('error');
+
+    if (error || !code) {
+        mostrar('❌', 'No se pudo conectar', 'Cerraste la autorización o hubo un error. Redirigiendo...');
+        setTimeout(() => window.location.href = 'vidriera.html', 3000);
+        return;
+    }
+
+    const { data: { session } } = await _supabase.auth.getSession();
+    if (!session) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        const response = await fetch('https://bzznyvzzwfqqxqddjqwh.supabase.co/functions/v1/mp-oauth', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`
+            },
+            body: JSON.stringify({ code })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || result.error) {
+            mostrar('❌', 'Error al conectar', result.error || 'Intentá de nuevo más tarde.');
+            setTimeout(() => window.location.href = 'vidriera.html', 3000);
+            return;
+        }
+
+        mostrar('✅', '¡Cuenta conectada!', 'Tu cuenta de Mercado Pago quedó vinculada. Redirigiendo...');
+        setTimeout(() => window.location.href = 'vidriera.html', 2500);
+
+    } catch (e) {
+        mostrar('❌', 'Error de conexión', 'No se pudo contactar al servidor. Intentá de nuevo.');
+        setTimeout(() => window.location.href = 'vidriera.html', 3000);
+    }
+}
+
+function mostrar(icono, titulo, subtitulo) {
+    document.getElementById('contenido').innerHTML = `
+        <div class="icono">${icono}</div>
+        <div class="titulo">${titulo}</div>
+        <div class="subtitulo">${subtitulo}</div>
+    `;
+}
+
+procesarOAuth();
+</script>
+</body>
+</html>
