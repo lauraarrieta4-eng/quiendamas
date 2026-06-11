@@ -347,6 +347,63 @@
     let fotosArchivos = [];
     let slotActual = null;
 
+    // ── COMPRESIÓN DE IMÁGENES ────────────────────────────────────────
+    // Redimensiona a máx. 1200px y convierte a WebP (o JPEG si el
+    // navegador no soporta WebP). Si algo falla, sube el archivo original.
+    const MAX_DIMENSION_FOTO = 1200;
+    const CALIDAD_FOTO = 0.8;
+
+    function comprimirImagen(archivo) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            const url = URL.createObjectURL(archivo);
+
+            img.onload = () => {
+                URL.revokeObjectURL(url);
+                let ancho = img.width;
+                let alto = img.height;
+
+                if (ancho > MAX_DIMENSION_FOTO || alto > MAX_DIMENSION_FOTO) {
+                    if (ancho > alto) {
+                        alto = Math.round(alto * MAX_DIMENSION_FOTO / ancho);
+                        ancho = MAX_DIMENSION_FOTO;
+                    } else {
+                        ancho = Math.round(ancho * MAX_DIMENSION_FOTO / alto);
+                        alto = MAX_DIMENSION_FOTO;
+                    }
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = ancho;
+                canvas.height = alto;
+                canvas.getContext('2d').drawImage(img, 0, 0, ancho, alto);
+
+                // Intentar WebP primero
+                canvas.toBlob((blobWebp) => {
+                    if (blobWebp && blobWebp.type === 'image/webp' && blobWebp.size < archivo.size) {
+                        resolve(blobWebp);
+                    } else {
+                        // Fallback a JPEG
+                        canvas.toBlob((blobJpeg) => {
+                            if (blobJpeg && blobJpeg.size < archivo.size) {
+                                resolve(blobJpeg);
+                            } else {
+                                resolve(archivo); // último recurso: original
+                            }
+                        }, 'image/jpeg', CALIDAD_FOTO);
+                    }
+                }, 'image/webp', CALIDAD_FOTO);
+            };
+
+            img.onerror = () => {
+                URL.revokeObjectURL(url);
+                resolve(archivo); // si no se puede leer como imagen, sube el original
+            };
+
+            img.src = url;
+        });
+    }
+
     function renderFotosGrid() {
         const grid = document.getElementById('fotos-grid');
         grid.innerHTML = '';
@@ -408,9 +465,20 @@
         try {
             const urlsFotos = [];
             for (let i = 0; i < fotosValidas.length; i++) {
-                const archivo = fotosValidas[i];
-                const nombreFoto = Date.now() + "_" + i + "_" + archivo.name.replace(/\s/g, '_');
-                const { error: errorFoto } = await _supabase.storage.from('fotos_subastas').upload(nombreFoto, archivo);
+                msgDiv.innerText = "⏳ Optimizando y subiendo foto " + (i + 1) + " de " + fotosValidas.length + "...";
+
+                const archivoOriginal = fotosValidas[i];
+                const archivo = await comprimirImagen(archivoOriginal);
+
+                let nombreFoto;
+                if (archivo !== archivoOriginal) {
+                    const extension = archivo.type === 'image/webp' ? 'webp' : 'jpg';
+                    nombreFoto = Date.now() + "_" + i + "." + extension;
+                } else {
+                    nombreFoto = Date.now() + "_" + i + "_" + archivoOriginal.name.replace(/\s/g, '_');
+                }
+
+                const { error: errorFoto } = await _supabase.storage.from('fotos_subastas').upload(nombreFoto, archivo, { contentType: archivo.type });
                 if (errorFoto) throw errorFoto;
                 const { data: urlPublica } = _supabase.storage.from('fotos_subastas').getPublicUrl(nombreFoto);
                 urlsFotos.push(urlPublica.publicUrl);
