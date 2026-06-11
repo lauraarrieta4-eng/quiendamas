@@ -1712,8 +1712,9 @@
         });
 
 async function eliminarPublicacion(id) {
-    const { data: art } = await _supabase.from('articulos').select('comprador_id, ganador_id, pago_confirmado').eq('id', id).maybeSingle();
-    if (art && (art.comprador_id || art.ganador_id)) {
+    const { data: art } = await _supabase.from('articulos').select('comprador_id, ganador_id, pago_confirmado, tipo_venta').eq('id', id).maybeSingle();
+    const tieneComprador = art?.tipo_venta === 'subasta' ? !!art.ganador_id : !!art.comprador_id;
+    if (art && tieneComprador) {
         if (!art.pago_confirmado) {
             alert("⚠️ No podés eliminar esta publicación hasta abonar la comisión y desbloquear los datos del comprador.\n\nUna vez que el pago sea verificado podrás dar de baja la publicación.");
             return;
