@@ -1787,7 +1787,7 @@ async function eliminarPublicacion(id) {
                 if (perfil.mp_access_token) {
                     mpStatus.innerHTML = `<div style="background:#e8f5e9;border-radius:10px;padding:10px 14px;font-size:0.85em;color:#2e7d32;text-align:center;">✅ <b>Mercado Pago conectado</b><br><span style="font-size:0.9em;color:#555;">Podés cobrar pagos online.</span></div>`;
                 } else {
-                    mpStatus.innerHTML = `<a href="https://auth.mercadopago.com.ar/authorization?client_id=6759906932202143&response_type=code&platform_id=mp&redirect_uri=https://quiendamasapp.com.ar/oauth.html&scope=offline_access" style="display:block;background:#009ee3;color:white;border-radius:10px;padding:11px 14px;font-size:0.88em;font-weight:bold;text-align:center;text-decoration:none;">💳 Conectar cuenta de Mercado Pago</a><p style="font-size:0.75em;color:#999;text-align:center;margin:4px 0 0;">Necesario para cobrar pagos online.</p>`;
+                    mpStatus.innerHTML = `<a href="https://auth.mercadopago.com.ar/authorization?client_id=2932744842253964&response_type=code&platform_id=mp&redirect_uri=https://quiendamasapp.com.ar/oauth.html&scope=offline_access" style="display:block;background:#009ee3;color:white;border-radius:10px;padding:11px 14px;font-size:0.88em;font-weight:bold;text-align:center;text-decoration:none;">💳 Conectar cuenta de Mercado Pago</a><p style="font-size:0.75em;color:#999;text-align:center;margin:4px 0 0;">Necesario para cobrar pagos online.</p>`;
                 }
             }
             if (user) document.getElementById('miperfil-email').innerText = user.email || '';
