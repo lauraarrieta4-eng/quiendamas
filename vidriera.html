@@ -1323,6 +1323,8 @@
         async function pagarOnline(id) {
             const { data: { session } } = await _supabase.auth.getSession();
             if (!session) { window.location.href = 'login.html'; return; }
+            const { data: art } = await _supabase.from('articulos').select('perfil_id').eq('id', id).maybeSingle();
+            if (art?.perfil_id === session.user.id) { alert('⚠️ No podés comprar tu propia publicación.'); return; }
             const btn = event.target;
             btn.disabled = true;
             btn.innerText = '⏳ Procesando...';
