@@ -1321,7 +1321,28 @@
 
         // ── COMPRAR AHORA ───────────────────────────────────────────
         async function pagarOnline(id) {
-            alert("💳 El pago online estará disponible próximamente.");
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (!session) { window.location.href = 'login.html'; return; }
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerText = '⏳ Procesando...';
+            try {
+                const res = await fetch('https://bzznyvzzwfqqxqddjqwh.supabase.co/functions/v1/mp-pago', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({ articulo_id: id })
+                });
+                const data = await res.json();
+                if (data.error) { alert('❌ ' + data.error); btn.disabled = false; btn.innerText = '💳 Pagar online'; return; }
+                window.location.href = data.init_point;
+            } catch (e) {
+                alert('❌ Error de conexión. Intentá de nuevo.');
+                btn.disabled = false;
+                btn.innerText = '💳 Pagar online';
+            }
         }
 
         async function comprarAhora(id) {
