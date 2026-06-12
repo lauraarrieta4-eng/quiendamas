@@ -1075,7 +1075,7 @@
                     const precio = (art.precio_base || 0).toLocaleString('es-AR');
                     let botonesCompra = '';
                     if (art.acepta_online) {
-                        botonesCompra += `<button class="btn-comprar" style="background:#009ee3;" onclick="pagarOnline('${art.id}')">💳 Pagar online — $${precio}</button>`;
+                        botonesCompra += `<button class="btn-comprar" style="background:#009ee3;" onclick="pagarOnline('${art.id}', this)">💳 Pagar online — $${precio}</button>`;
                     }
                     if (art.acepta_presencial) {
                         botonesCompra += `<button class="btn-comprar" style="${art.acepta_online ? 'margin-top:6px;' : ''}background:#43a047;" onclick="comprarAhora('${art.id}')">🤝 Coordinar en persona — $${precio}</button>`;
@@ -1320,12 +1320,11 @@
         }
 
         // ── COMPRAR AHORA ───────────────────────────────────────────
-        async function pagarOnline(id) {
+        async function pagarOnline(id, btn) {
             const { data: { session } } = await _supabase.auth.getSession();
             if (!session) { window.location.href = 'login.html'; return; }
             const { data: art } = await _supabase.from('articulos').select('perfil_id').eq('id', id).maybeSingle();
             if (art?.perfil_id === session.user.id) { alert('⚠️ No podés comprar tu propia publicación.'); return; }
-            const btn = event.target;
             btn.disabled = true;
             btn.innerText = '⏳ Procesando...';
             try {
