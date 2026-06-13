@@ -98,7 +98,7 @@
 const ADMIN_EMAIL = 'lauraarrieta4@gmail.com';
 const SUPABASE_URL_FN = 'https://bzznyvzzwfqqxqddjqwh.supabase.co';
 
-const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// _supabase ya viene de config.js
 
 let todasLasVentas = [];
 let filtroActual = 'todos';
@@ -116,7 +116,7 @@ async function init() {
 async function cargarVentas() {
   const { data: ventas } = await _supabase
     .from('ventas')
-    .select('*, comprador:comprador_id(email, nombre), vendedor:vendedor_id(email, nombre)')
+    .select('*, comprador:comprador_id(nombre), vendedor:vendedor_id(nombre)')
     .order('created_at', { ascending: false });
 
   todasLasVentas = ventas || [];
@@ -158,8 +158,8 @@ function renderTabla(ventas) {
 
   document.getElementById('filas').innerHTML = ventas.map(v => {
     const fecha = new Date(v.created_at).toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'2-digit' });
-    const compradorLabel = v.comprador?.nombre || v.comprador?.email || v.comprador_id?.slice(0,8) + '…';
-    const vendedorLabel = v.vendedor?.nombre || v.vendedor?.email || v.vendedor_id?.slice(0,8) + '…';
+    const compradorLabel = v.comprador?.nombre || (v.comprador_id?.slice(0,8) + '…');
+    const vendedorLabel = v.vendedor?.nombre || (v.vendedor_id?.slice(0,8) + '…');
     const monto = '$' + (v.monto_total || 0).toLocaleString('es-AR', {maximumFractionDigits:0});
     const comision = '$' + (v.comision || 0).toLocaleString('es-AR', {maximumFractionDigits:0});
     const estado = v.estado_entrega || 'retenido';
