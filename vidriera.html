@@ -1104,7 +1104,7 @@
                         const precioFinal = (art.precio_actual || art.precio_base || 0).toLocaleString('es-AR');
                         let botonesG = '';
                         if (art.acepta_online) botonesG += `<button class="btn-comprar" style="background:#009ee3;" onclick="pagarOnline('${art.id}', this)">💳 Pagar online — $${precioFinal}</button>`;
-                        if (art.acepta_presencial) botonesG += `<button class="btn-comprar" style="background:#43a047;margin-top:6px;">🤝 Coordinar en persona — $${precioFinal}</button>`;
+                        if (art.acepta_presencial) botonesG += `<div style="background:#e8f5e9;border-radius:10px;padding:10px;font-size:0.82em;color:#2e7d32;text-align:center;margin-top:6px;">🤝 <b>¡Ganaste!</b><br>El vendedor se pondrá en contacto con vos para coordinar la entrega.</div>`;
                         boton = botonesG || `<div style="background:#e8f5e9; border-radius:10px; padding:12px; font-size:0.82em; color:#2e7d32; text-align:center; line-height:1.5;">🏆 <b>¡Ganaste la subasta!</b><br>El vendedor se pondrá en contacto para coordinar el pago.</div>`;
                     }
                 } else if (yaTermino) {
@@ -1523,9 +1523,9 @@
                             botonesGanador += `<button class="btn-comprar" style="background:#009ee3;" onclick="pagarOnline('${art.id}', this)">💳 Pagar online — $${precioFinal}</button>`;
                         }
                         if (art.acepta_presencial) {
-                            botonesGanador += `<button class="btn-comprar" style="background:#43a047;margin-top:6px;">🤝 Coordinar en persona — $${precioFinal}</button>`;
+                            botonesGanador += `<div style="background:#e8f5e9;border-radius:10px;padding:10px;font-size:0.82em;color:#2e7d32;text-align:center;margin-top:6px;">🤝 <b>¡Ganaste!</b><br>El vendedor se pondrá en contacto con vos para coordinar la entrega.</div>`;
                         }
-                        boton = botonesGanador || `<button class="btn-ganador" style="font-size:0.85em;padding:12px;">🏆 ¡Ganaste! El vendedor se pondrá en contacto.</button>`;
+                        boton = botonesGanador || `<div style="background:#e8f5e9;border-radius:10px;padding:10px;font-size:0.82em;color:#2e7d32;text-align:center;">🏆 <b>¡Ganaste!</b><br>El vendedor se pondrá en contacto con vos.</div>`;
                     } else if (yaTermino) {
                         boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
                     } else {
