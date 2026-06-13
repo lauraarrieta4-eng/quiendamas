@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Admin - Quiéndamas</title>
+  <script src="config.js"></script>
+  <script src="supabase.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5e1e2; min-height: 100vh; padding: 20px; }
+    h1 { color: #E04891; font-size: 1.5em; margin-bottom: 6px; }
+    .subtitulo { color: #888; font-size: 0.85em; margin-bottom: 20px; }
+    .filtros { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .filtro-btn { padding: 6px 14px; border-radius: 20px; border: 2px solid #E04891; background: white; color: #E04891; font-size: 0.82em; cursor: pointer; font-weight: 600; transition: all 0.15s; }
+    .filtro-btn.activo { background: #E04891; color: white; }
+    .stats { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .stat { background: white; border-radius: 12px; padding: 14px 18px; flex: 1; min-width: 120px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .stat .num { font-size: 1.6em; font-weight: 700; color: #E04891; }
+    .stat .label { font-size: 0.75em; color: #888; margin-top: 2px; }
+    .tabla-wrap { background: white; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.82em; }
+    thead { background: #f9f9f9; }
+    th { padding: 12px 14px; text-align: left; color: #555; font-weight: 600; border-bottom: 1px solid #eee; white-space: nowrap; }
+    td { padding: 11px 14px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background: #fafafa; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.78em; font-weight: 600; }
+    .badge.retenido { background: #fff3e0; color: #e65100; }
+    .badge.entregado { background: #e8f5e9; color: #2e7d32; }
+    .badge.liberado { background: #e3f2fd; color: #1565c0; }
+    .badge.reembolsado { background: #fce4ec; color: #c62828; }
+    .acciones { display: flex; gap: 6px; flex-wrap: wrap; }
+    .btn-accion { padding: 5px 12px; border-radius: 8px; border: none; font-size: 0.78em; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+    .btn-accion:hover { opacity: 0.82; }
+    .btn-liberar { background: #1565c0; color: white; }
+    .btn-reembolso { background: #c62828; color: white; }
+    .btn-accion:disabled { opacity: 0.4; cursor: not-allowed; }
+    .monto { font-weight: 600; color: #222; }
+    .comision { color: #E04891; font-weight: 600; }
+    .titulo-art { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .vacío { text-align: center; padding: 40px; color: #aaa; font-size: 0.9em; }
+    #cargando { text-align: center; padding: 40px; color: #aaa; }
+    .login-bloq { display: flex; align-items: center; justify-content: center; min-height: 80vh; }
+    .login-card { background: white; border-radius: 16px; padding: 40px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .login-card h2 { color: #E04891; margin-bottom: 10px; }
+    .login-card p { color: #888; font-size: 0.9em; }
+    @media (max-width: 700px) {
+      table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="contenido" style="display:none;">
+  <h1>🛠️ Panel Admin</h1>
+  <div class="subtitulo">Quiéndamas — gestión de ventas y fondos</div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="filtros">
+    <button class="filtro-btn activo" onclick="filtrar('todos', this)">Todos</button>
+    <button class="filtro-btn" onclick="filtrar('retenido', this)">⏳ Retenidos</button>
+    <button class="filtro-btn" onclick="filtrar('entregado', this)">✅ Entregados</button>
+    <button class="filtro-btn" onclick="filtrar('liberado', this)">💸 Liberados</button>
+    <button class="filtro-btn" onclick="filtrar('reembolsado', this)">↩️ Reembolsados</button>
+  </div>
+
+  <div class="tabla-wrap">
+    <div id="cargando">Cargando ventas...</div>
+    <table id="tabla-ventas" style="display:none;">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Artículo</th>
+          <th>Comprador</th>
+          <th>Vendedor</th>
+          <th>Monto</th>
+          <th>Comisión</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="filas"></tbody>
+    </table>
+    <div id="vacio" class="vacío" style="display:none;">No hay ventas para mostrar.</div>
+  </div>
+</div>
+
+<div id="bloqueo" class="login-bloq" style="display:none;">
+  <div class="login-card">
+    <h2>🔒 Acceso restringido</h2>
+    <p>Esta página es solo para administradores.</p>
+  </div>
+</div>
+
+<script>
+const ADMIN_EMAIL = 'lauraarrieta4@gmail.com';
+const SUPABASE_URL_FN = 'https://bzznyvzzwfqqxqddjqwh.supabase.co';
+
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let todasLasVentas = [];
+let filtroActual = 'todos';
+
+async function init() {
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session || session.user.email !== ADMIN_EMAIL) {
+    document.getElementById('bloqueo').style.display = 'flex';
+    return;
+  }
+  document.getElementById('contenido').style.display = 'block';
+  await cargarVentas();
+}
+
+async function cargarVentas() {
+  const { data: ventas } = await _supabase
+    .from('ventas')
+    .select('*, comprador:comprador_id(email, nombre), vendedor:vendedor_id(email, nombre)')
+    .order('created_at', { ascending: false });
+
+  todasLasVentas = ventas || [];
+  renderStats();
+  renderTabla(todasLasVentas);
+}
+
+function renderStats() {
+  const total = todasLasVentas.length;
+  const retenidos = todasLasVentas.filter(v => v.estado_entrega === 'retenido').length;
+  const comisionTotal = todasLasVentas.reduce((s, v) => s + (v.comision || 0), 0);
+  const montoTotal = todasLasVentas.reduce((s, v) => s + (v.monto_total || 0), 0);
+
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="num">${total}</div><div class="label">Ventas totales</div></div>
+    <div class="stat"><div class="num">${retenidos}</div><div class="label">Fondos retenidos</div></div>
+    <div class="stat"><div class="num">$${comisionTotal.toLocaleString('es-AR', {maximumFractionDigits:0})}</div><div class="label">Comisiones cobradas</div></div>
+    <div class="stat"><div class="num">$${montoTotal.toLocaleString('es-AR', {maximumFractionDigits:0})}</div><div class="label">Volumen total</div></div>
+  `;
+}
+
+function filtrar(estado, btn) {
+  document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('activo'));
+  btn.classList.add('activo');
+  filtroActual = estado;
+  const filtradas = estado === 'todos' ? todasLasVentas : todasLasVentas.filter(v => v.estado_entrega === estado);
+  renderTabla(filtradas);
+}
+
+function renderTabla(ventas) {
+  document.getElementById('cargando').style.display = 'none';
+  if (!ventas.length) {
+    document.getElementById('tabla-ventas').style.display = 'none';
+    document.getElementById('vacio').style.display = 'block';
+    return;
+  }
+  document.getElementById('vacio').style.display = 'none';
+  document.getElementById('tabla-ventas').style.display = 'table';
+
+  document.getElementById('filas').innerHTML = ventas.map(v => {
+    const fecha = new Date(v.created_at).toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'2-digit' });
+    const compradorLabel = v.comprador?.nombre || v.comprador?.email || v.comprador_id?.slice(0,8) + '…';
+    const vendedorLabel = v.vendedor?.nombre || v.vendedor?.email || v.vendedor_id?.slice(0,8) + '…';
+    const monto = '$' + (v.monto_total || 0).toLocaleString('es-AR', {maximumFractionDigits:0});
+    const comision = '$' + (v.comision || 0).toLocaleString('es-AR', {maximumFractionDigits:0});
+    const estado = v.estado_entrega || 'retenido';
+
+    const puedeLiberar = estado === 'retenido' || estado === 'entregado';
+    const puedeReembolsar = estado !== 'reembolsado' && estado !== 'liberado';
+
+    return `<tr id="fila-${v.id}">
+      <td>${fecha}</td>
+      <td><div class="titulo-art" title="${v.titulo || ''}">${v.titulo || '—'}</div></td>
+      <td>${compradorLabel}</td>
+      <td>${vendedorLabel}</td>
+      <td class="monto">${monto}</td>
+      <td class="comision">${comision}</td>
+      <td><span class="badge ${estado}">${estadoLabel(estado)}</span></td>
+      <td>
+        <div class="acciones">
+          ${puedeLiberar ? `<button class="btn-accion btn-liberar" onclick="liberar('${v.id}', '${v.mp_payment_id}', this)">💸 Liberar</button>` : ''}
+          ${puedeReembolsar ? `<button class="btn-accion btn-reembolso" onclick="reembolsar('${v.id}', '${v.mp_payment_id}', ${v.monto_total}, this)">↩️ Reembolsar</button>` : ''}
+          ${!puedeLiberar && !puedeReembolsar ? '<span style="color:#aaa;font-size:0.8em;">—</span>' : ''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function estadoLabel(e) {
+  const labels = { retenido: '⏳ Retenido', entregado: '✅ Entregado', liberado: '💸 Liberado', reembolsado: '↩️ Reembolsado' };
+  return labels[e] || e;
+}
+
+async function liberar(ventaId, mpPaymentId, btn) {
+  if (!confirm('¿Liberar los fondos al vendedor ahora?')) return;
+  btn.disabled = true;
+  btn.innerText = '⏳...';
+
+  const { data: { session } } = await _supabase.auth.getSession();
+  const res = await fetch(`${SUPABASE_URL_FN}/functions/v1/mp-liberar`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+    body: JSON.stringify({ mp_payment_id: mpPaymentId, venta_id: ventaId }),
+  });
+  const data = await res.json();
+
+  if (data.ok) {
+    alert('✅ Fondos liberados correctamente.');
+    await cargarVentas();
+  } else {
+    alert('❌ ' + (data.error || 'Error al liberar. MP puede no tener habilitado el marketplace completo.'));
+    btn.disabled = false;
+    btn.innerText = '💸 Liberar';
+  }
+}
+
+async function reembolsar(ventaId, mpPaymentId, montoTotal, btn) {
+  const opcion = prompt(`Reembolso para pago $${montoTotal?.toLocaleString('es-AR')}.\n\nEscribí el monto a reembolsar (o dejá vacío para reembolso total):`);
+  if (opcion === null) return;
+
+  const monto = opcion.trim() === '' ? null : parseFloat(opcion.replace(',', '.'));
+  if (monto !== null && (isNaN(monto) || monto <= 0)) { alert('Monto inválido.'); return; }
+
+  btn.disabled = true;
+  btn.innerText = '⏳...';
+
+  const { data: { session } } = await _supabase.auth.getSession();
+  const res = await fetch(`${SUPABASE_URL_FN}/functions/v1/mp-reembolsar`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+    body: JSON.stringify({ mp_payment_id: mpPaymentId, venta_id: ventaId, monto }),
+  });
+  const data = await res.json();
+
+  if (data.ok) {
+    alert('✅ Reembolso procesado correctamente.');
+    await cargarVentas();
+  } else {
+    alert('❌ ' + (data.error || 'Error al reembolsar.'));
+    btn.disabled = false;
+    btn.innerText = '↩️ Reembolsar';
+  }
+}
+
+init();
+</script>
+</body>
+</html>
