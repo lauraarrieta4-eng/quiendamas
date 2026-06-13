@@ -281,7 +281,7 @@
         <div class="modal-box">
             <div style="font-size:3em;">💰</div>
             <h2>¡Tu subasta fue ganada!</h2>
-            <p style="color:#555; font-size:0.95em;">Para ver los datos del comprador y coordinar la entrega, abonás la comisión del <b>5% del precio final</b>:</p>
+            <p style="color:#555; font-size:0.95em;">Para ver los datos del comprador y coordinar la entrega, abonás la comisión del <b>4% del precio final</b>:</p>
             <div class="modal-monto" id="modal-monto-vendedor">$0</div>
             <div class="modal-datos">
                 <b>Titular:</b> Laura Fernanda Arrieta<br>
@@ -301,7 +301,7 @@
         <div class="modal-box">
             <div style="font-size:3em;">🛒</div>
             <h2 style="color:#43a047;">¡Compraron tu producto!</h2>
-            <p style="color:#555; font-size:0.95em;">Hay un comprador esperándote. Para ver sus datos y coordinar la entrega, abonás la comisión del <b>5% del precio de venta</b>:</p>
+            <p style="color:#555; font-size:0.95em;">Hay un comprador esperándote. Para ver sus datos y coordinar la entrega, abonás la comisión del <b>4% del precio de venta</b>:</p>
             <div class="modal-monto" id="modal-monto-venta" style="color:#43a047;">$0</div>
             <div class="modal-datos">
                 <b>Titular:</b> Laura Fernanda Arrieta<br>
@@ -1415,7 +1415,7 @@
         function cerrarModalCompraOk() { document.getElementById('modal-compra-ok').classList.remove('activo'); }
 
         function abrirModalVentaDirecta(precioFinal) {
-            const comision = Math.round(precioFinal * 0.05);
+            const comision = Math.round(precioFinal * 0.04);
             document.getElementById('modal-monto-venta').innerText = '$' + comision.toLocaleString('es-AR');
             document.getElementById('modal-vendedor-venta').classList.add('activo');
         }
@@ -1704,7 +1704,7 @@
         }).subscribe();
 
         function abrirModalVendedor(precioFinal) {
-            const comision = Math.round(precioFinal * 0.05);
+            const comision = Math.round(precioFinal * 0.04);
             document.getElementById('modal-monto-vendedor').innerText = '$' + comision.toLocaleString('es-AR');
             document.getElementById('modal-vendedor').classList.add('activo');
         }
