@@ -432,8 +432,8 @@
     <div class="modal-overlay" id="modal-calificacion">
         <div class="modal-cal-box">
             <img src="martillo.png" style="width:58px;height:58px;display:block;margin:0 auto 6px;">
-            <h2 style="color:var(--rosa);margin-top:6px;">Calificar al vendedor</h2>
-            <p style="color:#666;font-size:0.88em;margin-top:0;">¿Cómo fue tu experiencia de compra?</p>
+            <h2 style="color:var(--rosa);margin-top:6px;">📦 Recibí la compra</h2>
+            <p style="color:#666;font-size:0.88em;margin-top:0;">Confirmá que recibiste el producto y calificá al vendedor.</p>
             <div class="martillo-selector">
                 <button class="martillo-btn" onclick="seleccionarMartillo(1)"><img src="martillo.png" alt="1"></button>
                 <button class="martillo-btn" onclick="seleccionarMartillo(2)"><img src="martillo.png" alt="2"></button>
@@ -1118,7 +1118,7 @@
 
             // Botón calificar: solo para el comprador/ganador, después de pago confirmado
             if (pagoConfirmado && usuarioActualId && (soyComprador || soyGanador)) {
-                btnCalificar = `<button class="btn-calificar" id="btn-cal-${art.id}" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')"><img src="martillo.png" style="width:16px;height:16px;"> Calificar al vendedor</button>`;
+                btnCalificar = `<button class="btn-calificar" id="btn-cal-${art.id}" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')" style="background:#fff3e0;border-color:#f57c00;color:#e65100;font-weight:700;">📦 Recibí la compra — Calificar al vendedor</button>`;
             }
 
             const todasFotos = [art.foto_url].concat(art.fotos_extra || []).filter(Boolean);
