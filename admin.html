@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel Admin - Quiéndamas</title>
-  <script src="config.js"></script>
   <script src="supabase.min.js"></script>
+  <script src="config.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', sans-serif; background: #f5e1e2; min-height: 100vh; padding: 20px; }
@@ -116,7 +116,7 @@ async function init() {
 async function cargarVentas() {
   const { data: ventas } = await _supabase
     .from('ventas')
-    .select('*, comprador:comprador_id(nombre), vendedor:vendedor_id(nombre)')
+    .select('*')
     .order('created_at', { ascending: false });
 
   todasLasVentas = ventas || [];
@@ -158,8 +158,8 @@ function renderTabla(ventas) {
 
   document.getElementById('filas').innerHTML = ventas.map(v => {
     const fecha = new Date(v.created_at).toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'2-digit' });
-    const compradorLabel = v.comprador?.nombre || (v.comprador_id?.slice(0,8) + '…');
-    const vendedorLabel = v.vendedor?.nombre || (v.vendedor_id?.slice(0,8) + '…');
+    const compradorLabel = v.comprador_id?.slice(0,8) + '…';
+    const vendedorLabel = v.vendedor_id?.slice(0,8) + '…';
     const monto = '$' + (v.monto_total || 0).toLocaleString('es-AR', {maximumFractionDigits:0});
     const comision = '$' + (v.comision || 0).toLocaleString('es-AR', {maximumFractionDigits:0});
     const estado = v.estado_entrega || 'retenido';
