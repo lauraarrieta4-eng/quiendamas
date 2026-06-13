@@ -1089,7 +1089,7 @@
                     if (yaTermino && art.ganador_id) {
                         if (pagoConfirmado) {
                             boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosComprador('${art.ganador_id}')">👤 Ver datos del comprador</button>`;
-                        } else if (art.acepta_online) {
+                        } else if (art.acepta_online && !art.acepta_presencial) {
                             boton = `<button class="btn-oferta" style="background:#888;" disabled>⏳ Esperando pago del ganador</button>`;
                         } else {
                             boton = `<button class="btn-vendedor" onclick="abrirModalVendedor(${art.precio_actual || art.precio_base})">💰 Abonar comisión para ver comprador</button>`;
