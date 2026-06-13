@@ -1515,7 +1515,7 @@
                     const pagoConfirmado = art.pago_confirmado;
                     let boton = '';
                     if (soyGanador && pagoConfirmado) {
-                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verDatosVendedor('${art.id}', '${art.perfil_id}')">📋 Ver datos del vendedor</button>`;
+                        boton = `<div style="background:#e8f5e9;border-radius:10px;padding:10px;font-size:0.82em;color:#2e7d32;text-align:center;">✅ <b>¡Compra confirmada!</b><br>El vendedor se pondrá en contacto con vos para coordinar la entrega.</div>`;
                     } else if (soyGanador && !pagoConfirmado) {
                         const precioFinal = (art.precio_actual || art.precio_base || 0).toLocaleString('es-AR');
                         let botonesGanador = '';
@@ -1523,7 +1523,7 @@
                             botonesGanador += `<button class="btn-comprar" style="background:#009ee3;" onclick="pagarOnline('${art.id}', this)">💳 Pagar online — $${precioFinal}</button>`;
                         }
                         if (art.acepta_presencial) {
-                            botonesGanador += `<div style="background:#e8f5e9;border-radius:10px;padding:10px;font-size:0.82em;color:#2e7d32;text-align:center;margin-top:6px;">🤝 <b>¡Ganaste!</b><br>El vendedor se pondrá en contacto con vos para coordinar la entrega.</div>`;
+                            botonesGanador += `<div style="background:#fff8e1;border-radius:10px;padding:10px;font-size:0.82em;color:#e65100;text-align:center;margin-top:6px;">🤝 <b>Pago en persona:</b><br>El vendedor se pondrá en contacto con vos para coordinar la entrega.</div>`;
                         }
                         boton = botonesGanador || `<div style="background:#e8f5e9;border-radius:10px;padding:10px;font-size:0.82em;color:#2e7d32;text-align:center;">🏆 <b>¡Ganaste!</b><br>El vendedor se pondrá en contacto con vos.</div>`;
                     } else if (yaTermino) {
