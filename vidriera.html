@@ -1116,10 +1116,6 @@
                 }
             }
 
-            // Botón calificar: solo para el comprador/ganador, después de pago confirmado
-            if (pagoConfirmado && usuarioActualId && (soyComprador || soyGanador)) {
-                btnCalificar = `<button class="btn-calificar" id="btn-cal-${art.id}" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')" style="background:#fff3e0;border-color:#f57c00;color:#e65100;font-weight:700;">📦 Recibí la compra — Calificar al vendedor</button>`;
-            }
 
             const todasFotos = [art.foto_url].concat(art.fotos_extra || []).filter(Boolean);
             const badgeFotos = todasFotos.length > 1 ? `<span class="badge-fotos">📷 ${todasFotos.length}</span>` : '';
@@ -1166,16 +1162,6 @@
             if (!esVentaDirecta) iniciarReloj(art.id, art.finaliza_en);
 
             // Chequeo botón calificar
-            if (pagoConfirmado && usuarioActualId && (soyComprador || soyGanador)) {
-                const btnCal = document.getElementById('btn-cal-' + art.id);
-                if (btnCal && getCalificadasLocales().has(String(art.id))) {
-                    btnCal.disabled = true;
-                    btnCal.innerText = '✅ Ya calificaste esta compra';
-                    btnCal.style.background = '#e8f5e9';
-                    btnCal.style.color = '#2e7d32';
-                    btnCal.style.borderColor = '#a5d6a7';
-                }
-            }
         }
 
         // ── PREGUNTAS ───────────────────────────────────────────────
@@ -1614,7 +1600,8 @@
                         <div class="titulo">${escapeHtml(art.Titulo || '')}</div>
                         <div class="precio">$${(art.precio_base || 0).toLocaleString('es-AR')}</div>
                         ${estadoHtml}
-                        ${pagoConfirmado ? `<button class="btn-calificar" id="btn-cal-${art.id}" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')" ${yaCalificado ? 'disabled' : ''}><img src="martillo.png" style="width:16px;height:16px;"> ${yaCalificado ? '✅ Ya calificaste esta compra' : 'Calificar al vendedor'}</button>` : ''}
+                        ${pagoConfirmado && !yaCalificado ? `<button class="btn-calificar" id="btn-cal-${art.id}" onclick="abrirModalCalificar('${art.id}', '${art.perfil_id}')" style="background:#fff3e0;border-color:#f57c00;color:#e65100;font-weight:700;">📦 Recibí la compra — Calificar al vendedor</button>` : ''}
+                        ${pagoConfirmado && yaCalificado ? `<button class="btn-calificar" disabled style="background:#e8f5e9;border-color:#a5d6a7;color:#2e7d32;">✅ Ya calificaste esta compra</button>` : ''}
                     `;
                     if (pagoConfirmado && yaCalificado) {
                         setTimeout(() => {
