@@ -1037,6 +1037,7 @@
             if (esMia) div.style.border = "2px solid var(--rosa)";
 
             const esVentaDirecta = art.tipo_venta === 'venta';
+            const esServicio = CATEGORIAS_SERVICIOS.includes(art.categoria);
             const yaTermino = !esVentaDirecta && art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
             const soyGanador = !esVentaDirecta && yaTermino && !!usuarioActualId && art.ganador_id === usuarioActualId;
             const soyComprador = esVentaDirecta && !!usuarioActualId && art.comprador_id === usuarioActualId;
@@ -1049,7 +1050,12 @@
             let badgeTipo = '';
             let relojHtml = '';
 
-            if (esVentaDirecta) {
+            if (esServicio) {
+                badgeTipo = `<span class="tag-tipo" style="background:#e8f5e9;color:#2e7d32;">🛠️ Servicio</span>`;
+                if (!esMia) {
+                    boton = `<button class="btn-oferta" style="background:#43a047;" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">💬 Consultar</button>`;
+                }
+            } else if (esVentaDirecta) {
                 if (articuloVendido) {
                     badgeTipo = `<span class="tag-tipo vendido">✅ Vendido</span>`;
                 } else {
@@ -1961,7 +1967,7 @@ async function eliminarPublicacion(id) {
             " onmouseover="this.style.background='rgba(255,255,255,0.28)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
                 ✉️ quiendamasapp@gmail.com
             </a>
-            <a href="https://wa.me/5492944628902" target="_blank" style="
+            <a href="https://wa.me/5492944800443" target="_blank" style="
                 display: flex; align-items: center; gap: 7px;
                 background: rgba(255,255,255,0.15);
                 color: white; text-decoration: none;
