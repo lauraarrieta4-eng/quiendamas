@@ -1052,9 +1052,6 @@
 
             if (esServicio) {
                 badgeTipo = `<span class="tag-tipo" style="background:#e8f5e9;color:#2e7d32;">🛠️ Servicio</span>`;
-                if (!esMia) {
-                    boton = `<button class="btn-oferta" style="background:#43a047;" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">💬 Consultar</button>`;
-                }
             } else if (esVentaDirecta) {
                 if (articuloVendido) {
                     badgeTipo = `<span class="tag-tipo vendido">✅ Vendido</span>`;
@@ -1142,7 +1139,7 @@
                 ${boton}
                 ${btnCalificar}
                 <div class="acciones-sec">
-                    <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">❓ <span class="btn-txt">Preguntas</span></button>
+                    <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">${esServicio ? '💬' : '❓'} <span class="btn-txt">${esServicio ? 'Consultar' : 'Preguntas'}</span></button>
                     <button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 <span class="btn-txt">Compartir</span></button>
                     ${esMia ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ <span class="btn-txt">Eliminar</span></button>` : ''}
                 </div>
@@ -1172,9 +1169,17 @@
 
         // ── PREGUNTAS ───────────────────────────────────────────────
         async function abrirModalPreguntas(articuloId, vendedorId) {
+            if (!usuarioActualId) { window.location.href = 'login.html'; return; }
             articuloPreguntaActual = articuloId;
             vendedorPreguntaActual = vendedorId;
             document.getElementById('texto-pregunta').value = '';
+
+            const esServ = CATEGORIAS_SERVICIOS.includes(
+                (await _supabase.from('articulos').select('categoria').eq('id', articuloId).maybeSingle()).data?.categoria
+            );
+            document.getElementById('modal-preguntas').querySelector('h2').innerText = esServ ? '💬 Consultas' : '❓ Preguntas del producto';
+            document.getElementById('texto-pregunta').placeholder = esServ ? 'Escribí tu consulta al prestador...' : 'Escribí tu pregunta al vendedor...';
+            document.getElementById('modal-preguntas').querySelector('.btn-enviar-pregunta').innerText = esServ ? 'Enviar consulta' : 'Enviar pregunta';
 
             const seccion = document.getElementById('seccion-nueva-pregunta');
             seccion.style.display = usuarioActualId === vendedorId ? 'none' : 'block';
