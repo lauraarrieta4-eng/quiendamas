@@ -146,6 +146,7 @@
     </div>
 
     <!-- Métodos de pago aceptados -->
+    <div id="seccion-pagos">
     <label>¿Cómo aceptás el pago?</label>
     <div style="display:flex; gap:10px; margin-top:8px;">
         <label style="display:flex; align-items:center; gap:8px; font-weight:normal; background:#f5f5f5; border:2px solid var(--lila); border-radius:10px; padding:10px 14px; cursor:pointer; flex:1;">
@@ -156,6 +157,7 @@
             <input type="checkbox" id="acepta_presencial" checked style="width:18px;height:18px;margin:0;accent-color:var(--rosa);">
             <span>🤝 En persona<br><small style="color:#888;font-weight:normal;">Comisión 4%</small></span>
         </label>
+    </div>
     </div>
 
     <button id="btn-publicar" onclick="publicar()">🚀 ¡Publicar Subasta!</button>
@@ -343,15 +345,16 @@
 
         const btnSubasta = document.getElementById('btn-subasta');
         if (tipo === 'servicio') {
-            // Los servicios solo pueden ser venta directa
             cambiarModoVenta('venta');
             btnSubasta.disabled = true;
             btnSubasta.style.opacity = '0.35';
             btnSubasta.title = 'Los servicios no admiten subasta';
+            document.getElementById('seccion-pagos').style.display = 'none';
         } else {
             btnSubasta.disabled = false;
             btnSubasta.style.opacity = '';
             btnSubasta.title = '';
+            document.getElementById('seccion-pagos').style.display = 'block';
         }
     }
 
@@ -497,9 +500,9 @@
                 urlsFotos.push(urlPublica.publicUrl);
             }
 
-            const aceptaOnline = document.getElementById('acepta_online').checked;
-            const aceptaPresencial = document.getElementById('acepta_presencial').checked;
-            if (!aceptaOnline && !aceptaPresencial) {
+            const aceptaOnline = tipoActual === 'servicio' ? false : document.getElementById('acepta_online').checked;
+            const aceptaPresencial = tipoActual === 'servicio' ? false : document.getElementById('acepta_presencial').checked;
+            if (!aceptaOnline && !aceptaPresencial && tipoActual !== 'servicio') {
                 msgDiv.style.color = "red";
                 msgDiv.innerText = "⚠️ Tenés que aceptar al menos un método de pago.";
                 return;
