@@ -53,6 +53,8 @@
 
         .highlight { background: var(--verde-suave); border-radius: 10px; padding: 14px 18px; margin: 14px 0; font-size: 0.9em; color: #333; font-weight: 600; border-left: 4px solid var(--verde-lima); }
         .highlight-verde { background: #e8f5e9; border-radius: 10px; padding: 14px 18px; margin: 14px 0; font-size: 0.9em; color: #2e7d32; font-weight: 600; border-left: 4px solid #43a047; }
+        .highlight-naranja { background: #fff3e0; border-radius: 10px; padding: 14px 18px; margin: 14px 0; font-size: 0.9em; color: #e65100; font-weight: 600; border-left: 4px solid #ffb74d; }
+        .highlight-azul { background: #e3f2fd; border-radius: 10px; padding: 14px 18px; margin: 14px 0; font-size: 0.9em; color: #1565c0; font-weight: 600; border-left: 4px solid #42a5f5; }
 
         .modalidad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
         .modalidad-card { border-radius: 12px; padding: 16px; }
@@ -64,12 +66,23 @@
         .modalidad-card p { font-size: 0.85em; color: #555; margin: 0; }
         @media (max-width: 500px) { .modalidad-grid { grid-template-columns: 1fr; } }
 
+        .ejemplo-comision { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 12px; padding: 18px; margin: 16px 0; }
+        .ejemplo-comision h4 { color: var(--rosa); font-size: 0.95em; margin-bottom: 12px; font-weight: 700; }
+        .ejemplo-comision table { width: 100%; border-collapse: collapse; font-size: 0.88em; }
+        .ejemplo-comision td { padding: 6px 10px; color: #555; border-bottom: 1px solid #f0f0f0; }
+        .ejemplo-comision td:last-child { text-align: right; font-weight: 600; }
+        .ejemplo-comision tr.total td { color: #222; font-weight: 700; border-top: 2px solid #ddd; border-bottom: none; padding-top: 10px; }
+        .ejemplo-comision tr.total td:last-child { color: var(--rosa); }
+
         .contacto-box { background: var(--rosa); color: white; border-radius: 16px; padding: 30px; text-align: center; margin-bottom: 30px; }
         .contacto-box h2 { font-family: 'Playfair Display', serif; font-size: 1.4em; margin-bottom: 10px; }
         .contacto-box p { opacity: 0.9; margin-bottom: 15px; font-size: 0.95em; }
         .contacto-box a { display: inline-block; background: white; color: var(--rosa); padding: 12px 25px; border-radius: 25px; font-weight: 700; text-decoration: none; font-size: 1em; }
 
         .footer { text-align: center; padding: 20px; color: #aaa; font-size: 0.8em; }
+
+        .leyenda-dnpdp { background: #f3e5f5; border: 1px solid #ce93d8; border-radius: 10px; padding: 14px 18px; margin: 16px 0; font-size: 0.85em; color: #4a148c; line-height: 1.6; }
+        .leyenda-dnpdp strong { display: block; margin-bottom: 6px; }
     </style>
 </head>
 <body>
@@ -85,6 +98,7 @@
 
     <div class="contenido">
 
+        <!-- 1. CÓMO FUNCIONA -->
         <div class="seccion">
             <h2>🏷️ ¿Cómo funciona Quiéndamas?</h2>
             <p>Quiéndamas es una plataforma local de compraventa donde podés publicar artículos y servicios en dos modalidades:</p>
@@ -124,35 +138,60 @@
                 <li>Elegí la modalidad: subasta o venta directa.</li>
                 <li>Completá los datos: título, descripción, precio, categoría y fotos.</li>
                 <li>Tu publicación aparece en la vidriera.</li>
-                <li>Cuando se vende o adjudica, se cobra una comisión sobre el precio final: <b>6% si el comprador pagó online</b> (incluida en el pago) o <b>4% por transferencia bancaria</b> si coordinaron en persona.</li>
+                <li>Cuando se vende o adjudica, se descuenta una comisión sobre el precio final. Consultá la sección "Comisiones y pagos" para el detalle.</li>
                 <li>Confirmado el pago, los datos del comprador quedan disponibles para coordinar la entrega.</li>
             </ol>
 
             <div class="highlight">
                 💳 <strong>¿Por qué necesitás conectar Mercado Pago?</strong> Los pagos online de los compradores se acreditan directamente en tu cuenta de Mercado Pago. Sin esta conexión, los compradores solo podrán elegir la opción de pago presencial.
             </div>
-
-            <div class="highlight">
-                💡 La publicación y las ofertas son gratuitas. Se cobra una comisión al vendedor sobre el precio final: <b>6% si el pago fue online</b> (vía Mercado Pago) o <b>4% por transferencia bancaria</b> en pagos presenciales.
-            </div>
         </div>
 
+        <!-- 2. COMISIONES Y PAGOS -->
         <div class="seccion">
             <h2>💰 Comisiones y pagos</h2>
             <p>Publicar, ofertar y comprar en Quiéndamas es <strong>completamente gratuito</strong>. La comisión se cobra únicamente al vendedor cuyo artículo fue vendido o adjudicado.</p>
 
-            <h3>Modalidades de pago</h3>
+            <h3>Modalidades de pago y comisiones</h3>
+
             <ul>
-                <li><strong>Pago online (Mercado Pago):</strong> el comprador abona directamente desde la plataforma con tarjeta de crédito, débito o efectivo. La comisión del <b>6%</b> se descuenta automáticamente del monto recibido por el vendedor.</li>
-                <li><strong>Pago presencial:</strong> comprador y vendedor coordinan el pago en persona. El vendedor abona la comisión del <b>4%</b> por transferencia bancaria a la cuenta de Quiéndamas.</li>
+                <li><strong>Pago online (Mercado Pago):</strong> el comprador abona directamente desde la plataforma. Sobre el precio final se descuentan dos cargos al vendedor: la <strong>comisión de Quiéndamas (6%)</strong> y el <strong>cargo por servicio de Mercado Pago (4,17%)</strong>. Ambos descuentos son realizados por Mercado Pago automáticamente al procesar el pago.</li>
+                <li><strong>Pago presencial (transferencia bancaria):</strong> comprador y vendedor coordinan el pago en persona. El vendedor abona únicamente la <strong>comisión de Quiéndamas (4%)</strong> por transferencia bancaria a la cuenta de Quiéndamas. En este caso no aplica el cargo de Mercado Pago.</li>
             </ul>
+
+            <div class="highlight-naranja">
+                ⚠️ <strong>Importante para vendedores — pago online:</strong> Al optar por cobro vía Mercado Pago, el monto que acreditás en tu cuenta ya tiene descontados tanto el cargo de Mercado Pago (4,17%) como la comisión de Quiéndamas (6%). El total descontado es aproximadamente el <strong>10,17%</strong> del precio de venta.
+            </div>
+
+            <div class="ejemplo-comision">
+                <h4>📊 Ejemplo ilustrativo — venta online de $10.000</h4>
+                <table>
+                    <tr>
+                        <td>Precio de venta</td>
+                        <td>$10.000</td>
+                    </tr>
+                    <tr>
+                        <td>Cargo Mercado Pago (4,17%)</td>
+                        <td>− $417</td>
+                    </tr>
+                    <tr>
+                        <td>Comisión Quiéndamas (6%)</td>
+                        <td>− $600</td>
+                    </tr>
+                    <tr class="total">
+                        <td>Lo que recibís en tu cuenta</td>
+                        <td>≈ $8.983</td>
+                    </tr>
+                </table>
+                <p style="font-size:0.8em; color:#999; margin-top:10px; margin-bottom:0;">* Los cargos de Mercado Pago pueden variar según el medio de pago utilizado por el comprador (tarjeta de crédito, cuotas, etc.).</p>
+            </div>
 
             <h3>Procesamiento de pagos online — Mercado Pago</h3>
             <ul>
                 <li>Los pagos online son procesados por <strong>Mercado Pago</strong>. Al pagar, el comprador acepta también los términos y condiciones de Mercado Pago.</li>
-                <li>Mercado Pago puede aplicar cargos adicionales según el medio de pago elegido (tarjeta de crédito, cuotas, etc.).</li>
+                <li>El cargo del 4,17% corresponde al servicio de procesamiento de Mercado Pago y es independiente de Quiéndamas. Este porcentaje puede variar según el medio de pago (tarjeta de crédito, cuotas, etc.) conforme a las tarifas vigentes de Mercado Pago.</li>
                 <li>Los fondos recibidos por el vendedor quedan retenidos por un período de hasta <strong>21 días</strong> como medida de seguridad para compradores y vendedores.</li>
-                <li>Una vez confirmada la entrega y calificado el vendedor, Quiéndamas puede liberar los fondos antes del vencimiento del período de retención.</li>
+                <li>Una vez confirmada la entrega, Quiéndamas puede liberar los fondos antes del vencimiento del período de retención.</li>
                 <li>En caso de problema con la entrega, Quiéndamas puede gestionar el reembolso total o parcial al comprador dentro del período de retención.</li>
             </ul>
 
@@ -161,6 +200,33 @@
             </div>
         </div>
 
+        <!-- 3. LOGÍSTICA -->
+        <div class="seccion">
+            <h2>📦 Logística y entrega</h2>
+            <p>Quiéndamas es una plataforma de intermediación. <strong>La logística de entrega de productos y servicios es exclusiva responsabilidad de las partes involucradas en la transacción</strong> (comprador y vendedor).</p>
+
+            <h3>Condiciones generales de entrega</h3>
+            <ul>
+                <li>Una vez confirmado el pago, el vendedor recibe los datos de contacto del comprador para coordinar la entrega directamente entre ambas partes.</li>
+                <li>El lugar, modalidad y fecha de entrega se acuerdan libremente entre comprador y vendedor.</li>
+                <li>Quiéndamas no interviene en los acuerdos logísticos, no garantiza plazos de entrega y no es responsable por demoras, daños o pérdidas ocurridos durante el traslado del artículo.</li>
+                <li>En el caso de servicios, la prestación se coordina directamente entre proveedor y contratante una vez confirmado el pago.</li>
+            </ul>
+
+            <h3>Recomendaciones para una entrega segura</h3>
+            <ul>
+                <li>Para artículos de alto valor, se recomienda concretar la entrega en lugares públicos y concurridos.</li>
+                <li>Verificá el artículo antes de confirmar la recepción.</li>
+                <li>Conservá el comprobante de pago hasta haber recibido el artículo en conformidad.</li>
+                <li>Ante cualquier inconveniente antes de la entrega, contactanos dentro del período de retención de fondos (21 días).</li>
+            </ul>
+
+            <div class="highlight">
+                🤝 <strong>La logística queda en manos de las partes.</strong> Quiéndamas facilita el contacto entre comprador y vendedor una vez confirmado el pago, pero no participa en el acuerdo de entrega ni asume responsabilidad por lo que ocurra fuera de la plataforma.
+            </div>
+        </div>
+
+        <!-- 4. REGLAS DE PUBLICACIÓN -->
         <div class="seccion">
             <h2>📝 Reglas de publicación</h2>
             <p>Para mantener la confianza y seguridad de la plataforma, todas las publicaciones deben cumplir estas reglas:</p>
@@ -174,6 +240,7 @@
             </ul>
         </div>
 
+        <!-- 5. RESPONSABILIDADES -->
         <div class="seccion">
             <h2>🤝 Responsabilidades</h2>
             <p>Quiéndamas actúa como plataforma intermediaria entre compradores y vendedores. No somos parte de la transacción comercial entre usuarios.</p>
@@ -184,6 +251,7 @@
                 <li>Respetar el precio acordado (fijo en venta directa, precio final en subasta).</li>
                 <li>Cumplir con la entrega del artículo o la prestación del servicio.</li>
                 <li>Coordinar la logística de entrega directamente con el comprador.</li>
+                <li>Tener su cuenta de Mercado Pago activa y en condiciones para recibir pagos si optó por esa modalidad.</li>
             </ul>
 
             <h3>El comprador es responsable de:</h3>
@@ -197,16 +265,18 @@
             <ul>
                 <li>El estado, calidad o autenticidad de los artículos publicados.</li>
                 <li>Incumplimientos entre compradores y vendedores.</li>
-                <li>La logística o costos de envío o encuentro entre las partes.</li>
+                <li>La logística, costos de envío o traslado acordados entre las partes.</li>
                 <li>Disputas posteriores a la entrega de datos de contacto.</li>
+                <li>Variaciones en los cargos de Mercado Pago según el medio de pago elegido por el comprador.</li>
             </ul>
         </div>
 
+        <!-- 6. ARTÍCULOS PERMITIDOS -->
         <div class="seccion">
-            <h2>📦 Artículos y servicios permitidos</h2>
+            <h2>🛍️ Artículos y servicios permitidos</h2>
             <p>Quiéndamas es una plataforma local abierta a todo tipo de artículos y servicios. Las categorías disponibles son:</p>
 
-            <h3>🛍️ Productos</h3>
+            <h3>Productos</h3>
             <ul>
                 <li><strong>Vehículos:</strong> autos, motos, bicicletas, repuestos y accesorios.</li>
                 <li><strong>Tecnología:</strong> celulares, computadoras, notebooks, tablets, componentes PC, conectividad, consolas, audio y video, y accesorios.</li>
@@ -222,7 +292,7 @@
                 <li><strong>Otros:</strong> cualquier artículo no clasificado en las categorías anteriores.</li>
             </ul>
 
-            <h3>🛠️ Servicios</h3>
+            <h3>Servicios</h3>
             <ul>
                 <li>Profesionales y administrativos.</li>
                 <li>Tecnología y servicios digitales.</li>
@@ -246,28 +316,84 @@
             </ul>
         </div>
 
+        <!-- 7. PROTECCIÓN DE DATOS -->
         <div class="seccion">
-            <h2>🔒 Registro y privacidad</h2>
+            <h2>🔒 Protección de datos personales</h2>
+            <p>Quiéndamas trata los datos personales de sus usuarios de conformidad con la <strong>Ley N° 25.326 de Protección de los Datos Personales</strong> de la República Argentina y las normativas complementarias de la Dirección Nacional de Protección de Datos Personales (DNPDP).</p>
+
+            <h3>¿Qué datos recolectamos?</h3>
+            <ul>
+                <li>Nombre completo, apodo, CUIL, dirección, número de teléfono y ciudad, provistos al momento del registro.</li>
+                <li>Datos de uso de la plataforma: publicaciones realizadas, ofertas efectuadas, historial de compras y ventas.</li>
+                <li>Foto de perfil, si el usuario decide cargarla voluntariamente.</li>
+                <li>Datos de contacto vinculados a transacciones confirmadas (compartidos únicamente entre las partes involucradas).</li>
+            </ul>
+
+            <h3>¿Para qué usamos tus datos?</h3>
+            <ul>
+                <li>Verificar la identidad del usuario y habilitar el uso de la plataforma.</li>
+                <li>Facilitar las transacciones entre compradores y vendedores.</li>
+                <li>Enviar notificaciones relacionadas con tus publicaciones, ofertas y compras.</li>
+                <li>Gestionar el cobro de comisiones y la vinculación con Mercado Pago.</li>
+                <li>Cumplir con obligaciones legales y prevenir fraudes.</li>
+            </ul>
+
+            <h3>¿Con quién compartimos tus datos?</h3>
+            <ul>
+                <li><strong>Entre usuarios:</strong> los datos de contacto del comprador se comparten con el vendedor únicamente una vez confirmado el pago. Los datos del vendedor no se comparten con el comprador.</li>
+                <li><strong>Mercado Pago:</strong> los datos necesarios para procesar pagos online se transfieren a Mercado Pago, sujetos a su propia política de privacidad.</li>
+                <li><strong>Terceros:</strong> no compartimos datos personales con terceros con fines comerciales ni publicitarios.</li>
+                <li><strong>Autoridades:</strong> podemos divulgar datos ante requerimiento de autoridad competente conforme a la legislación vigente.</li>
+            </ul>
+
+            <h3>Tus derechos como titular de los datos</h3>
+            <p>En cumplimiento del artículo 14 y siguientes de la Ley 25.326, tenés derecho a:</p>
+            <ul>
+                <li><strong>Acceso:</strong> solicitar en forma gratuita qué datos tuyos tenemos registrados.</li>
+                <li><strong>Rectificación:</strong> corregir datos inexactos o incompletos.</li>
+                <li><strong>Supresión:</strong> solicitar la eliminación de tus datos cuando no sean necesarios para los fines que motivaron su recolección.</li>
+                <li><strong>Confidencialidad:</strong> tus datos no serán cedidos a terceros sin tu consentimiento, salvo las excepciones previstas en la ley.</li>
+            </ul>
+            <p>Para ejercer estos derechos, escribinos a <strong>quiendamas.app@gmail.com</strong> indicando tu nombre completo y CUIL.</p>
+
+            <h3>Seguridad de los datos</h3>
+            <ul>
+                <li>Los datos se almacenan en servidores seguros con medidas técnicas y organizativas para prevenir el acceso no autorizado, pérdida o destrucción.</li>
+                <li>El acceso a los datos personales está restringido al personal autorizado de Quiéndamas.</li>
+                <li>En caso de incidente de seguridad que afecte tus datos, te notificaremos conforme lo establece la normativa vigente.</li>
+            </ul>
+
+            <div class="leyenda-dnpdp">
+                <strong>📌 Leyenda de la Dirección Nacional de Protección de Datos Personales</strong>
+                "El titular de los datos personales tiene la facultad de ejercer el derecho de acceso a los mismos en forma gratuita a intervalos no inferiores a seis meses, salvo que se acredite un interés legítimo al efecto conforme lo establecido en el artículo 14, inciso 3 de la Ley Nº 25.326. La DIRECCIÓN NACIONAL DE PROTECCIÓN DE DATOS PERSONALES, Órgano de Control de la Ley Nº 25.326, tiene la atribución de atender las denuncias y reclamos que se interpongan con relación al incumplimiento de las normas sobre protección de datos personales."
+            </div>
+        </div>
+
+        <!-- 8. REGISTRO -->
+        <div class="seccion">
+            <h2>👤 Registro y cuenta de usuario</h2>
             <p>Para usar la plataforma es obligatorio registrarse con datos reales. <strong>El uso de Quiéndamas está reservado exclusivamente a mayores de 18 años.</strong> Al registrarte declarás tener la mayoría de edad requerida.</p>
             <ul>
                 <li>El registro requiere nombre completo, apodo, CUIL, dirección, teléfono y ciudad.</li>
                 <li><strong>Los datos personales del comprador</strong> solo se comparten con el vendedor tras confirmar el pago (online o presencial). Los datos del vendedor no se comparten con el comprador.</li>
                 <li>No compartimos tus datos con terceros con fines comerciales.</li>
-                <li>Podés solicitar la eliminación de tu cuenta escribiendo a nuestro correo de contacto.</li>
-                <li>Al registrarte aceptás recibir notificaciones relacionadas con tus publicaciones.</li>
+                <li>Podés solicitar la eliminación de tu cuenta escribiendo a <strong>quiendamas.app@gmail.com</strong>. La eliminación implica la pérdida de historial de publicaciones, compras y calificaciones.</li>
+                <li>Al registrarte aceptás recibir notificaciones relacionadas con tus publicaciones, ofertas y compras.</li>
+                <li>Es tu responsabilidad mantener la confidencialidad de tu contraseña. Quiéndamas no se hace responsable por accesos no autorizados derivados del uso indebido de tus credenciales.</li>
             </ul>
         </div>
 
+        <!-- 9. CONDICIONES GENERALES -->
         <div class="seccion">
             <h2>📋 Condiciones generales de uso</h2>
             <ul>
                 <li>El uso de la plataforma implica la aceptación de estos términos y condiciones.</li>
                 <li><strong>El uso de Quiéndamas está reservado exclusivamente a personas mayores de 18 años.</strong> Los menores de edad no pueden registrarse ni realizar transacciones en la plataforma.</li>
-                <li>Quiéndamas se reserva el derecho de modificar estos términos con previo aviso.</li>
+                <li>Quiéndamas se reserva el derecho de modificar estos términos con previo aviso de al menos 10 días corridos publicado en la plataforma.</li>
                 <li>Las compras confirmadas son vinculantes: si comprás o ganás una subasta, tenés la obligación de coordinar la entrega.</li>
-                <li>Quiéndamas puede suspender cuentas que incumplan las normas de uso.</li>
-                <li>Cualquier disputa entre usuarios debe resolverse entre las partes.</li>
-                <li>La plataforma opera en Bariloche y zona, República Argentina.</li>
+                <li>Quiéndamas puede suspender o dar de baja cuentas que incumplan las normas de uso, sin obligación de reembolso de comisiones pagadas.</li>
+                <li>Cualquier disputa entre usuarios debe resolverse entre las partes. Quiéndamas puede actuar como facilitador, pero no tiene obligación legal de intervenir.</li>
+                <li>La plataforma opera en Bariloche y zona, República Argentina. Toda controversia que surja del uso de la plataforma se somete a la jurisdicción de los tribunales ordinarios de la ciudad de San Carlos de Bariloche.</li>
             </ul>
         </div>
 
