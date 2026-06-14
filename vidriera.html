@@ -485,6 +485,7 @@
     </div>
 
     <div class="barra-interacciones" id="bloque-interacciones" style="display: none;">
+        <button class="btn-interaccion" id="btn-mi-perfil" onclick="abrirModalMiPerfil()" style="position:relative;">👤 Mi Perfil<span id="badge-mp" style="display:none;position:absolute;top:-6px;right:-6px;background:#f57c00;color:white;font-size:0.65em;font-weight:700;border-radius:20px;padding:2px 5px;white-space:nowrap;">⚠️ MP</span></button>
         <button class="btn-interaccion" onclick="filtrarMisPublicaciones()">📝 Mis Pubs</button>
         <button class="btn-interaccion" onclick="filtrarMisOfertas()">💰 Mis Ofertas</button>
         <button class="btn-interaccion" onclick="filtrarMisCompras()">🛒 Mis Compras</button>
@@ -983,8 +984,9 @@
             const bloqueInteracciones = document.getElementById('bloque-interacciones');
             if (user) {
                 usuarioActualId = user.id;
-                const { data: perfil } = await _supabase.from('perfiles').select('nombre_completo, apodo').eq('id', user.id).maybeSingle();
+                const { data: perfil } = await _supabase.from('perfiles').select('nombre_completo, apodo, mp_access_token').eq('id', user.id).maybeSingle();
                 display.innerText = "Hola, " + (perfil && (perfil.apodo || perfil.nombre_completo) ? (perfil.apodo || perfil.nombre_completo) : "Usuario");
+                if (perfil && !perfil.mp_access_token) document.getElementById('badge-mp').style.display = 'inline-block';
                 btn.innerText = "🚪 Salir";
                 bloqueInteracciones.style.display = "flex";
                 // campanita
