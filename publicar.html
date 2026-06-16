@@ -177,7 +177,22 @@
 
     async function protegerPagina() {
         const { data: { user } } = await _supabase.auth.getUser();
-        if (!user) { alert("⚠️ Tenés que iniciar sesión para publicar."); window.location.href = 'login.html'; }
+        if (!user) { alert("⚠️ Tenés que iniciar sesión para publicar."); window.location.href = 'login.html'; return; }
+
+        const { data: perfil } = await _supabase.from('perfiles').select('mp_access_token').eq('id', user.id).maybeSingle();
+        if (!perfil?.mp_access_token) {
+            const chk = document.getElementById('acepta_online');
+            const label = chk.closest('label');
+            chk.checked = false;
+            chk.disabled = true;
+            label.style.opacity = '0.5';
+            label.style.cursor = 'not-allowed';
+            label.title = 'Necesitás conectar Mercado Pago primero';
+            const aviso = document.createElement('div');
+            aviso.style.cssText = 'margin-top:8px;padding:10px 12px;background:#fff8e1;border-radius:8px;font-size:0.82em;color:#e65100;border-left:3px solid #f57c00;';
+            aviso.innerHTML = '⚠️ <b>Para aceptar pagos online</b> necesitás conectar tu cuenta de Mercado Pago desde <b>Mi Perfil</b>.';
+            document.getElementById('seccion-pagos').appendChild(aviso);
+        }
     }
     protegerPagina();
 
@@ -506,6 +521,14 @@
                 msgDiv.style.color = "red";
                 msgDiv.innerText = "⚠️ Tenés que aceptar al menos un método de pago.";
                 return;
+            }
+            if (aceptaOnline) {
+                const { data: perfil } = await _supabase.from('perfiles').select('mp_access_token').eq('id', user.id).maybeSingle();
+                if (!perfil?.mp_access_token) {
+                    msgDiv.style.color = "red";
+                    msgDiv.innerText = "❌ Para aceptar pagos online necesitás conectar tu cuenta de Mercado Pago desde Mi Perfil.";
+                    return;
+                }
             }
 
             const registro = {
