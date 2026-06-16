@@ -272,6 +272,20 @@
         .martillo-btn.activo { opacity: 1; transform: scale(1.15); filter: drop-shadow(0 2px 5px rgba(0,0,0,0.25)); }
         .martillo-btn:hover { opacity: 0.7; }
         .cal-label { font-size: 0.9em; font-weight: bold; color: var(--rosa); min-height: 22px; margin-bottom: 12px; }
+
+        /* ── REMATE INLINE ── */
+        @keyframes numeroBounce { 0%{transform:scale(1.7);opacity:0} 65%{transform:scale(0.9)} 100%{transform:scale(1);opacity:1} }
+        @keyframes golpe { 0%{transform:rotate(-55deg)} 35%{transform:rotate(18deg)} 55%{transform:rotate(-8deg)} 75%{transform:rotate(4deg)} 100%{transform:rotate(0)} }
+        @keyframes pulseBorde { 0%{box-shadow:0 0 4px rgba(239,83,80,0.3)} 100%{box-shadow:0 0 24px rgba(239,83,80,0.85)} }
+        @keyframes adjudicadoAparece { 0%{transform:scale(0.4);opacity:0} 70%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
+        .tarjeta-remate { animation:pulseBorde 0.55s ease-in-out infinite alternate; border:2px solid #ef5350 !important; border-radius:12px; }
+        .reloj-inline-remate { background:#111 !important; border-radius:8px; display:flex !important; flex-direction:column; align-items:center; justify-content:center; padding:12px 8px !important; min-height:72px; border:none !important; }
+        .reloj-num { font-size:2.6em; font-weight:900; color:white; line-height:1; animation:numeroBounce 0.32s ease-out; display:block; }
+        .reloj-num.urgente { color:#ffb74d; }
+        .reloj-num.critico { color:#ef5350; text-shadow:0 0 20px rgba(239,83,80,0.6); }
+        .reloj-martillo-inline { width:54px; height:54px; transform-origin:80% 20%; mix-blend-mode:screen; animation:golpe 0.55s ease-out forwards; }
+        .reloj-adj-inline { font-size:0.82em; font-weight:900; color:#A5D6A7; letter-spacing:3px; margin-top:4px; animation:adjudicadoAparece 0.45s ease-out; }
+        .reloj-final { background:#0d200d !important; }
     </style>
 </head>
 <body>
@@ -1630,13 +1644,22 @@
         function iniciarReloj(id, fecha) {
             const display = document.getElementById(`reloj-${id}`);
             if (!fecha || !display) return;
+            let remateIniciado = false;
             const intervalo = setInterval(() => {
                 const diff = new Date(fecha).getTime() - Date.now();
                 if (diff <= 0) {
-                    display.innerText = "🛑 SUBASTA CERRADA";
-                    display.style.background = "#eee";
-                    display.style.color = "#666";
                     clearInterval(intervalo);
+                    if (!remateIniciado) {
+                        display.innerText = "🛑 SUBASTA CERRADA";
+                        display.style.background = "#eee";
+                        display.style.color = "#666";
+                    }
+                    return;
+                }
+                if (diff <= 10500 && !remateIniciado) {
+                    remateIniciado = true;
+                    clearInterval(intervalo);
+                    iniciarRemateInline(id, display, Math.ceil(diff / 1000));
                     return;
                 }
                 const d = Math.floor(diff / 86400000);
@@ -1645,6 +1668,37 @@
                 const s = Math.floor((diff % 60000) / 1000);
                 display.innerText = "⏳ Faltan: " + (d > 0 ? `${d}d ` : '') + `${h}h ${m}m ${s}s`;
             }, 1000);
+        }
+
+        function iniciarRemateInline(id, display, segundos) {
+            const tarjeta = document.getElementById(`tarjeta-${id}`);
+            tarjeta?.classList.add('tarjeta-remate');
+            display.removeAttribute('style');
+            display.className = 'reloj-inline-remate';
+
+            let cuenta = Math.min(Math.max(segundos, 0), 10);
+
+            function tick() {
+                if (cuenta === 0) {
+                    display.className = 'reloj-inline-remate reloj-final';
+                    display.innerHTML = `
+                        <img src="martillo.png" class="reloj-martillo-inline" alt="martillo">
+                        <div class="reloj-adj-inline">¡ADJUDICADO!</div>`;
+                    setTimeout(() => {
+                        tarjeta?.classList.remove('tarjeta-remate');
+                        display.removeAttribute('class');
+                        display.style.background = '#eee';
+                        display.style.color = '#666';
+                        display.innerText = '🛑 SUBASTA CERRADA';
+                    }, 3200);
+                    return;
+                }
+                const color = cuenta <= 3 ? 'critico' : cuenta <= 6 ? 'urgente' : '';
+                display.innerHTML = `<span class="reloj-num ${color}">${cuenta}</span>`;
+                cuenta--;
+                setTimeout(tick, 1000);
+            }
+            tick();
         }
 
         let ofertaArticuloId = null;
@@ -2027,6 +2081,7 @@ async function eliminarPublicacion(id) {
             <a href="terminos.html" target="_blank" style="color: #c8e6c9; text-decoration: underline;">Términos y Condiciones</a>
         </div>
     </footer>
+
 
 </body>
 </html>
