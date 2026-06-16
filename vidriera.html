@@ -14,11 +14,11 @@
     <script src="config.js"></script>
     <style>
         :root {
-            --rosa:       #E04891;
-            --lila:       #E1B7ED;
-            --rosa-claro: #F5E1E2;
-            --verde-suave:#D1E389;
-            --verde-lima: #B9DE51;
+            --rosa:       #2E7D32;
+            --lila:       #C8E6C9;
+            --rosa-claro: #F1F8E9;
+            --verde-suave:#E8F5E9;
+            --verde-lima: #A5D6A7;
         }
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--rosa-claro); padding: 10px; margin: 0; -webkit-tap-highlight-color: transparent; min-height: 100vh; }
@@ -29,7 +29,7 @@
         .barra-superior-izq h1 { margin: 0; font-size: 2.2em; font-weight: 900; letter-spacing: -1px; color: white; text-shadow: 0 2px 6px rgba(0,0,0,0.18); }
         .barra-superior-der { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .barra-superior-der span { font-size: 0.85em; font-weight: bold; color: #e8f5e9; }
-        .btn-top { background: white; color: var(--rosa); border: 2px solid rgba(224,72,145,0.2); padding: 7px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85em; box-shadow: 0 2px 8px rgba(0,0,0,0.07); transition: all 0.2s; }
+        .btn-top { background: white; color: var(--rosa); border: 2px solid rgba(46,125,50,0.15); padding: 7px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85em; box-shadow: 0 2px 8px rgba(0,0,0,0.07); transition: all 0.2s; }
         .btn-top.primario { background: var(--rosa); color: white; border-color: var(--rosa); }
         .btn-top:hover { transform: scale(1.05); box-shadow: 0 4px 14px rgba(0,0,0,0.13); }
         /* ── CAMPANITA ── */
@@ -40,7 +40,7 @@
         .panel-notif-header { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid #f0f0f0; font-weight:bold; font-size:0.88em; color:#333; }
         .notif-item { padding:12px 16px; border-bottom:1px solid #f9f9f9; font-size:0.82em; color:#444; line-height:1.4; cursor:pointer; transition:background 0.15s; }
         .notif-item:hover { background:#fafafa; }
-        .notif-item.nueva { background:#fff8fb; border-left:3px solid var(--rosa); }
+        .notif-item.nueva { background:#f1f8f1; border-left:3px solid var(--rosa); }
         .notif-item .notif-tiempo { font-size:0.75em; color:#bbb; margin-top:3px; }
         .notif-vacia { padding:20px; text-align:center; color:#bbb; font-size:0.85em; }
         @media (max-width: 480px) {
@@ -63,7 +63,7 @@
         .btn-filtro.activo { background: #43a047; color: white; }
 
         .barra-interacciones { display: flex; justify-content: center; gap: 10px; margin-bottom: 12px; padding: 8px; background: var(--lila); border-radius: 12px; }
-        .btn-interaccion { background: white; border: 2px solid rgba(106,0,80,0.12); color: #6a0050; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.85em; cursor: pointer; flex: 1; max-width: 160px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: all 0.2s; }
+        .btn-interaccion { background: white; border: 2px solid rgba(46,125,50,0.12); color: #1b5e20; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 0.85em; cursor: pointer; flex: 1; max-width: 160px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: all 0.2s; }
         .btn-interaccion:hover { background: var(--rosa); color: white; border-color: var(--rosa); }
 
         .busqueda-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; position: relative; }
@@ -73,19 +73,19 @@
         .barra-busqueda button:not(.btn-hamburguesa) { background: var(--rosa); color: white; border: none; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 0.9em; cursor: pointer; }
 
         /* ── MENÚ HAMBURGUESA ── */
-        .btn-hamburguesa { background: white; color: #6a0050; border: 2px solid rgba(224,72,145,0.25); padding: 8px 12px; border-radius: 20px; font-size: 1.05em; cursor: pointer; flex-shrink: 0; transition: all 0.2s; line-height: 1; }
+        .btn-hamburguesa { background: white; color: #1b5e20; border: 2px solid rgba(46,125,50,0.2); padding: 8px 12px; border-radius: 20px; font-size: 1.05em; cursor: pointer; flex-shrink: 0; transition: all 0.2s; line-height: 1; }
         .btn-hamburguesa:hover, .btn-hamburguesa.abierto { background: var(--rosa); color: white; border-color: var(--rosa); }
         .menu-filtro-venta { display: none; position: absolute; top: calc(100% + 6px); right: 0; background: white; border-radius: 16px; box-shadow: 0 8px 28px rgba(0,0,0,0.15); padding: 8px; z-index: 300; min-width: 200px; border: 1px solid rgba(0,0,0,0.07); animation: fadeDown 0.17s ease; }
         .menu-filtro-venta.abierto { display: block; }
         @keyframes fadeDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
         .menu-fv-titulo { font-size: 0.7em; font-weight: bold; color: #bbb; text-transform: uppercase; letter-spacing: 0.07em; padding: 4px 12px 6px; }
         .btn-fv { display: flex; align-items: center; gap: 8px; width: 100%; background: none; border: none; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.88em; color: #555; transition: all 0.15s; text-align: left; box-sizing: border-box; }
-        .btn-fv:hover { background: #f8f0f6; color: var(--rosa); }
-        .btn-fv.activo { background: #fce4ec; color: var(--rosa); }
+        .btn-fv:hover { background: #f1f8f1; color: var(--rosa); }
+        .btn-fv.activo { background: #e8f5e9; color: var(--rosa); }
         .btn-fv.activo-verde { background: #e8f5e9; color: #2e7d32; }
         .selector-tipo { display: flex; gap: 10px; margin-bottom: 10px; justify-content: center; }
         .btn-tipo { flex: 1; max-width: 180px; padding: 10px; border: 2px solid var(--rosa); border-radius: 25px; background: white; color: var(--rosa); font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; transition: all 0.2s; }
-        .btn-tipo.activo { background: var(--rosa); color: white; border-color: transparent; box-shadow: 0 3px 10px rgba(224,72,145,0.35); }
+        .btn-tipo.activo { background: var(--rosa); color: white; border-color: transparent; box-shadow: 0 3px 10px rgba(46,125,50,0.3); }
 
         .filtros { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 8px; padding: 8px 42px; margin-bottom: 5px; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; background: var(--verde-lima); border-radius: 12px; }
         .filtros::-webkit-scrollbar { display: none; }
@@ -97,7 +97,7 @@
         .btn-filtro.subcat:hover, .btn-filtro.subcat.activo { background: var(--rosa); color: white; }
 
         .filtros-wrapper { position: relative; margin-bottom: 5px; }
-        .filtros-arrow { display: none; position: absolute; top: 50%; transform: translateY(-50%); background: var(--rosa); color: white; border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 1.2em; cursor: pointer; z-index: 10; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(224,72,145,0.4); transition: transform 0.15s; }
+        .filtros-arrow { display: none; position: absolute; top: 50%; transform: translateY(-50%); background: var(--rosa); color: white; border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 1.2em; cursor: pointer; z-index: 10; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(46,125,50,0.3); transition: transform 0.15s; }
         .filtros-arrow:hover { transform: translateY(-50%) scale(1.12); }
         .filtros-arrow.izq { left: 2px; }
         .filtros-arrow.der { right: 2px; }
@@ -143,7 +143,7 @@
             .btn-txt { display: none; }
         }
         .tarjeta:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.13); }
-        .tag-cat { position: absolute; top: 10px; right: 10px; background: var(--lila); font-size: 0.7em; padding: 3px 10px; border-radius: 12px; color: #6a0050; font-weight: bold; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tag-cat { position: absolute; top: 10px; right: 10px; background: var(--lila); font-size: 0.7em; padding: 3px 10px; border-radius: 12px; color: #1b5e20; font-weight: bold; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .tag-tipo { position: absolute; top: 34px; right: 10px; font-size: 0.65em; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
         .tag-tipo.subasta { background: #fff3e0; color: #e65100; }
         .tag-tipo.venta { background: #e8f5e9; color: #2e7d32; }
@@ -169,7 +169,7 @@
         .btn-oferta:hover  { background: #a8d040; }
         .btn-comprar { background: linear-gradient(135deg, #43a047, #2e7d32); color: white; padding: 13px; font-size: 0.95em; box-shadow: 0 3px 10px rgba(67,160,71,0.28); }
         .btn-comprar:hover { background: linear-gradient(135deg, #2e7d32, #1b5e20); transform: scale(1.02); }
-        .btn-vendedor { background: var(--rosa); color: white; padding: 13px; font-size: 0.95em; box-shadow: 0 3px 10px rgba(224,72,145,0.25); }
+        .btn-vendedor { background: var(--rosa); color: white; padding: 13px; font-size: 0.95em; box-shadow: 0 3px 10px rgba(46,125,50,0.2); }
         .btn-vendedor:hover { opacity: 0.88; }
         .btn-ganador  { background: linear-gradient(135deg, #f9a825, #f57f17); color: white; padding: 13px; font-size: 0.95em; }
         .btn-ganador:hover { opacity: 0.88; }
@@ -177,7 +177,7 @@
         .btn-compartir, .btn-preguntar, .btn-eliminar, .btn-calificar {
             background: white; padding: 10px; font-size: 0.83em; border-width: 2px; border-style: solid;
         }
-        .btn-compartir { border-color: var(--lila);  color: #6a0050; }
+        .btn-compartir { border-color: var(--lila);  color: #1b5e20; }
         .btn-compartir:hover { background: var(--lila); }
         .btn-preguntar { border-color: var(--rosa);  color: var(--rosa); }
         .btn-preguntar:hover { background: var(--rosa); color: white; }
@@ -208,7 +208,7 @@
         .carrusel-btn { background: var(--verde-lima); color: #333; border: none; border-radius: 50%; width: 48px; height: 48px; font-size: 1.4em; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .carrusel-btn:hover { background: var(--rosa); color: white; }
         .carrusel-contador { color: white; font-size: 0.95em; font-weight: bold; min-width: 50px; text-align: center; }
-        .carrusel-cerrar { position: absolute; top: 15px; right: 18px; background: var(--lila); color: #6a0050; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2em; cursor: pointer; font-weight: bold; }
+        .carrusel-cerrar { position: absolute; top: 15px; right: 18px; background: var(--lila); color: #1b5e20; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2em; cursor: pointer; font-weight: bold; }
         .badge-preguntas { background: #e53935; color: white; border-radius: 50%; font-size: 0.75em; padding: 1px 6px; margin-left: 4px; }
         /* ── MODAL PREGUNTAS ── */
         .modal-preguntas-box { background: white; border-radius: 20px; padding: 22px; max-width: 420px; width: 93%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.18); border-top: 5px solid var(--lila); }
@@ -218,7 +218,7 @@
         .pregunta-item .a { font-size: 0.85em; color: #2e7d32; background: #e8f5e9; border-radius: 8px; padding: 7px 10px; margin-top: 5px; }
         .pregunta-item .sin-resp { font-size: 0.8em; color: #999; font-style: italic; margin-top: 4px; }
         .input-pregunta { width: 100%; padding: 10px 14px; border: 1px solid var(--lila); border-radius: 10px; font-size: 0.9em; outline: none; margin-top: 12px; resize: none; }
-        .input-pregunta:focus { border-color: var(--rosa); box-shadow: 0 0 0 2px rgba(224,72,145,0.1); }
+        .input-pregunta:focus { border-color: var(--rosa); box-shadow: 0 0 0 2px rgba(46,125,50,0.1); }
         .btn-enviar-pregunta { background: var(--rosa); color: white; border: none; padding: 11px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.9em; margin-top: 8px; }
         .btn-enviar-pregunta:hover { opacity: 0.88; }
         .btn-responder { background: var(--verde-lima); color: #333; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.78em; font-weight: bold; margin-top: 6px; }
@@ -227,7 +227,7 @@
 
         /* ── MODAL MI PERFIL ── */
         .modal-miperfil-box { background: white; border-radius: 20px; overflow: hidden; max-width: 360px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.18); }
-        .miperfil-header { background: linear-gradient(135deg, var(--rosa), #c2185b); padding: 28px 20px; text-align: center; }
+        .miperfil-header { background: linear-gradient(135deg, #2E7D32, #1b5e20); padding: 28px 20px; text-align: center; }
         .miperfil-avatar-wrap { position: relative; display: inline-block; cursor: pointer; }
         .miperfil-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 3px 10px rgba(0,0,0,0.2); }
         .miperfil-avatar-edit { position: absolute; bottom: 0; right: 0; background: white; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.85em; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
@@ -238,7 +238,7 @@
         .miperfil-dato:last-of-type { border-bottom: none; }
         .miperfil-dato .etiqueta { color: #999; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
         .miperfil-input { flex: 1; border: 1.5px solid #e0e0e0; border-radius: 8px; padding: 6px 10px; font-size: 0.92em; color: #333; font-weight: 600; outline: none; background: #fafafa; text-align: right; }
-        .miperfil-input:focus { border-color: var(--rosa); background: white; box-shadow: 0 0 0 2px rgba(224,72,145,0.12); }
+        .miperfil-input:focus { border-color: var(--rosa); background: white; box-shadow: 0 0 0 2px rgba(46,125,50,0.1); }
 
         /* ── MODAL PERFIL VENDEDOR ── */
         .modal-perfil-box { background: white; border-radius: 20px; overflow: hidden; max-width: 380px; width: 92%; max-height: 88vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.18); }
