@@ -15,11 +15,11 @@
     <script src="config.js"></script>
     <style>
         :root {
-            --rosa: #E04891;
-            --lila: #E1B7ED;
-            --rosa-claro: #F5E1E2;
-            --verde-suave: #D1E389;
-            --verde-lima: #B9DE51;
+            --rosa: #2E7D32;
+            --lila: #C8E6C9;
+            --rosa-claro: #F1F8E9;
+            --verde-suave: #E8F5E9;
+            --verde-lima: #A5D6A7;
         }
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--rosa-claro); display: flex; justify-content: center; padding: 15px; margin: 0; min-height: 100vh; align-items: center; }
@@ -28,7 +28,7 @@
         label { display: block; margin-top: 15px; font-weight: bold; font-size: 0.9em; color: #333; }
         .password-container { position: relative; width: 100%; }
         input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid var(--lila); border-radius: 10px; box-sizing: border-box; font-size: 16px; outline: none; transition: border 0.2s; }
-        input:focus { border-color: var(--rosa); box-shadow: 0 0 0 2px rgba(224,72,145,0.1); }
+        input:focus { border-color: var(--rosa); box-shadow: 0 0 0 2px rgba(46,125,50,0.1); }
         .password-container input { padding-right: 45px; }
         .toggle-password { position: absolute; right: 12px; top: 50%; transform: translateY(-3px); cursor: pointer; font-size: 1.2rem; user-select: none; color: #999; }
         button { background: var(--rosa); color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 20px; font-size: 1rem; transition: opacity 0.2s; }
@@ -50,7 +50,7 @@
         .pass-requisitos li::before { content: "○"; font-size: .7em; }
         .pass-requisitos li.ok::before { content: "●"; }
         select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid var(--lila); border-radius: 10px; box-sizing: border-box; font-size: 16px; outline: none; transition: border 0.2s; background: white; color: #333; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
-        select:focus { border-color: var(--rosa); box-shadow: 0 0 0 2px rgba(224,72,145,0.1); }
+        select:focus { border-color: var(--rosa); box-shadow: 0 0 0 2px rgba(46,125,50,0.1); }
 
         /* ── SOLO ESTO CAMBIÓ: logo redondo con nombre ── */
         .logo-login { text-align: center; margin-bottom: 15px; }
@@ -338,6 +338,15 @@
                 if (apodoExistente) {
                     msg.style.color = "red";
                     msg.innerText = "❌ Ese apodo ya está en uso. Elegí otro.";
+                    return;
+                }
+
+                const { data: cuilExistente } = await _supabase
+                    .from('perfiles').select('id').eq('cuil', cuil).maybeSingle();
+
+                if (cuilExistente) {
+                    msg.style.color = "red";
+                    msg.innerText = "❌ Ese CUIL ya está registrado. Si ya tenés cuenta, ingresá con tu email.";
                     return;
                 }
 
