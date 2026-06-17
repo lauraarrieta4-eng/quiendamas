@@ -37,9 +37,17 @@
         .btn-tipo { flex: 1; padding: 10px; border: 2px solid var(--rosa); border-radius: 20px; background: white; color: var(--rosa); font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; margin-top: 0; transition: all 0.2s; }
         .btn-tipo.activo { background: var(--rosa); color: white; }
 
-        .selector-modo { display: flex; gap: 10px; margin-top: 12px; }
-        .btn-modo { flex: 1; padding: 10px; border: 2px solid #43a047; border-radius: 20px; background: white; color: #43a047; font-weight: bold; font-size: 0.9em; cursor: pointer; text-align: center; margin-top: 0; transition: all 0.2s; }
-        .btn-modo.activo { background: #43a047; color: white; }
+        .selector-modo { display: flex; gap: 12px; margin: 8px 0 16px; }
+        .btn-modo { flex: 1; padding: 16px 10px; border: 2px solid #ddd; border-radius: 16px; background: white; cursor: pointer; text-align: center; transition: all 0.2s; margin-top: 0; }
+        .btn-modo .modo-icon { font-size: 2em; display: block; margin-bottom: 5px; }
+        .btn-modo .modo-nombre { font-size: 0.95em; font-weight: 800; color: #333; display: block; margin-bottom: 4px; }
+        .btn-modo .modo-desc { font-size: 0.72em; font-weight: normal; color: #999; display: block; line-height: 1.35; }
+        .btn-modo.activo { border-color: #2E7D32; background: #f1f8f1; box-shadow: 0 0 0 3px rgba(46,125,50,0.15); }
+        .btn-modo.activo .modo-nombre { color: #2E7D32; }
+        .btn-modo.activo .modo-desc { color: #5a9e5e; }
+        #btn-venta.activo { border-color: #1565c0; background: #e8f0fe; box-shadow: 0 0 0 3px rgba(21,101,192,0.15); }
+        #btn-venta.activo .modo-nombre { color: #1565c0; }
+        #btn-venta.activo .modo-desc { color: #4a7ec7; }
 
         .fotos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
         .foto-slot { border: 2px dashed var(--lila); border-radius: 10px; height: 90px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; background: var(--rosa-claro); transition: border 0.2s; }
@@ -68,10 +76,18 @@
     </div>
 
     <!-- Modo: Subasta / Venta directa -->
-    <label>Modalidad de venta:</label>
+    <label>¿Cómo querés vender?</label>
     <div class="selector-modo">
-        <button type="button" class="btn-modo activo" id="btn-subasta" onclick="cambiarModoVenta('subasta')">🔨 Subasta</button>
-        <button type="button" class="btn-modo" id="btn-venta" onclick="cambiarModoVenta('venta')">💲 Venta directa</button>
+        <button type="button" class="btn-modo activo" id="btn-subasta" onclick="cambiarModoVenta('subasta')">
+            <span class="modo-icon">🔨</span>
+            <span class="modo-nombre">Subasta</span>
+            <span class="modo-desc">El precio arranca bajo y sube con las ofertas. Vendés al mejor postor cuando cierra.</span>
+        </button>
+        <button type="button" class="btn-modo" id="btn-venta" onclick="cambiarModoVenta('venta')">
+            <span class="modo-icon">🛒</span>
+            <span class="modo-nombre">Venta directa</span>
+            <span class="modo-desc">Precio fijo. El primero que pague se lleva el producto.</span>
+        </button>
     </div>
 
     <label>Título:</label>
@@ -90,6 +106,7 @@
         <label>Categoría:</label>
         <select id="cat-principal" onchange="actualizarSubcat()">
             <option value="Vehiculos">🚗 Vehículos</option>
+            <option value="Inmuebles">🏠 Inmuebles</option>
             <option value="Tecnologia">📱 Tecnología</option>
             <option value="Moda">👗 Moda</option>
             <option value="Joyas">⌚ Joyas y Relojes</option>
@@ -213,6 +230,19 @@
     // ══════════════════════════════════════════════════════════════════
     const SUBCATS = {
 
+        // ── VEHÍCULOS ─────────────────────────────────────────────────
+        'Vehiculos': [
+            { value: 'Autos',       label: '🚗 Autos' },
+            { value: 'Utilitarios', label: '🚐 Utilitarios' },
+            { value: 'Motos',       label: '🏍️ Motos' },
+        ],
+
+        // ── INMUEBLES ─────────────────────────────────────────────────
+        'Inmuebles': [
+            { value: 'Inmuebles-Casas',    label: '🏠 Casas' },
+            { value: 'Inmuebles-Terrenos', label: '🌄 Terrenos' },
+        ],
+
         // ── TECNOLOGÍA ────────────────────────────────────────────────
         'Tecnologia': [
             { value: 'Celulares',          label: '📱 Celulares' },
@@ -304,6 +334,15 @@
         ],
     };
 
+    const CATS_AVISO = ['Vehiculos', 'Inmuebles'];
+
+    function actualizarSeccionPagos() {
+        const principal = document.getElementById('cat-principal').value;
+        const esAviso = CATS_AVISO.includes(principal);
+        const ocultar = tipoActual === 'servicio' || esAviso;
+        document.getElementById('seccion-pagos').style.display = ocultar ? 'none' : 'block';
+    }
+
     function actualizarSubcat() {
         const principal = document.getElementById('cat-principal').value;
         const subcatWrapper = document.getElementById('subcat-wrapper');
@@ -319,6 +358,8 @@
         } else {
             subcatWrapper.style.display = 'none';
         }
+
+        actualizarSeccionPagos();
     }
 
     function actualizarSubcat2() {
@@ -347,10 +388,10 @@
         return principal;
     }
 
-    actualizarSubcat();
-
     // ── TIPO PRODUCTO / SERVICIO ──────────────────────────────────────
     let tipoActual = 'producto';
+
+    actualizarSubcat();
     function cambiarTipo(tipo) {
         tipoActual = tipo;
         document.getElementById('btn-producto').classList.toggle('activo', tipo === 'producto');
@@ -364,13 +405,12 @@
             btnSubasta.disabled = true;
             btnSubasta.style.opacity = '0.35';
             btnSubasta.title = 'Los servicios no admiten subasta';
-            document.getElementById('seccion-pagos').style.display = 'none';
         } else {
             btnSubasta.disabled = false;
             btnSubasta.style.opacity = '';
             btnSubasta.title = '';
-            document.getElementById('seccion-pagos').style.display = 'block';
         }
+        actualizarSeccionPagos();
     }
 
     // ── FOTOS ─────────────────────────────────────────────────────────
