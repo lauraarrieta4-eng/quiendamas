@@ -529,7 +529,8 @@
         <button class="filtros-arrow izq" onclick="scrollFiltros('filtros-productos', -200)">‹</button>
         <div class="filtros" id="filtros-productos">
             <button class="btn-filtro cat activo" id="cat-btn-Todos"          onclick="filtrarCategoria('Todos')">📦 Todos</button>
-            <button class="btn-filtro cat"        id="cat-btn-Vehiculos"      onclick="filtrarCategoria('Vehiculos')">🚗 Vehículos</button>
+            <button class="btn-filtro cat" data-sub id="cat-btn-Vehiculos"   onclick="filtrarCategoria('Vehiculos')">🚗 Vehículos</button>
+            <button class="btn-filtro cat" data-sub id="cat-btn-Inmuebles"   onclick="filtrarCategoria('Inmuebles')">🏠 Inmuebles</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Tecnologia"   onclick="filtrarCategoria('Tecnologia')">📱 Tecnología</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Moda"         onclick="filtrarCategoria('Moda')">👗 Moda</button>
             <button class="btn-filtro cat"        id="cat-btn-Joyas"          onclick="filtrarCategoria('Joyas')">⌚ Joyas</button>
@@ -617,6 +618,12 @@
             'Tecnologia-Soporte','Clases-Tutorias','Diseno-Creatividad','Servicios-Profesionales',
         ];
 
+        // Categorías de aviso: gratis por ahora, se cobra por publicación en el futuro
+        const CATEGORIAS_AVISO = [
+            'Inmuebles','Inmuebles-Casas','Inmuebles-Terrenos',
+            'Vehiculos','Autos','Motos','Utilitarios',
+        ];
+
         // ─────────────────────────────────────────────────────────────
         // VALORES_CAT: todos los valores de BD que agrupa cada categoría
         // ─────────────────────────────────────────────────────────────
@@ -625,8 +632,12 @@
             // ── VEHÍCULOS ─────────────────────────────────────────────
             'Vehiculos': [
                 'Vehiculos',
-                // legacy: antes eran dos categorías separadas
-                'Autos', 'Motos',
+                'Autos', 'Motos', 'Utilitarios',
+            ],
+
+            // ── INMUEBLES ─────────────────────────────────────────────
+            'Inmuebles': [
+                'Inmuebles', 'Inmuebles-Casas', 'Inmuebles-Terrenos',
             ],
 
             // ── TECNOLOGÍA ────────────────────────────────────────────
@@ -693,6 +704,19 @@
         // SUBCATS_FILTRO: chips que aparecen debajo de la categoría
         // ─────────────────────────────────────────────────────────────
         const SUBCATS_FILTRO = {
+
+            // ── VEHÍCULOS ─────────────────────────────────────────────
+            'Vehiculos': [
+                { value: 'Autos',       label: '🚗 Autos' },
+                { value: 'Utilitarios', label: '🚐 Utilitarios' },
+                { value: 'Motos',       label: '🏍️ Motos' },
+            ],
+
+            // ── INMUEBLES ─────────────────────────────────────────────
+            'Inmuebles': [
+                { value: 'Inmuebles-Casas',    label: '🏠 Casas' },
+                { value: 'Inmuebles-Terrenos', label: '🌄 Terrenos' },
+            ],
 
             // ── TECNOLOGÍA ────────────────────────────────────────────
             'Tecnologia': [
@@ -767,7 +791,9 @@
         // ─────────────────────────────────────────────────────────────
         const LABEL_CAT = {
             'Vehiculos': 'Vehículos',
-            'Autos': 'Vehículos', 'Motos': 'Vehículos', // legacy → mismo label
+            'Autos': 'Autos', 'Motos': 'Motos', 'Utilitarios': 'Utilitarios',
+            'Inmuebles': 'Inmuebles',
+            'Inmuebles-Casas': 'Casas', 'Inmuebles-Terrenos': 'Terrenos',
             'Computacion': 'PC y notebooks',
             'Celulares': 'Celulares',
             'AudioVideo': 'Audio y Video',
@@ -1054,6 +1080,7 @@
 
             const esVentaDirecta = art.tipo_venta === 'venta';
             const esServicio = CATEGORIAS_SERVICIOS.includes(art.categoria);
+            const esAviso = CATEGORIAS_AVISO.includes(art.categoria);
             const yaTermino = !esVentaDirecta && art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
             const soyGanador = !esVentaDirecta && yaTermino && !!usuarioActualId && art.ganador_id === usuarioActualId;
             const soyComprador = esVentaDirecta && !!usuarioActualId && art.comprador_id === usuarioActualId;
@@ -1068,6 +1095,9 @@
 
             if (esServicio) {
                 badgeTipo = `<span class="tag-tipo" style="background:#e8f5e9;color:#2e7d32;">🛠️ Servicio</span>`;
+            } else if (esAviso) {
+                const esInmueble = art.categoria?.startsWith('Inmuebles');
+                badgeTipo = `<span class="tag-tipo" style="background:#e3f2fd;color:#1565c0;">${esInmueble ? '🏠 Inmueble' : '🚗 Vehículo'}</span>`;
             } else if (esVentaDirecta) {
                 if (articuloVendido) {
                     badgeTipo = `<span class="tag-tipo vendido">✅ Vendido</span>`;
@@ -1155,7 +1185,7 @@
                 ${boton}
                 ${btnCalificar}
                 <div class="acciones-sec">
-                    <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">${esServicio ? '💬' : '❓'} <span class="btn-txt">${esServicio ? 'Consultar' : 'Preguntas'}</span></button>
+                    <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">${(esServicio || esAviso) ? '💬' : '❓'} <span class="btn-txt">${(esServicio || esAviso) ? 'Consultar' : 'Preguntas'}</span></button>
                     <button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 <span class="btn-txt">Compartir</span></button>
                     ${esMia ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ <span class="btn-txt">Eliminar</span></button>` : ''}
                 </div>
@@ -1190,11 +1220,10 @@
             vendedorPreguntaActual = vendedorId;
             document.getElementById('texto-pregunta').value = '';
 
-            const esServ = CATEGORIAS_SERVICIOS.includes(
-                (await _supabase.from('articulos').select('categoria').eq('id', articuloId).maybeSingle()).data?.categoria
-            );
+            const catData = (await _supabase.from('articulos').select('categoria').eq('id', articuloId).maybeSingle()).data?.categoria;
+            const esServ = CATEGORIAS_SERVICIOS.includes(catData) || CATEGORIAS_AVISO.includes(catData);
             document.getElementById('modal-preguntas').querySelector('h2').innerText = esServ ? '💬 Consultas' : '❓ Preguntas del producto';
-            document.getElementById('texto-pregunta').placeholder = esServ ? 'Escribí tu consulta al prestador...' : 'Escribí tu pregunta al vendedor...';
+            document.getElementById('texto-pregunta').placeholder = esServ ? 'Escribí tu consulta...' : 'Escribí tu pregunta al vendedor...';
             document.getElementById('modal-preguntas').querySelector('.btn-enviar-pregunta').innerText = esServ ? 'Enviar consulta' : 'Enviar pregunta';
 
             const seccion = document.getElementById('seccion-nueva-pregunta');
