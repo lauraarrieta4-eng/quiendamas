@@ -153,7 +153,14 @@
         .foto-art:hover { opacity: 0.92; }
         .titulo { font-size: 1.1em; font-weight: bold; color: #222; }
         .apodo-art { font-size: 0.78em; color: var(--rosa); margin-top: 2px; margin-bottom: 5px; font-weight: 600; cursor: pointer; text-decoration: underline dotted; }
-        .descripcion { font-size: 0.85em; color: #666; margin: 8px 0; min-height: 38px; line-height: 1.4; }
+        /* ── MODAL DESCRIPCIÓN ── */
+        #modal-descripcion { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:3000; align-items:flex-end; justify-content:center; }
+        #modal-descripcion.activo { display:flex; }
+        .modal-desc-inner { background:white; width:100%; max-width:520px; border-radius:20px 20px 0 0; padding:24px 20px 32px; max-height:75vh; overflow-y:auto; }
+        .modal-desc-titulo { font-size:1em; font-weight:800; color:#222; margin-bottom:12px; padding-right:28px; }
+        .modal-desc-texto { font-size:0.92em; color:#444; line-height:1.6; white-space:pre-wrap; }
+        .modal-desc-cerrar { position:absolute; top:14px; right:16px; font-size:1.3em; background:none; border:none; cursor:pointer; color:#888; }
+        .modal-desc-inner { position:relative; }
         .precio { font-size: 1.6em; color: var(--rosa); margin: 8px 0; font-weight: bold; }
         .reloj { font-size: 0.85em; font-weight: bold; color: #555; background: var(--verde-suave); padding: 8px; border-radius: 8px; text-align: center; margin-bottom: 10px; }
         /* ── BOTONES DE TARJETA — sistema unificado ── */
@@ -1179,13 +1186,13 @@
                 ${badgeFotos}
                 <div class="titulo">${escapeHtml(art.Titulo)}</div>
                 <div class="apodo-art" id="apodo-${art.id}" onclick="abrirModalPerfil('${art.perfil_id}')">👤 Cargando...</div>
-                <div class="descripcion">${escapeHtml(art.descripcion || 'Sin detalles adicionales')}</div>
                 ${precioDisplay}
                 ${relojHtml}
                 ${boton}
                 ${btnCalificar}
                 <div class="acciones-sec">
                     <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">${(esServicio || esAviso) ? '💬' : '❓'} <span class="btn-txt">${(esServicio || esAviso) ? 'Consultar' : 'Preguntas'}</span></button>
+                    <button class="btn-compartir" onclick="abrirDescripcion('${art.id}')">📄 <span class="btn-txt">Descripción</span></button>
                     <button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 <span class="btn-txt">Compartir</span></button>
                     ${esMia ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ <span class="btn-txt">Eliminar</span></button>` : ''}
                 </div>
@@ -1203,6 +1210,7 @@
             });
 
             fotosCache[art.id] = todasFotos;
+            _descripciones[art.id] = { titulo: art.Titulo, texto: art.descripcion || 'Sin descripción.' };
             const imgEl = div.querySelector('.foto-art');
             if (imgEl) {
                 imgEl.addEventListener('click', () => abrirCarrusel(fotosCache[art.id], 0));
@@ -1283,6 +1291,11 @@
                 mensaje: `❓ Nueva pregunta en "${tituloArt}": "${preview}"`,
                 articulo_id: articuloPreguntaActual
             }]);
+            fetch('https://bzznyvzzwfqqxqddjqwh.supabase.co/functions/v1/notificar-pregunta', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${_supabaseKey}` },
+                body: JSON.stringify({ vendedor_id: vendedorPreguntaActual, articulo_titulo: tituloArt, pregunta_preview: preview })
+            }).catch(() => {});
             document.getElementById('texto-pregunta').value = '';
             await cargarPreguntas(articuloPreguntaActual, vendedorPreguntaActual);
         }
@@ -1833,6 +1846,18 @@
         }
         function cerrarCarrusel() { document.getElementById('modal-carrusel').classList.remove('activo'); }
 
+        const _descripciones = {};
+        function abrirDescripcion(id) {
+            const d = _descripciones[id];
+            if (!d) return;
+            document.getElementById('modal-desc-titulo').innerText = d.titulo;
+            document.getElementById('modal-desc-texto').innerText = d.texto;
+            document.getElementById('modal-descripcion').classList.add('activo');
+        }
+        function cerrarDescripcion() {
+            document.getElementById('modal-descripcion').classList.remove('activo');
+        }
+
         async function compartir(titulo, id) {
             const url = window.location.href.split('?')[0] + '?art=' + id;
             if (navigator.share) {
@@ -1859,9 +1884,19 @@
         });
 
 async function eliminarPublicacion(id) {
-    const { data: art } = await _supabase.from('articulos').select('comprador_id, ganador_id, pago_confirmado, tipo_venta').eq('id', id).maybeSingle();
-    const tieneComprador = art?.tipo_venta === 'subasta' ? !!art.ganador_id : !!art.comprador_id;
-    if (art && tieneComprador) {
+    const { data: art } = await _supabase.from('articulos').select('comprador_id, ganador_id, pago_confirmado, tipo_venta, finaliza_en, precio_actual, precio_base').eq('id', id).maybeSingle();
+    if (!art) return;
+
+    const esSubasta = art.tipo_venta === 'subasta';
+    const subastaTerminada = esSubasta && art.finaliza_en && new Date(art.finaliza_en) < new Date();
+    const tuvoOfertas = esSubasta && art.precio_actual > art.precio_base;
+
+    // Solo bloquear si es venta directa con comprador, o subasta terminada con ganador y ofertas reales
+    const hayComprador = esSubasta
+        ? subastaTerminada && tuvoOfertas && !!art.ganador_id
+        : !!art.comprador_id;
+
+    if (hayComprador) {
         if (!art.pago_confirmado) {
             alert("⚠️ No podés eliminar esta publicación hasta abonar la comisión y desbloquear los datos del comprador.\n\nUna vez que el pago sea verificado podrás dar de baja la publicación.");
             return;
@@ -2111,6 +2146,14 @@ async function eliminarPublicacion(id) {
         </div>
     </footer>
 
+<!-- Modal Descripción -->
+<div id="modal-descripcion" onclick="if(event.target===this)cerrarDescripcion()">
+  <div class="modal-desc-inner">
+    <button class="modal-desc-cerrar" onclick="cerrarDescripcion()">✕</button>
+    <div class="modal-desc-titulo" id="modal-desc-titulo"></div>
+    <div class="modal-desc-texto" id="modal-desc-texto"></div>
+  </div>
+</div>
 
 </body>
 </html>
