@@ -521,7 +521,7 @@
         <div class="menu-filtro-venta" id="menu-filtro-venta">
             <div class="menu-fv-titulo">Filtrar por tipo</div>
             <button class="btn-fv activo" id="fv-todos"   onclick="cambiarFiltroVenta(null)">📦 Todos</button>
-            <button class="btn-fv"        id="fv-subasta" onclick="cambiarFiltroVenta('subasta')"><img src="martillo.png" style="width:15px;height:15px;"> Subastas</button>
+            <button class="btn-fv"        id="fv-subasta" onclick="cambiarFiltroVenta('subasta')"><img src="gavel.png" style="width:15px;height:15px;vertical-align:middle;"> Subastas</button>
             <button class="btn-fv"        id="fv-venta"   onclick="cambiarFiltroVenta('venta')">💲 Venta directa</button>
         </div>
     </div>
@@ -1141,7 +1141,7 @@
                     boton = botonesCompra;
                 }
             } else {
-                badgeTipo = `<span class="tag-tipo subasta">🔨 Subasta</span>`;
+                badgeTipo = `<span class="tag-tipo subasta"><img src="gavel.png" style="width:13px;height:13px;vertical-align:middle;margin-right:3px;">Subasta</span>`;
                 relojHtml = `<div class="reloj" id="reloj-${art.id}">⏳ Cargando...</div>`;
                 if (soyVendedor) {
                     if (yaTermino && art.ganador_id) {
@@ -1168,7 +1168,7 @@
                 } else if (yaTermino) {
                     boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
                 } else {
-                    boton = `<button class="btn-oferta" onclick="abrirModalOfertar('${art.id}', ${art.precio_actual || art.precio_base || 0})">🔨 Ofertar</button>`;
+                    boton = `<button class="btn-oferta" onclick="abrirModalOfertar('${art.id}', ${art.precio_actual || art.precio_base || 0})"><img src="gavel.png" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;">Ofertar</button>`;
                 }
             }
 
@@ -1291,11 +1291,6 @@
                 mensaje: `❓ Nueva pregunta en "${tituloArt}": "${preview}"`,
                 articulo_id: articuloPreguntaActual
             }]);
-            fetch('https://bzznyvzzwfqqxqddjqwh.supabase.co/functions/v1/notificar-pregunta', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${_supabaseKey}` },
-                body: JSON.stringify({ vendedor_id: vendedorPreguntaActual, articulo_titulo: tituloArt, pregunta_preview: preview })
-            }).catch(() => {});
             document.getElementById('texto-pregunta').value = '';
             await cargarPreguntas(articuloPreguntaActual, vendedorPreguntaActual);
         }
@@ -1601,7 +1596,7 @@
                     } else if (yaTermino) {
                         boton = `<button class="btn-oferta" style="background:#999;" disabled>Subasta cerrada</button>`;
                     } else {
-                        boton = `<button class="btn-oferta" onclick="abrirModalOfertar('${art.id}', ${art.precio_actual || art.precio_base || 0})">🔨 Ofertar</button>`;
+                        boton = `<button class="btn-oferta" onclick="abrirModalOfertar('${art.id}', ${art.precio_actual || art.precio_base || 0})"><img src="gavel.png" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;">Ofertar</button>`;
                     }
                     const div = document.createElement('div');
                     div.className = 'tarjeta';
@@ -1664,7 +1659,7 @@
                     div.className = 'tarjeta';
                     div.style.border = '2px solid #43a047';
                     div.innerHTML = `
-                        <span class="tag-tipo ${esVentaDirecta ? 'venta' : 'subasta'}">${esVentaDirecta ? '💲 Venta directa' : '🔨 Subasta'}</span>
+                        <span class="tag-tipo ${esVentaDirecta ? 'venta' : 'subasta'}">${esVentaDirecta ? '💲 Venta directa' : '<img src="gavel.png" style="width:13px;height:13px;vertical-align:middle;margin-right:3px;">Subasta'}</span>
                         <img src="${art.foto_url || ''}" class="foto-art">
                         <div class="titulo">${escapeHtml(art.Titulo || '')}</div>
                         <div class="precio">$${(art.precio_base || 0).toLocaleString('es-AR')}</div>
@@ -1724,7 +1719,7 @@
                 if (cuenta === 0) {
                     display.className = 'reloj-inline-remate reloj-final';
                     display.innerHTML = `
-                        <img src="martillo.png" class="reloj-martillo-inline" alt="martillo">
+                        <img src="gavel.png" class="reloj-martillo-inline" alt="martillo">
                         <div class="reloj-adj-inline">¡ADJUDICADO!</div>`;
                     setTimeout(() => {
                         tarjeta?.classList.remove('tarjeta-remate');
