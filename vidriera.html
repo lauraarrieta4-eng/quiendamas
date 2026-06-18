@@ -978,6 +978,19 @@
                 lista.innerHTML = data.map(n => {
                     const hace = tiempoRelativo(n.created_at);
                     const esPreguntas = n.mensaje.startsWith('❓');
+                    const solMatch = n.mensaje.match(/^__SOL__([a-f0-9-]+)__\s*/);
+                    if (solMatch) {
+                        const solId = solMatch[1];
+                        const texto = n.mensaje.replace(/^__SOL__[a-f0-9-]+__\s*/, '');
+                        return `<div class="notif-item${n.leida ? '' : ' nueva'}">
+                            <div style="margin-bottom:8px;">${escapeHtml(texto)}</div>
+                            <div style="display:flex;gap:8px;">
+                                <button onclick="aceptarSolicitud('${solId}','${n.articulo_id}',this)" style="flex:1;background:#2e7d32;color:white;border:none;padding:7px;border-radius:8px;cursor:pointer;font-weight:700;">✅ Aceptar</button>
+                                <button onclick="rechazarSolicitud('${solId}','${n.articulo_id}',this)" style="flex:1;background:#c62828;color:white;border:none;padding:7px;border-radius:8px;cursor:pointer;font-weight:700;">❌ Rechazar</button>
+                            </div>
+                            <div class="notif-tiempo">${hace}</div>
+                        </div>`;
+                    }
                     return `<div class="notif-item${n.leida ? '' : ' nueva'}" onclick="abrirNotificacion('${n.articulo_id}', ${esPreguntas})">
                         ${escapeHtml(n.mensaje)}
                         <div class="notif-tiempo">${hace}</div>
@@ -1031,6 +1044,7 @@
             const bloqueInteracciones = document.getElementById('bloque-interacciones');
             if (user) {
                 usuarioActualId = user.id;
+                cargarMisSolicitudes();
                 const { data: perfil } = await _supabase.from('perfiles').select('nombre_completo, apodo, mp_access_token').eq('id', user.id).maybeSingle();
                 display.innerText = "Hola, " + (perfil && (perfil.apodo || perfil.nombre_completo) ? (perfil.apodo || perfil.nombre_completo) : "Usuario");
                 if (perfil && !perfil.mp_access_token) document.getElementById('badge-mp').style.display = 'inline-block';
@@ -1105,6 +1119,18 @@
             } else if (esAviso) {
                 const esInmueble = art.categoria?.startsWith('Inmuebles');
                 badgeTipo = `<span class="tag-tipo" style="background:#e3f2fd;color:#1565c0;">${esInmueble ? '🏠 Inmueble' : '🚗 Vehículo'}</span>`;
+                if (!soyVendedor && usuarioActualId) {
+                    const sol = _misSolicitudes[art.id];
+                    if (!sol) {
+                        boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="solicitarContacto('${art.id}','${art.perfil_id}',this)">📱 Solicitar contacto</button>`;
+                    } else if (sol.estado === 'pendiente') {
+                        boton = `<button class="btn-oferta" style="background:#888;" disabled>⏳ Solicitud enviada</button>`;
+                    } else if (sol.estado === 'aceptada') {
+                        boton = `<button class="btn-oferta" style="background:#2e7d32;" onclick="verTelefonoVendedor('${art.perfil_id}')">📞 Ver teléfono</button>`;
+                    } else if (sol.estado === 'rechazada') {
+                        boton = `<button class="btn-oferta" style="background:#999;" disabled>❌ No disponible</button>`;
+                    }
+                }
             } else if (esVentaDirecta) {
                 if (articuloVendido) {
                     badgeTipo = `<span class="tag-tipo vendido">✅ Vendido</span>`;
@@ -1842,6 +1868,76 @@
         function cerrarCarrusel() { document.getElementById('modal-carrusel').classList.remove('activo'); }
 
         const _descripciones = {};
+        // ── SOLICITUDES DE CONTACTO ──────────────────────────────────
+        let _misSolicitudes = {};
+        async function cargarMisSolicitudes() {
+            if (!usuarioActualId) return;
+            const { data } = await _supabase.from('solicitudes_contacto')
+                .select('*').eq('comprador_id', usuarioActualId);
+            _misSolicitudes = Object.fromEntries((data || []).map(s => [s.articulo_id, s]));
+        }
+
+        async function solicitarContacto(articuloId, vendedorId, btn) {
+            btn.disabled = true;
+            btn.innerText = 'Enviando...';
+            const { data: sol, error } = await _supabase.from('solicitudes_contacto')
+                .insert([{ articulo_id: articuloId, comprador_id: usuarioActualId, vendedor_id: vendedorId }])
+                .select().single();
+            if (error) { btn.disabled = false; btn.innerText = '📱 Solicitar contacto'; alert('Error: ' + error.message); return; }
+            const [{ data: artData }, { data: miPerfil }] = await Promise.all([
+                _supabase.from('articulos').select('Titulo').eq('id', articuloId).single(),
+                _supabase.from('perfiles').select('apodo,nombre_completo').eq('id', usuarioActualId).maybeSingle()
+            ]);
+            const nombre = miPerfil?.apodo || miPerfil?.nombre_completo || 'Un usuario';
+            await _supabase.from('notificaciones').insert([{
+                usuario_id: vendedorId,
+                mensaje: `__SOL__${sol.id}__ 📱 ${nombre} quiere ver tu contacto para "${artData?.Titulo || 'tu publicación'}"`,
+                articulo_id: articuloId
+            }]);
+            _misSolicitudes[articuloId] = sol;
+            btn.innerText = '⏳ Solicitud enviada';
+        }
+
+        async function aceptarSolicitud(solId, articuloId, btn) {
+            btn.disabled = true;
+            btn.closest('div').querySelectorAll('button').forEach(b => b.disabled = true);
+            const { data: sol } = await _supabase.from('solicitudes_contacto')
+                .update({ estado: 'aceptada' }).eq('id', solId).select().single();
+            const [{ data: miPerfil }, { data: artData }] = await Promise.all([
+                _supabase.from('perfiles').select('telefono,apodo,nombre_completo').eq('id', usuarioActualId).maybeSingle(),
+                _supabase.from('articulos').select('Titulo').eq('id', articuloId).single()
+            ]);
+            const nombre = miPerfil?.apodo || miPerfil?.nombre_completo || 'El vendedor';
+            const phone = miPerfil?.telefono || 'No cargado aún en el perfil';
+            await _supabase.from('notificaciones').insert([{
+                usuario_id: sol.comprador_id,
+                mensaje: `✅ ${nombre} aceptó tu solicitud de contacto para "${artData?.Titulo}". Teléfono: ${phone}`,
+                articulo_id: articuloId
+            }]);
+            btn.closest('.notif-item').innerHTML = `<div style="color:#2e7d32;font-weight:700;">✅ Solicitud aceptada</div>`;
+        }
+
+        async function rechazarSolicitud(solId, articuloId, btn) {
+            btn.disabled = true;
+            btn.closest('div').querySelectorAll('button').forEach(b => b.disabled = true);
+            const { data: sol } = await _supabase.from('solicitudes_contacto')
+                .update({ estado: 'rechazada' }).eq('id', solId).select().single();
+            const { data: artData } = await _supabase.from('articulos').select('Titulo').eq('id', articuloId).single();
+            await _supabase.from('notificaciones').insert([{
+                usuario_id: sol.comprador_id,
+                mensaje: `❌ Tu solicitud de contacto para "${artData?.Titulo}" no fue aceptada.`,
+                articulo_id: articuloId
+            }]);
+            btn.closest('.notif-item').innerHTML = `<div style="color:#999;">❌ Solicitud rechazada</div>`;
+        }
+
+        async function verTelefonoVendedor(vendedorId) {
+            const { data: p } = await _supabase.from('perfiles').select('telefono,apodo,nombre_completo').eq('id', vendedorId).maybeSingle();
+            const nombre = p?.apodo || p?.nombre_completo || 'El vendedor';
+            if (!p?.telefono) { alert(`${nombre} todavía no cargó su teléfono en el perfil.`); return; }
+            alert(`📞 Teléfono de ${nombre}: ${p.telefono}`);
+        }
+
         function abrirDescripcion(id) {
             const d = _descripciones[id];
             if (!d) return;
