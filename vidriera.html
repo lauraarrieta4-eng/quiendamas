@@ -963,10 +963,14 @@
         // ── NOTIFICACIONES ───────────────────────────────────────────
         async function cargarNotificaciones() {
             if (!usuarioActualId) return;
-            const { data } = await _supabase.from('notificaciones')
-                .select('*').eq('usuario_id', usuarioActualId)
-                .order('created_at', { ascending: false }).limit(20);
+            const [{ data }, { data: solsPendientes }] = await Promise.all([
+                _supabase.from('notificaciones').select('*').eq('usuario_id', usuarioActualId)
+                    .order('created_at', { ascending: false }).limit(20),
+                _supabase.from('solicitudes_contacto').select('id, articulo_id, comprador_id')
+                    .eq('vendedor_id', usuarioActualId).eq('estado', 'pendiente')
+            ]);
             if (!data) return;
+            const solsPorArticulo = Object.fromEntries((solsPendientes || []).map(s => [s.articulo_id, s]));
             const noLeidas = data.filter(n => !n.leida).length;
             const badge = document.getElementById('badge-notif');
             if (noLeidas > 0) { badge.innerText = noLeidas; badge.style.display = 'flex'; }
@@ -978,16 +982,9 @@
                 lista.innerHTML = data.map(n => {
                     const hace = tiempoRelativo(n.created_at);
                     const esPreguntas = n.mensaje.startsWith('❓');
-                    const solMatch = n.mensaje.match(/^__SOL__([a-f0-9-]+)__\s*/);
-                    if (solMatch) {
-                        const solId = solMatch[1];
-                        const texto = n.mensaje.replace(/^__SOL__[a-f0-9-]+__\s*/, '');
+                    if (n.mensaje.startsWith('📱')) {
                         return `<div class="notif-item${n.leida ? '' : ' nueva'}">
-                            <div style="margin-bottom:8px;">${escapeHtml(texto)}</div>
-                            <div style="display:flex;gap:8px;">
-                                <button onclick="aceptarSolicitud('${solId}','${n.articulo_id}',this)" style="flex:1;background:#2e7d32;color:white;border:none;padding:7px;border-radius:8px;cursor:pointer;font-weight:700;">✅ Aceptar</button>
-                                <button onclick="rechazarSolicitud('${solId}','${n.articulo_id}',this)" style="flex:1;background:#c62828;color:white;border:none;padding:7px;border-radius:8px;cursor:pointer;font-weight:700;">❌ Rechazar</button>
-                            </div>
+                            ${escapeHtml(n.mensaje)}
                             <div class="notif-tiempo">${hace}</div>
                         </div>`;
                     }
@@ -1123,12 +1120,8 @@
                     const sol = _misSolicitudes[art.id];
                     if (!sol) {
                         boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="solicitarContacto('${art.id}','${art.perfil_id}',this)">📱 Solicitar contacto</button>`;
-                    } else if (sol.estado === 'pendiente') {
-                        boton = `<button class="btn-oferta" style="background:#888;" disabled>⏳ Solicitud enviada</button>`;
-                    } else if (sol.estado === 'aceptada') {
-                        boton = `<button class="btn-oferta" style="background:#2e7d32;" onclick="verTelefonoVendedor('${art.perfil_id}')">📞 Ver teléfono</button>`;
-                    } else if (sol.estado === 'rechazada') {
-                        boton = `<button class="btn-oferta" style="background:#999;" disabled>❌ No disponible</button>`;
+                    } else {
+                        boton = `<button class="btn-oferta" style="background:#888;" disabled>✅ Contacto solicitado</button>`;
                     }
                 }
             } else if (esVentaDirecta) {
@@ -1880,55 +1873,30 @@
         async function solicitarContacto(articuloId, vendedorId, btn) {
             btn.disabled = true;
             btn.innerText = 'Enviando...';
-            const { data: sol, error } = await _supabase.from('solicitudes_contacto')
-                .insert([{ articulo_id: articuloId, comprador_id: usuarioActualId, vendedor_id: vendedorId }])
-                .select().single();
-            if (error) { btn.disabled = false; btn.innerText = '📱 Solicitar contacto'; alert('Error: ' + error.message); return; }
             const [{ data: artData }, { data: miPerfil }] = await Promise.all([
                 _supabase.from('articulos').select('Titulo').eq('id', articuloId).single(),
-                _supabase.from('perfiles').select('apodo,nombre_completo').eq('id', usuarioActualId).maybeSingle()
+                _supabase.from('perfiles').select('apodo,nombre_completo,verificado,reputacion_promedio,telefono').eq('id', usuarioActualId).maybeSingle()
             ]);
+            if (!miPerfil?.telefono) {
+                btn.disabled = false;
+                btn.innerText = '📱 Solicitar contacto';
+                alert('⚠️ Para solicitar contacto primero cargá tu teléfono en Mi Perfil. El vendedor te va a llamar a ese número.');
+                return;
+            }
+            const { data: sol, error } = await _supabase.from('solicitudes_contacto')
+                .insert([{ articulo_id: articuloId, comprador_id: usuarioActualId, vendedor_id: vendedorId, estado: 'enviada' }])
+                .select().single();
+            if (error) { btn.disabled = false; btn.innerText = '📱 Solicitar contacto'; alert('Error: ' + error.message); return; }
             const nombre = miPerfil?.apodo || miPerfil?.nombre_completo || 'Un usuario';
+            const verificado = miPerfil?.verificado ? ' · ✅ Verificado' : ' · ⚠️ No verificado';
+            const rep = miPerfil?.reputacion_promedio ? ` · ⭐ ${Number(miPerfil.reputacion_promedio).toFixed(1)}` : '';
             await _supabase.from('notificaciones').insert([{
                 usuario_id: vendedorId,
-                mensaje: `__SOL__${sol.id}__ 📱 ${nombre} quiere ver tu contacto para "${artData?.Titulo || 'tu publicación'}"`,
+                mensaje: `📱 ${nombre}${verificado}${rep} quiere que lo contactes para "${artData?.Titulo || 'tu publicación'}". Su teléfono: ${miPerfil.telefono}`,
                 articulo_id: articuloId
             }]);
             _misSolicitudes[articuloId] = sol;
-            btn.innerText = '⏳ Solicitud enviada';
-        }
-
-        async function aceptarSolicitud(solId, articuloId, btn) {
-            btn.disabled = true;
-            btn.closest('div').querySelectorAll('button').forEach(b => b.disabled = true);
-            const { data: sol } = await _supabase.from('solicitudes_contacto')
-                .update({ estado: 'aceptada' }).eq('id', solId).select().single();
-            const [{ data: miPerfil }, { data: artData }] = await Promise.all([
-                _supabase.from('perfiles').select('telefono,apodo,nombre_completo').eq('id', usuarioActualId).maybeSingle(),
-                _supabase.from('articulos').select('Titulo').eq('id', articuloId).single()
-            ]);
-            const nombre = miPerfil?.apodo || miPerfil?.nombre_completo || 'El vendedor';
-            const phone = miPerfil?.telefono || 'No cargado aún en el perfil';
-            await _supabase.from('notificaciones').insert([{
-                usuario_id: sol.comprador_id,
-                mensaje: `✅ ${nombre} aceptó tu solicitud de contacto para "${artData?.Titulo}". Teléfono: ${phone}`,
-                articulo_id: articuloId
-            }]);
-            btn.closest('.notif-item').innerHTML = `<div style="color:#2e7d32;font-weight:700;">✅ Solicitud aceptada</div>`;
-        }
-
-        async function rechazarSolicitud(solId, articuloId, btn) {
-            btn.disabled = true;
-            btn.closest('div').querySelectorAll('button').forEach(b => b.disabled = true);
-            const { data: sol } = await _supabase.from('solicitudes_contacto')
-                .update({ estado: 'rechazada' }).eq('id', solId).select().single();
-            const { data: artData } = await _supabase.from('articulos').select('Titulo').eq('id', articuloId).single();
-            await _supabase.from('notificaciones').insert([{
-                usuario_id: sol.comprador_id,
-                mensaje: `❌ Tu solicitud de contacto para "${artData?.Titulo}" no fue aceptada.`,
-                articulo_id: articuloId
-            }]);
-            btn.closest('.notif-item').innerHTML = `<div style="color:#999;">❌ Solicitud rechazada</div>`;
+            btn.innerText = '✅ Solicitud enviada';
         }
 
         async function verTelefonoVendedor(vendedorId) {
