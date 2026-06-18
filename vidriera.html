@@ -42,6 +42,9 @@
         .notif-item:hover { background:#fafafa; }
         .notif-item.nueva { background:#f1f8f1; border-left:3px solid var(--rosa); }
         .notif-item .notif-tiempo { font-size:0.75em; color:#bbb; margin-top:3px; }
+        .btn-aceptar-contacto { margin-top:8px; padding:6px 14px; background:#1565c0; color:#fff; border:none; border-radius:20px; font-size:0.82em; cursor:pointer; font-weight:600; }
+        .btn-aceptar-contacto:hover { background:#0d47a1; }
+        .btn-aceptar-contacto:disabled { background:#aaa; cursor:not-allowed; }
         .notif-vacia { padding:20px; text-align:center; color:#bbb; font-size:0.85em; }
         @media (max-width: 480px) {
             .barra-superior { padding: 10px; }
@@ -982,7 +985,7 @@
                 lista.innerHTML = data.map(n => {
                     const hace = tiempoRelativo(n.created_at);
                     const esPreguntas = n.mensaje.startsWith('❓');
-                    if (n.mensaje.startsWith('📱')) {
+                    if (n.mensaje.startsWith('📞') || n.mensaje.startsWith('📱')) {
                         return `<div class="notif-item${n.leida ? '' : ' nueva'}">
                             ${escapeHtml(n.mensaje)}
                             <div class="notif-tiempo">${hace}</div>
@@ -1042,7 +1045,15 @@
             if (user) {
                 usuarioActualId = user.id;
                 cargarMisSolicitudes();
-                const { data: perfil } = await _supabase.from('perfiles').select('nombre_completo, apodo, mp_access_token').eq('id', user.id).maybeSingle();
+                const [{ data: perfil, error: perfilError }, { data: misCals }] = await Promise.all([
+                    _supabase.from('perfiles').select('nombre_completo, apodo, mp_access_token, telefono, ciudad, verificado').eq('id', user.id).maybeSingle(),
+                    _supabase.from('calificaciones').select('puntaje').eq('vendedor_id', user.id)
+                ]);
+                if (perfilError) console.error('Error cargando perfil:', perfilError.message);
+                const repPromedio = misCals && misCals.length > 0
+                    ? (misCals.reduce((s, c) => s + c.puntaje, 0) / misCals.length).toFixed(1)
+                    : null;
+                _miPerfil = perfil ? { ...perfil, reputacion: repPromedio } : null;
                 display.innerText = "Hola, " + (perfil && (perfil.apodo || perfil.nombre_completo) ? (perfil.apodo || perfil.nombre_completo) : "Usuario");
                 if (perfil && !perfil.mp_access_token) document.getElementById('badge-mp').style.display = 'inline-block';
                 btn.innerText = "🚪 Salir";
@@ -1863,6 +1874,7 @@
         const _descripciones = {};
         // ── SOLICITUDES DE CONTACTO ──────────────────────────────────
         let _misSolicitudes = {};
+        let _miPerfil = null;
         async function cargarMisSolicitudes() {
             if (!usuarioActualId) return;
             const { data } = await _supabase.from('solicitudes_contacto')
@@ -1871,32 +1883,31 @@
         }
 
         async function solicitarContacto(articuloId, vendedorId, btn) {
-            btn.disabled = true;
-            btn.innerText = 'Enviando...';
-            const [{ data: artData }, { data: miPerfil }] = await Promise.all([
-                _supabase.from('articulos').select('Titulo').eq('id', articuloId).single(),
-                _supabase.from('perfiles').select('apodo,nombre_completo,verificado,reputacion_promedio,telefono').eq('id', usuarioActualId).maybeSingle()
-            ]);
-            if (!miPerfil?.telefono) {
-                btn.disabled = false;
-                btn.innerText = '📱 Solicitar contacto';
+            if (!_miPerfil?.telefono) {
                 alert('⚠️ Para solicitar contacto primero cargá tu teléfono en Mi Perfil. El vendedor te va a llamar a ese número.');
                 return;
             }
+            const { data: artData } = await _supabase.from('articulos').select('Titulo').eq('id', articuloId).single();
+            const titulo = artData?.Titulo || 'la publicación';
+            const ok = confirm(`📱 Tu teléfono (${_miPerfil.telefono}) será compartido con el vendedor de "${titulo}". ¿Confirmás?`);
+            if (!ok) return;
+            btn.disabled = true;
+            btn.innerText = 'Enviando...';
             const { data: sol, error } = await _supabase.from('solicitudes_contacto')
                 .insert([{ articulo_id: articuloId, comprador_id: usuarioActualId, vendedor_id: vendedorId, estado: 'enviada' }])
                 .select().single();
             if (error) { btn.disabled = false; btn.innerText = '📱 Solicitar contacto'; alert('Error: ' + error.message); return; }
-            const nombre = miPerfil?.apodo || miPerfil?.nombre_completo || 'Un usuario';
-            const verificado = miPerfil?.verificado ? ' · ✅ Verificado' : ' · ⚠️ No verificado';
-            const rep = miPerfil?.reputacion_promedio ? ` · ⭐ ${Number(miPerfil.reputacion_promedio).toFixed(1)}` : '';
+            const nombre = _miPerfil.apodo || _miPerfil.nombre_completo || 'Un usuario';
+            const verificado = _miPerfil.verificado ? ' · ✅ Verificado' : ' · ⚠️ No verificado';
+            const rep = _miPerfil.reputacion ? ` · ⭐ ${_miPerfil.reputacion}` : '';
+            const ciudad = _miPerfil.ciudad ? ` · 📍 ${_miPerfil.ciudad}` : '';
             await _supabase.from('notificaciones').insert([{
                 usuario_id: vendedorId,
-                mensaje: `📱 ${nombre}${verificado}${rep} quiere que lo contactes para "${artData?.Titulo || 'tu publicación'}". Su teléfono: ${miPerfil.telefono}`,
+                mensaje: `📞 ${nombre}${verificado}${rep}${ciudad} quiere que lo contactes por "${titulo}". Su teléfono: ${_miPerfil.telefono}`,
                 articulo_id: articuloId
             }]);
             _misSolicitudes[articuloId] = sol;
-            btn.innerText = '✅ Solicitud enviada';
+            btn.innerText = '✅ Contacto solicitado';
         }
 
         async function verTelefonoVendedor(vendedorId) {
@@ -2010,7 +2021,7 @@ async function eliminarPublicacion(id) {
             const provincia = document.getElementById('miperfil-provincia').value.trim();
             if (!apodo) { msg.style.color = 'red'; msg.innerText = '⚠️ El apodo no puede estar vacío.'; return; }
             msg.style.color = 'blue'; msg.innerText = '⏳ Guardando...';
-            const { error } = await _supabase.from('perfiles').update({ apodo, telefono, direccion, ciudad, provincia }).eq('id', usuarioActualId);
+            const { error } = await _supabase.from('perfiles').upsert({ id: usuarioActualId, apodo, telefono, direccion, ciudad, provincia });
             if (error) { msg.style.color = 'red'; msg.innerText = '❌ Error: ' + error.message; return; }
             msg.style.color = 'green'; msg.innerText = '✅ ¡Datos actualizados!';
             // actualizar apodo en el header
@@ -2088,8 +2099,10 @@ async function eliminarPublicacion(id) {
         }
         function cerrarModalPerfil() { document.getElementById('modal-perfil').classList.remove('activo'); }
 
-        revisarSesion();
-        cargarArticulos('Todos');
+        (async () => {
+            await revisarSesion();
+            cargarArticulos('Todos');
+        })();
     </script>
     <script>
       // ── PWA: captura el prompt de instalación ──────────────────────
