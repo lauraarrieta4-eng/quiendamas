@@ -587,6 +587,7 @@
         }
 
         let usuarioActualId = null;
+        const ADMIN_ID = '211e28d6-98d1-4778-b97e-d614e02e2395';
         let tipoActual = 'productos';
         let categoriaActual = 'Todos';
         let filtroVenta = null; // null = todos, 'subasta', 'venta'
@@ -676,6 +677,7 @@
                 // valores legacy por si había publicaciones anteriores
                 'Riego-Goteo','Riego-Aspersores','Riego-Mangueras','Riego-Automatizacion','Riego-Bombas',
                 'Decoracion',
+                'Hidroponia',
             ],
 
             // ── MODA ──────────────────────────────────────────────────
@@ -762,6 +764,7 @@
                 { value: 'Macetas',                   label: '🪴 Macetas' },
                 { value: 'Riego',                     label: '💧 Materiales para riego' },
                 { value: 'Decoracion',                label: '✨ Decoración' },
+                { value: 'Hidroponia',                label: '💧🌱 Hidroponía' },
             ],
 
             // ── MODA ──────────────────────────────────────────────────
@@ -838,6 +841,7 @@
             'Fertilizantes-Organicos': 'Fertiliz. Org.', 'Fertilizantes-Inorganicos': 'Fertiliz. Inorg.',
             'Macetas': 'Macetas',
             'Macetas-Barro': 'Macetas', 'Macetas-Plastico': 'Macetas', 'Macetas-Ceramica': 'Macetas', // legacy
+            'Hidroponia': 'Hidroponía',
             'Riego': 'Materiales para riego',
             'Riego-Goteo': 'Riego', 'Riego-Aspersores': 'Riego',
             'Riego-Mangueras': 'Riego', 'Riego-Automatizacion': 'Riego',
@@ -1110,10 +1114,11 @@
             const esVentaDirecta = art.tipo_venta === 'venta';
             const esServicio = CATEGORIAS_SERVICIOS.includes(art.categoria);
             const esAviso = CATEGORIAS_AVISO.includes(art.categoria);
+            const esStock = esVentaDirecta && art.stock !== null && art.stock !== undefined;
             const yaTermino = !esVentaDirecta && art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
             const soyGanador = !esVentaDirecta && yaTermino && !!usuarioActualId && art.ganador_id === usuarioActualId;
-            const soyComprador = esVentaDirecta && !!usuarioActualId && art.comprador_id === usuarioActualId;
-            const articuloVendido = esVentaDirecta && !!art.comprador_id;
+            const soyComprador = esVentaDirecta && !esStock && !!usuarioActualId && art.comprador_id === usuarioActualId;
+            const articuloVendido = esVentaDirecta && !esStock && !!art.comprador_id;
             const soyVendedor = esMia;
             const pagoConfirmado = art.pago_confirmado;
 
@@ -1136,11 +1141,36 @@
                     }
                 }
             } else if (esVentaDirecta) {
-                if (articuloVendido) {
+                if (esStock) {
+                    badgeTipo = art.stock > 0
+                        ? `<span class="tag-tipo venta">📦 Stock: ${art.stock} disponible${art.stock !== 1 ? 's' : ''}</span>`
+                        : `<span class="tag-tipo vendido">📦 Sin stock</span>`;
+                    if (soyVendedor) {
+                        const ventasArt = _ventasStockMap[String(art.id)] || [];
+                        const retenidas = ventasArt.filter(v => v.estado_entrega === 'retenido').length;
+                        const liberadas = ventasArt.filter(v => v.estado_entrega === 'liberado').length;
+                        if (ventasArt.length > 0) {
+                            let textoBtn = `👥 ${ventasArt.length} venta${ventasArt.length !== 1 ? 's' : ''}`;
+                            if (retenidas > 0) textoBtn += ` · 🔒 ${retenidas} sin desbloquear`;
+                            boton = `<button class="btn-oferta" style="background:#1565c0;" onclick="verCompradoresStock('${art.id}', ${art.precio_base || 0})">${textoBtn}</button>`;
+                        } else {
+                            boton = `<button class="btn-oferta" style="background:#666;" disabled>📦 Sin ventas aún</button>`;
+                        }
+                    } else if (art.stock > 0) {
+                        const precio = (art.precio_base || 0).toLocaleString('es-AR');
+                        let botonesCompra = '';
+                        if (art.acepta_online) botonesCompra += `<button class="btn-comprar" style="background:#009ee3;" onclick="pagarOnline('${art.id}', this)">💳 Pagar online — $${precio}</button>`;
+                        if (art.acepta_presencial) botonesCompra += `<button class="btn-comprar" style="${art.acepta_online ? 'margin-top:6px;' : ''}background:#43a047;" onclick="comprarStockAhora('${art.id}')">🤝 Coordinar en persona — $${precio}</button>`;
+                        boton = botonesCompra;
+                    } else {
+                        boton = `<button class="btn-oferta" style="background:#999;" disabled>📦 Sin stock</button>`;
+                    }
+                } else if (articuloVendido) {
                     badgeTipo = `<span class="tag-tipo vendido">✅ Vendido</span>`;
                 } else {
                     badgeTipo = `<span class="tag-tipo venta">💲 Venta directa</span>`;
                 }
+                if (!esStock) {
                 if (soyVendedor) {
                     if (articuloVendido) {
                         if (pagoConfirmado) {
@@ -1169,6 +1199,7 @@
                         botonesCompra += `<button class="btn-comprar" style="${art.acepta_online ? 'margin-top:6px;' : ''}background:#43a047;" onclick="comprarAhora('${art.id}')">🤝 Coordinar en persona — $${precio}</button>`;
                     }
                     boton = botonesCompra;
+                }
                 }
             } else {
                 badgeTipo = `<span class="tag-tipo subasta"><img src="gavel.png" style="width:13px;height:13px;vertical-align:middle;margin-right:3px;">Subasta</span>`;
@@ -1494,6 +1525,47 @@
 
         function cerrarModalCompraOk() { document.getElementById('modal-compra-ok').classList.remove('activo'); }
 
+        async function comprarStockAhora(id) {
+            if (!usuarioActualId) { alert("⚠️ Tenés que ingresar para comprar."); window.location.href = 'login.html'; return; }
+            const { data: art } = await _supabase.from('articulos').select('*').eq('id', id).maybeSingle();
+            if (!art) { alert("No se encontró el artículo."); return; }
+            if (art.perfil_id === usuarioActualId) { alert("⚠️ No podés comprar tu propia publicación."); return; }
+            if (!art.stock || art.stock <= 0) { alert("😕 Ya no hay stock disponible."); cargarArticulos(categoriaActual); return; }
+            const precio = (art.precio_base || 0).toLocaleString('es-AR');
+            const confirmar = confirm(`¿Confirmás la compra de "${art.Titulo}" por $${precio}?\n\nEl vendedor se pondrá en contacto para coordinar la entrega.`);
+            if (!confirmar) return;
+            // Registrar venta
+            const { error: errorVenta } = await _supabase.from('ventas').insert([{
+                articulo_id: String(id),
+                comprador_id: usuarioActualId,
+                vendedor_id: art.perfil_id,
+                titulo: art.Titulo,
+                monto_total: art.precio_base,
+                estado_pago: 'presencial',
+                estado_entrega: 'retenido'
+            }]);
+            if (errorVenta) { alert("Error al procesar la compra: " + errorVenta.message); return; }
+            // Decrementar stock
+            await _supabase.from('articulos').update({ stock: art.stock - 1 }).eq('id', id);
+            // Notificar al vendedor y al admin
+            const nombre = _miPerfil?.apodo || _miPerfil?.nombre_completo || 'Un usuario';
+            const comisionAdmin = Math.round((art.precio_base || 0) * 0.04);
+            await Promise.all([
+                _supabase.from('notificaciones').insert([{
+                    usuario_id: art.perfil_id,
+                    mensaje: `🎉 ¡Vendiste una unidad de "${art.Titulo}"! ${nombre} coordinará la entrega en persona. Quedan ${art.stock - 1} en stock.`,
+                    articulo_id: id
+                }]),
+                ADMIN_ID !== 'REEMPLAZAR_CON_TU_UUID' && _supabase.from('notificaciones').insert([{
+                    usuario_id: ADMIN_ID,
+                    mensaje: `🛍️ Venta de stock presencial: "${art.Titulo}" · Comprador: ${nombre} · Vendedor ID: ${art.perfil_id} · Precio: $${(art.precio_base||0).toLocaleString('es-AR')} · Comisión esperada: $${comisionAdmin.toLocaleString('es-AR')} (4%).`,
+                    articulo_id: id
+                }])
+            ]);
+            document.getElementById('modal-compra-ok').classList.add('activo');
+            cargarArticulos(categoriaActual);
+        }
+
         function abrirModalVentaDirecta(precioFinal) {
             const comision = Math.round(precioFinal * 0.04);
             document.getElementById('modal-monto-venta').innerText = '$' + comision.toLocaleString('es-AR');
@@ -1501,18 +1573,26 @@
         }
         function cerrarModalVentaDirecta() { document.getElementById('modal-vendedor-venta').classList.remove('activo'); }
 
+        let _ventasStockMap = {};
+
         async function filtrarMisPublicaciones() {
             if (!usuarioActualId) return;
             document.getElementById('input-busqueda').value = '';
             try {
-                const { data: articulos, error } = await _supabase.from('articulos').select('*')
-                    .eq('perfil_id', usuarioActualId).order('created_at', { ascending: false });
+                const [{ data: articulos, error }, { data: misVentas }] = await Promise.all([
+                    _supabase.from('articulos').select('*').eq('perfil_id', usuarioActualId).order('created_at', { ascending: false }),
+                    _supabase.from('ventas').select('id, articulo_id, comprador_id, monto_total, created_at, estado_entrega').eq('vendedor_id', usuarioActualId)
+                ]);
                 if (error) throw error;
+                _ventasStockMap = {};
+                (misVentas || []).forEach(v => {
+                    if (!_ventasStockMap[v.articulo_id]) _ventasStockMap[v.articulo_id] = [];
+                    _ventasStockMap[v.articulo_id].push(v);
+                });
                 const lista = document.getElementById('articulos-lista');
                 lista.innerHTML = articulos.length ? "" : "<div class='sin-resultados'>No publicaste nada todavía.</div>";
                 articulos.forEach(art => {
                     if (!art.activo) {
-                        // Tarjeta simplificada para inactivas
                         const div = document.createElement('div');
                         div.className = 'tarjeta';
                         div.id = 'tarjeta-' + art.id;
@@ -1530,6 +1610,35 @@
                     }
                 });
             } catch (e) { console.error(e); }
+        }
+
+        async function verCompradoresStock(articuloId, precioUnitario) {
+            const { data: ventasFrescas } = await _supabase.from('ventas').select('id, comprador_id, monto_total, created_at, estado_entrega').eq('articulo_id', String(articuloId)).eq('vendedor_id', usuarioActualId);
+            const ventas = ventasFrescas || [];
+            if (!ventas.length) { alert('No hay ventas registradas todavía.'); return; }
+            const liberadas = ventas.filter(v => v.estado_entrega === 'liberado');
+            const retenidas = ventas.filter(v => v.estado_entrega !== 'liberado');
+            let texto = '';
+            if (liberadas.length > 0) {
+                const ids = [...new Set(liberadas.map(v => v.comprador_id))];
+                const { data: perfiles } = await _supabase.from('perfiles').select('id, nombre_completo, apodo, telefono').in('id', ids);
+                const pm = Object.fromEntries((perfiles || []).map(p => [p.id, p]));
+                texto += `✅ DESBLOQUEADAS (${liberadas.length}):\n`;
+                texto += liberadas.map((v, i) => {
+                    const p = pm[v.comprador_id];
+                    const nombre = p?.apodo || p?.nombre_completo || 'Usuario';
+                    const tel = p?.telefono || 'Sin teléfono';
+                    const fecha = new Date(v.created_at).toLocaleDateString('es-AR');
+                    return `  ${i + 1}. ${nombre} · Tel: ${tel} · ${fecha}`;
+                }).join('\n');
+            }
+            if (retenidas.length > 0) {
+                const comisionTotal = Math.round(precioUnitario * 0.04 * retenidas.length);
+                texto += `${liberadas.length > 0 ? '\n\n' : ''}🔒 PENDIENTES DE PAGO (${retenidas.length}):\n`;
+                texto += `  Comisión total: $${comisionTotal.toLocaleString('es-AR')} (${retenidas.length} × 4%)\n`;
+                texto += `  Para desbloquearlas, transferí al alias qdm.uala\n  y enviá el comprobante por WhatsApp al 2944800443`;
+            }
+            alert(texto);
         }
 
 
