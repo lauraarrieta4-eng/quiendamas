@@ -96,6 +96,18 @@
     <label id="label-precio">Precio Base ($):</label>
     <input type="number" id="precio_base" placeholder="0.00">
 
+    <div id="bloque-stock" style="display:none;">
+        <label>Cantidad en stock:</label>
+        <input type="number" id="stock" min="1" placeholder="Ej: 10" style="width:120px;">
+        <small style="color:#888;display:block;margin-top:4px;">Si tenés más de una unidad para vender, indicá la cantidad.</small>
+    </div>
+
+    <div id="bloque-link-descarga" style="display:none;">
+        <label>Link de descarga: <span style="color:#e53935;">*</span></label>
+        <input type="url" id="link_descarga" placeholder="https://drive.google.com/..." style="width:100%;">
+        <small style="color:#888;display:block;margin-top:4px;">Pegá el link de tu archivo o carpeta (Google Drive, Dropbox, etc.). Si tenés varios archivos o módulos, creá una carpeta, metelos todos adentro y compartí el link de la carpeta. Solo lo recibe quien compre.</small>
+    </div>
+
     <label>Descripción:</label>
     <textarea id="descripcion" rows="3" placeholder="Detalles, estado, condiciones... ⚠️ No incluyas datos de contacto."></textarea>
 
@@ -117,6 +129,7 @@
             <option value="Hogar">🏠 Hogar y Muebles</option>
             <option value="Electro">🔌 Electrodomésticos</option>
             <option value="Alimentos">🛒 Alimentos y Bebidas</option>
+            <option value="Infoproductos">📚 Infoproductos</option>
             <option value="Otros">📦 Otros</option>
         </select>
 
@@ -223,6 +236,11 @@
         document.getElementById('bloque-fecha').style.display = modo === 'subasta' ? 'block' : 'none';
         document.getElementById('label-precio').innerText = modo === 'subasta' ? 'Precio Base ($):' : 'Precio de venta ($):';
         document.getElementById('btn-publicar').innerText = modo === 'subasta' ? '🚀 ¡Publicar Subasta!' : '💲 ¡Publicar Venta!';
+        const principal = document.getElementById('cat-principal')?.value;
+        const esAviso = CATS_AVISO.includes(principal);
+        const esInfo = principal === 'Infoproductos' || (document.getElementById('cat-sub')?.value || '').startsWith('Info-');
+        document.getElementById('bloque-stock').style.display = (modo === 'venta' && tipoActual !== 'servicio' && !esAviso && !esInfo) ? 'block' : 'none';
+        document.getElementById('bloque-link-descarga').style.display = esInfo ? 'block' : 'none';
     }
 
     // ══════════════════════════════════════════════════════════════════
@@ -303,6 +321,16 @@
             { value: 'Herramientas-Jardin',       label: '🛠️ Herramientas de jardín' },
             { value: 'Indumentaria-Jardin',       label: '👒 Indumentaria para jardineros' },
             { value: 'Decoracion',                label: '✨ Decoración de jardín' },
+            { value: 'Hidroponia',                label: '💧🌱 Hidroponía' },
+        ],
+
+        // ── INFOPRODUCTOS ─────────────────────────────────────────────
+        'Infoproductos': [
+            { value: 'Info-Ebook',       label: '📖 Ebook' },
+            { value: 'Info-Workbook',    label: '📝 Workbook' },
+            { value: 'Info-Videocurso',  label: '🎬 Videocurso' },
+            { value: 'Info-Podcast',     label: '🎙️ Podcast' },
+            { value: 'Info-Masterclass', label: '🎓 Masterclass' },
         ],
     };
 
@@ -339,8 +367,21 @@
     function actualizarSeccionPagos() {
         const principal = document.getElementById('cat-principal').value;
         const esAviso = CATS_AVISO.includes(principal);
+        const esInfo = principal === 'Infoproductos' || (document.getElementById('cat-sub')?.value || '').startsWith('Info-');
         const ocultar = tipoActual === 'servicio' || esAviso;
         document.getElementById('seccion-pagos').style.display = ocultar ? 'none' : 'block';
+        document.getElementById('bloque-stock').style.display = (modoVenta === 'venta' && !ocultar && !esInfo) ? 'block' : 'none';
+        document.getElementById('bloque-link-descarga').style.display = esInfo ? 'block' : 'none';
+
+        // Infoproducto: solo pago online, ocultar opción presencial
+        const labelPresencial = document.getElementById('acepta_presencial').closest('label');
+        if (esInfo) {
+            document.getElementById('acepta_online').checked = true;
+            document.getElementById('acepta_presencial').checked = false;
+            labelPresencial.style.display = 'none';
+        } else {
+            labelPresencial.style.display = '';
+        }
     }
 
     function actualizarSubcat() {
@@ -357,6 +398,16 @@
             actualizarSubcat2();
         } else {
             subcatWrapper.style.display = 'none';
+        }
+
+        // Infoproductos: forzar modo venta y mostrar campo link
+        if (principal === 'Infoproductos') {
+            cambiarModoVenta('venta');
+            document.getElementById('btn-subasta').disabled = true;
+            document.getElementById('btn-subasta').style.opacity = '0.35';
+        } else {
+            document.getElementById('btn-subasta').disabled = false;
+            document.getElementById('btn-subasta').style.opacity = '';
         }
 
         actualizarSeccionPagos();
@@ -555,8 +606,10 @@
                 urlsFotos.push(urlPublica.publicUrl);
             }
 
-            const aceptaOnline = tipoActual === 'servicio' ? false : document.getElementById('acepta_online').checked;
-            const aceptaPresencial = tipoActual === 'servicio' ? false : document.getElementById('acepta_presencial').checked;
+            const linkDesc = document.getElementById('link_descarga').value.trim();
+            const esInfoGuardar = !!linkDesc;
+            const aceptaOnline = tipoActual === 'servicio' ? false : (esInfoGuardar ? true : document.getElementById('acepta_online').checked);
+            const aceptaPresencial = tipoActual === 'servicio' || esInfoGuardar ? false : document.getElementById('acepta_presencial').checked;
             if (!aceptaOnline && !aceptaPresencial && tipoActual !== 'servicio') {
                 msgDiv.style.color = "red";
                 msgDiv.innerText = "⚠️ Tenés que aceptar al menos un método de pago.";
@@ -587,6 +640,11 @@
 
             if (modoVenta === 'subasta') {
                 registro["finaliza_en"] = new Date(fecha).toISOString();
+            }
+            if (modoVenta === 'venta') {
+                const stockVal = parseInt(document.getElementById('stock').value);
+                if (!isNaN(stockVal) && stockVal >= 1) registro["stock"] = stockVal;
+                if (linkDesc) registro["link_descarga"] = linkDesc;
             }
 
             const { error: errorTabla } = await _supabase.from('articulos').insert([registro]);
