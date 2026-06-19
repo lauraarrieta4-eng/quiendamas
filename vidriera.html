@@ -551,6 +551,7 @@
             <button class="btn-filtro cat"        id="cat-btn-Hogar"          onclick="filtrarCategoria('Hogar')">🏠 Hogar</button>
             <button class="btn-filtro cat"        id="cat-btn-Electro"        onclick="filtrarCategoria('Electro')">🔌 Electrodomésticos</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Alimentos"    onclick="filtrarCategoria('Alimentos')">🛒 Alimentos y Bebidas</button>
+            <button class="btn-filtro cat" data-sub id="cat-btn-Infoproductos" onclick="filtrarCategoria('Infoproductos')">📚 Infoproductos</button>
             <button class="btn-filtro cat"        id="cat-btn-Otros"          onclick="filtrarCategoria('Otros')">📦 Otros</button>
         </div>
         <button class="filtros-arrow der" onclick="scrollFiltros('filtros-productos', 200)">›</button>
@@ -661,6 +662,12 @@
                 'AudioVideo',
             ],
 
+            // ── INFOPRODUCTOS ─────────────────────────────────────────
+            'Infoproductos': [
+                'Infoproductos',
+                'Info-Ebook','Info-Workbook','Info-Videocurso','Info-Podcast','Info-Masterclass',
+            ],
+
             // ── VIVERO ────────────────────────────────────────────────
             'Vivero': [
                 'Vivero',
@@ -742,6 +749,15 @@
                 { value: 'AudioVideo',             label: '📺 Audio y Video' },
             ],
 
+            // ── INFOPRODUCTOS ─────────────────────────────────────────
+            'Infoproductos': [
+                { value: 'Info-Ebook',       label: '📖 Ebook' },
+                { value: 'Info-Workbook',    label: '📝 Workbook' },
+                { value: 'Info-Videocurso',  label: '🎬 Videocurso' },
+                { value: 'Info-Podcast',     label: '🎙️ Podcast' },
+                { value: 'Info-Masterclass', label: '🎓 Masterclass' },
+            ],
+
             // ── VIVERO ────────────────────────────────────────────────
             'Vivero': [
                 { value: 'Plantas-Aromaticas',        label: '🌸 Aromáticas' },
@@ -819,6 +835,9 @@
             'Hogar': 'Hogar',
             'Herramientas': 'Herramientas',
             'Otros': 'Otros',
+            'Infoproductos': 'Infoproductos',
+            'Info-Ebook': 'Ebook', 'Info-Workbook': 'Workbook',
+            'Info-Videocurso': 'Videocurso', 'Info-Podcast': 'Podcast', 'Info-Masterclass': 'Masterclass',
             'Tecnologia': 'Tecnología',
             // Tecnología subcats
             'Tech-ComponentesPC':  'Componentes PC',
@@ -1115,10 +1134,11 @@
             const esServicio = CATEGORIAS_SERVICIOS.includes(art.categoria);
             const esAviso = CATEGORIAS_AVISO.includes(art.categoria);
             const esStock = esVentaDirecta && art.stock !== null && art.stock !== undefined;
+            const esInfoproducto = esVentaDirecta && !!art.link_descarga;
             const yaTermino = !esVentaDirecta && art.finaliza_en && new Date(art.finaliza_en).getTime() < Date.now();
             const soyGanador = !esVentaDirecta && yaTermino && !!usuarioActualId && art.ganador_id === usuarioActualId;
-            const soyComprador = esVentaDirecta && !esStock && !!usuarioActualId && art.comprador_id === usuarioActualId;
-            const articuloVendido = esVentaDirecta && !esStock && !!art.comprador_id;
+            const soyComprador = esVentaDirecta && !esStock && !esInfoproducto && !!usuarioActualId && art.comprador_id === usuarioActualId;
+            const articuloVendido = esVentaDirecta && !esStock && !esInfoproducto && !!art.comprador_id;
             const soyVendedor = esMia;
             const pagoConfirmado = art.pago_confirmado;
 
@@ -1141,7 +1161,18 @@
                     }
                 }
             } else if (esVentaDirecta) {
-                if (esStock) {
+                if (esInfoproducto) {
+                    badgeTipo = `<span class="tag-tipo venta">📥 Infoproducto digital</span>`;
+                    if (soyVendedor) {
+                        const ventasArt = _ventasStockMap[String(art.id)] || [];
+                        boton = ventasArt.length > 0
+                            ? `<button class="btn-oferta" style="background:#1565c0;" onclick="verCompradoresInfoproducto('${art.id}')">👥 ${ventasArt.length} venta${ventasArt.length !== 1 ? 's' : ''}</button>`
+                            : `<button class="btn-oferta" style="background:#666;" disabled>📥 Sin ventas aún</button>`;
+                    } else {
+                        const precio = (art.precio_base || 0).toLocaleString('es-AR');
+                        boton = `<button class="btn-comprar" style="background:#009ee3;" onclick="pagarOnline('${art.id}', this)">💳 Comprar online — $${precio}</button>`;
+                    }
+                } else if (esStock) {
                     badgeTipo = art.stock > 0
                         ? `<span class="tag-tipo venta">📦 Stock: ${art.stock} disponible${art.stock !== 1 ? 's' : ''}</span>`
                         : `<span class="tag-tipo vendido">📦 Sin stock</span>`;
@@ -1564,6 +1595,22 @@
             ]);
             document.getElementById('modal-compra-ok').classList.add('activo');
             cargarArticulos(categoriaActual);
+        }
+
+        async function verCompradoresInfoproducto(articuloId) {
+            const { data: ventas } = await _supabase.from('ventas').select('id, comprador_id, created_at').eq('articulo_id', String(articuloId)).eq('vendedor_id', usuarioActualId);
+            if (!ventas?.length) { alert('No hay ventas registradas todavía.'); return; }
+            const ids = [...new Set(ventas.map(v => v.comprador_id))];
+            const { data: perfiles } = await _supabase.from('perfiles').select('id, nombre_completo, apodo, telefono').in('id', ids);
+            const pm = Object.fromEntries((perfiles || []).map(p => [p.id, p]));
+            const texto = `📥 COMPRADORES (${ventas.length}):\n` + ventas.map((v, i) => {
+                const p = pm[v.comprador_id];
+                const nombre = p?.apodo || p?.nombre_completo || 'Usuario';
+                const tel = p?.telefono || 'Sin teléfono';
+                const fecha = new Date(v.created_at).toLocaleDateString('es-AR');
+                return `  ${i + 1}. ${nombre} · Tel: ${tel} · ${fecha}`;
+            }).join('\n');
+            alert(texto);
         }
 
         function abrirModalVentaDirecta(precioFinal) {
