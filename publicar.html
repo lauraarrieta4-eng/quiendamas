@@ -102,12 +102,6 @@
         <small style="color:#888;display:block;margin-top:4px;">Si tenés más de una unidad para vender, indicá la cantidad.</small>
     </div>
 
-    <div id="bloque-link-descarga" style="display:none;">
-        <label>Link de descarga: <span style="color:#e53935;">*</span></label>
-        <input type="url" id="link_descarga" placeholder="https://drive.google.com/..." style="width:100%;">
-        <small style="color:#888;display:block;margin-top:4px;">Pegá el link de tu archivo o carpeta (Google Drive, Dropbox, etc.). Si tenés varios archivos o módulos, creá una carpeta, metelos todos adentro y compartí el link de la carpeta. Solo lo recibe quien compre.</small>
-    </div>
-
     <label>Descripción:</label>
     <textarea id="descripcion" rows="3" placeholder="Detalles, estado, condiciones... ⚠️ No incluyas datos de contacto."></textarea>
 
@@ -144,6 +138,12 @@
             <label>Detalle:</label>
             <select id="cat-sub2"></select>
         </div>
+
+        <div id="bloque-link-descarga" style="display:none; margin-top:8px;">
+            <label>Link de descarga: <span style="color:#e53935;">*</span></label>
+            <input type="url" id="link_descarga" placeholder="https://drive.google.com/..." style="width:100%;">
+            <small style="color:#888;display:block;margin-top:4px;">Pegá el link de tu archivo o carpeta (Google Drive, Dropbox, etc.). Si tenés varios archivos o módulos, creá una carpeta, metelos todos adentro y compartí el link de la carpeta. Solo lo recibe quien compre.</small>
+        </div>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════
@@ -166,8 +166,8 @@
     <!-- Fotos -->
     <label>Fotos (hasta 5):</label>
     <div class="fotos-grid" id="fotos-grid"></div>
-    <p class="foto-hint">La primera foto es la principal. Tocá cada cuadro para agregar una imagen.</p>
-    <input type="file" id="input-foto-hidden" accept="image/*" style="display:none;" onchange="agregarFoto(this)">
+    <p class="foto-hint">La primera foto es la principal. Podés subir fotos o un video corto (máx. 50MB).</p>
+    <input type="file" id="input-foto-hidden" accept="image/*,video/*" style="display:none;" onchange="agregarFoto(this)">
 
     <!-- Fecha cierre (solo subasta) -->
     <div id="bloque-fecha">
@@ -322,6 +322,7 @@
             { value: 'Indumentaria-Jardin',       label: '👒 Indumentaria para jardineros' },
             { value: 'Decoracion',                label: '✨ Decoración de jardín' },
             { value: 'Hidroponia',                label: '💧🌱 Hidroponía' },
+            { value: 'Fitosanitarios',            label: '🧴 Fitosanitarios' },
         ],
 
         // ── INFOPRODUCTOS ─────────────────────────────────────────────
@@ -534,7 +535,10 @@
             slot.className = 'foto-slot';
             if (fotosArchivos[i]) {
                 const url = URL.createObjectURL(fotosArchivos[i]);
-                slot.innerHTML = `<img src="${url}" alt="foto ${i+1}"><button class="btn-borrar" onclick="borrarFoto(${i})">✕</button>`;
+                const esVideo = fotosArchivos[i].type.startsWith('video/');
+                slot.innerHTML = esVideo
+                    ? `<video src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" muted playsinline></video><button class="btn-borrar" onclick="borrarFoto(${i})">✕</button>`
+                    : `<img src="${url}" alt="foto ${i+1}"><button class="btn-borrar" onclick="borrarFoto(${i})">✕</button>`;
             } else {
                 slot.innerHTML = `<span class="icono-agregar">📷</span>`;
                 slot.onclick = () => { slotActual = i; document.getElementById('input-foto-hidden').click(); };
@@ -590,10 +594,19 @@
                 msgDiv.innerText = "⏳ Optimizando y subiendo foto " + (i + 1) + " de " + fotosValidas.length + "...";
 
                 const archivoOriginal = fotosValidas[i];
-                const archivo = await comprimirImagen(archivoOriginal);
+                const esVideo = archivoOriginal.type.startsWith('video/');
+
+                if (esVideo && archivoOriginal.size > 50 * 1024 * 1024) {
+                    throw new Error(`El video "${archivoOriginal.name}" supera los 50MB. Usá un clip más corto o comprimilo antes de subir.`);
+                }
+
+                const archivo = esVideo ? archivoOriginal : await comprimirImagen(archivoOriginal);
 
                 let nombreFoto;
-                if (archivo !== archivoOriginal) {
+                if (esVideo) {
+                    const ext = archivoOriginal.name.split('.').pop() || 'mp4';
+                    nombreFoto = Date.now() + "_" + i + "." + ext;
+                } else if (archivo !== archivoOriginal) {
                     const extension = archivo.type === 'image/webp' ? 'webp' : 'jpg';
                     nombreFoto = Date.now() + "_" + i + "." + extension;
                 } else {
