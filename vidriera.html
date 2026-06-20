@@ -189,6 +189,8 @@
         }
         .btn-compartir { border-color: var(--lila);  color: #1b5e20; }
         .btn-compartir:hover { background: var(--lila); }
+        .btn-compartir-icono { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 50%; display:flex; align-items:center; justify-content:center; transition: opacity 0.2s; }
+        .btn-compartir-icono:hover img { opacity: 1 !important; }
         .btn-preguntar { border-color: var(--rosa);  color: var(--rosa); }
         .btn-preguntar:hover { background: var(--rosa); color: white; }
         .btn-eliminar  { border-color: #e53935; color: #e53935; }
@@ -587,6 +589,13 @@
             return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
         }
 
+        function mediaTag(url, extraAttrs = '') {
+            if (!url) return `<img src="" class="foto-art" ${extraAttrs}>`;
+            const esVideo = /\.(mp4|mov|webm|avi|mkv)(\?|$)/i.test(url);
+            if (esVideo) return `<video src="${escapeHtml(url)}" class="foto-art" muted autoplay loop playsinline ${extraAttrs} style="object-fit:cover;"></video>`;
+            return `<img src="${escapeHtml(url)}" class="foto-art" ${extraAttrs}>`;
+        }
+
         let usuarioActualId = null;
         const ADMIN_ID = '211e28d6-98d1-4778-b97e-d614e02e2395';
         let tipoActual = 'productos';
@@ -685,6 +694,7 @@
                 'Riego-Goteo','Riego-Aspersores','Riego-Mangueras','Riego-Automatizacion','Riego-Bombas',
                 'Decoracion',
                 'Hidroponia',
+                'Fitosanitarios',
             ],
 
             // ── MODA ──────────────────────────────────────────────────
@@ -781,6 +791,7 @@
                 { value: 'Riego',                     label: '💧 Materiales para riego' },
                 { value: 'Decoracion',                label: '✨ Decoración' },
                 { value: 'Hidroponia',                label: '💧🌱 Hidroponía' },
+                { value: 'Fitosanitarios',            label: '🧴 Fitosanitarios' },
             ],
 
             // ── MODA ──────────────────────────────────────────────────
@@ -861,6 +872,7 @@
             'Macetas': 'Macetas',
             'Macetas-Barro': 'Macetas', 'Macetas-Plastico': 'Macetas', 'Macetas-Ceramica': 'Macetas', // legacy
             'Hidroponia': 'Hidroponía',
+            'Fitosanitarios': 'Fitosanitarios',
             'Riego': 'Materiales para riego',
             'Riego-Goteo': 'Riego', 'Riego-Aspersores': 'Riego',
             'Riego-Mangueras': 'Riego', 'Riego-Automatizacion': 'Riego',
@@ -1274,7 +1286,7 @@
             div.innerHTML = `
                 <span class="tag-cat">${escapeHtml(labelCat(art.categoria))}</span>
                 ${badgeTipo}
-                <img src="${escapeHtml(art.foto_url || '')}" class="foto-art" data-fotos-id="${art.id}" style="cursor:pointer;">
+                ${mediaTag(art.foto_url, `data-fotos-id="${art.id}" style="cursor:pointer;"`)}
                 ${badgeFotos}
                 <div class="titulo">${escapeHtml(art.Titulo)}</div>
                 <div class="apodo-art" id="apodo-${art.id}" onclick="abrirModalPerfil('${art.perfil_id}')">👤 Cargando...</div>
@@ -1285,7 +1297,7 @@
                 <div class="acciones-sec">
                     <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">${(esServicio || esAviso) ? '💬' : '❓'} <span class="btn-txt">${(esServicio || esAviso) ? 'Consultar' : 'Preguntas'}</span></button>
                     <button class="btn-compartir" onclick="abrirDescripcion('${art.id}')">📄 <span class="btn-txt">Descripción</span></button>
-                    <button class="btn-compartir" onclick="compartir('${art.Titulo}', '${art.id}')">📤 <span class="btn-txt">Compartir</span></button>
+                    <button class="btn-compartir-icono" onclick="compartir('${art.Titulo}', '${art.id}')" title="Compartir"><img src="share_8539544.png" style="width:18px;height:18px;object-fit:contain;opacity:0.6;"></button>
                     ${esMia ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ <span class="btn-txt">Eliminar</span></button>` : ''}
                 </div>
             `;
@@ -1789,7 +1801,7 @@
                     div.style.border = "2px solid var(--lila)";
                     div.innerHTML = `
                         <span class="tag-cat">${labelCat(art.categoria)}</span>
-                        <img src="${art.foto_url || ''}" class="foto-art">
+                        ${mediaTag(art.foto_url)}
                         <div class="titulo">${art.Titulo}</div>
                         <div class="descripcion">${art.descripcion || 'Sin detalles adicionales'}</div>
                         <div class="precio">$<span id="precio-${art.id}">${art.precio_actual || art.precio_base}</span></div>
@@ -1846,7 +1858,7 @@
                     div.style.border = '2px solid #43a047';
                     div.innerHTML = `
                         <span class="tag-tipo ${esVentaDirecta ? 'venta' : 'subasta'}">${esVentaDirecta ? '💲 Venta directa' : '<img src="gavel.png" style="width:13px;height:13px;vertical-align:middle;margin-right:3px;">Subasta'}</span>
-                        <img src="${art.foto_url || ''}" class="foto-art">
+                        ${mediaTag(art.foto_url)}
                         <div class="titulo">${escapeHtml(art.Titulo || '')}</div>
                         <div class="precio">$${(art.precio_base || 0).toLocaleString('es-AR')}</div>
                         ${estadoHtml}
