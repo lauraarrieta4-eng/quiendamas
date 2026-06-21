@@ -554,6 +554,7 @@
             <button class="btn-filtro cat"        id="cat-btn-Electro"        onclick="filtrarCategoria('Electro')">🔌 Electrodomésticos</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Alimentos"    onclick="filtrarCategoria('Alimentos')">🛒 Alimentos y Bebidas</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Infoproductos" onclick="filtrarCategoria('Infoproductos')">📚 Infoproductos</button>
+            <button class="btn-filtro cat" data-sub id="cat-btn-Deporte"       onclick="filtrarCategoria('Deporte')">🏅 Deporte</button>
             <button class="btn-filtro cat"        id="cat-btn-Otros"          onclick="filtrarCategoria('Otros')">📦 Otros</button>
         </div>
         <button class="filtros-arrow der" onclick="scrollFiltros('filtros-productos', 200)">›</button>
@@ -677,6 +678,12 @@
                 'Info-Ebook','Info-Workbook','Info-Videocurso','Info-Podcast','Info-Masterclass',
             ],
 
+            // ── DEPORTE ───────────────────────────────────────────────
+            'Deporte': [
+                'Deporte',
+                'Deporte-Bicicletas','Deporte-Camping','Deporte-Gimnasia','Deporte-Deportes',
+            ],
+
             // ── VIVERO ────────────────────────────────────────────────
             'Vivero': [
                 'Vivero',
@@ -757,6 +764,14 @@
                 { value: 'Tech-Accesorios',        label: '🎧 Accesorios' },
                 { value: 'Tech-Consolas',          label: '🎮 Consolas' },
                 { value: 'AudioVideo',             label: '📺 Audio y Video' },
+            ],
+
+            // ── DEPORTE ───────────────────────────────────────────────
+            'Deporte': [
+                { value: 'Deporte-Bicicletas', label: '🚲 Bicicletas' },
+                { value: 'Deporte-Camping',    label: '🏕️ Camping y senderismo' },
+                { value: 'Deporte-Gimnasia',   label: '🏋️ Equipos de gimnasia' },
+                { value: 'Deporte-Deportes',   label: '⚽ Deportes' },
             ],
 
             // ── INFOPRODUCTOS ─────────────────────────────────────────
@@ -846,6 +861,9 @@
             'Hogar': 'Hogar',
             'Herramientas': 'Herramientas',
             'Otros': 'Otros',
+            'Deporte': 'Deporte',
+            'Deporte-Bicicletas': 'Bicicletas', 'Deporte-Camping': 'Camping y senderismo',
+            'Deporte-Gimnasia': 'Equipos de gimnasia', 'Deporte-Deportes': 'Deportes',
             'Infoproductos': 'Infoproductos',
             'Info-Ebook': 'Ebook', 'Info-Workbook': 'Workbook',
             'Info-Videocurso': 'Videocurso', 'Info-Podcast': 'Podcast', 'Info-Masterclass': 'Masterclass',
