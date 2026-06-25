@@ -612,6 +612,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             msgDiv.innerText = "⚠️ Indicá la fecha y hora de cierre de la subasta.";
             return;
         }
+        const esInfo = !!document.getElementById('link-descarga')?.value.trim();
+        if (modoVenta === 'venta' && !esInfo) {
+            const stockVal = parseInt(document.getElementById('stock').value);
+            if (!stockVal || stockVal < 1) {
+                msgDiv.style.color = "red";
+                msgDiv.innerText = "⚠️ Indicá la cantidad en stock (mínimo 1). Si tenés una sola unidad, poné 1.";
+                document.getElementById('stock').focus();
+                return;
+            }
+        }
 
         msgDiv.style.color = "blue";
         msgDiv.innerText = "⏳ Subiendo fotos y publicando...";

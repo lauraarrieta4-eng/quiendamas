@@ -2267,6 +2267,7 @@ async function eliminarPublicacion(id) {
             const ciudad   = document.getElementById('miperfil-ciudad').value.trim();
             const provincia = document.getElementById('miperfil-provincia').value.trim();
             if (!apodo) { msg.style.color = 'red'; msg.innerText = '⚠️ El apodo no puede estar vacío.'; return; }
+            if (!direccion) { msg.style.color = 'red'; msg.innerText = '⚠️ La dirección es obligatoria para poder coordinar entregas.'; document.getElementById('miperfil-direccion').focus(); return; }
             const esNegocio = document.getElementById('miperfil-es-negocio').checked;
             const datosNegocio = esNegocio ? {
                 tipo_cuenta: 'negocio',

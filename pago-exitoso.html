@@ -38,8 +38,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="card">
     <div class="icono">✅</div>
     <h1>¡Pago realizado!</h1>
-    <p>Tu pago fue procesado correctamente. El vendedor recibirá una notificación y se pondrá en contacto con vos para coordinar la entrega.</p>
+    <p id="mensaje-exito">Tu pago fue procesado correctamente. El vendedor recibirá una notificación y se pondrá en contacto con vos para coordinar la entrega.</p>
     <a href="vidriera.html">Volver a la vidriera</a>
 </div>
+<script>
+    const params = new URLSearchParams(location.search);
+    const ref = params.get('external_reference') || '';
+    if (ref.startsWith('CART__')) {
+        document.getElementById('mensaje-exito').innerHTML =
+            '¡Tu pago fue confirmado! Vas a recibir una notificación con los datos para retirar tu pedido o coordinar el delivery. También podés revisar tu campanita 🔔.';
+    }
+</script>
 </body>
 </html>
