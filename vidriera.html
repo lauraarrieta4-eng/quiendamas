@@ -253,14 +253,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         .input-respuesta { width: 100%; padding: 7px 10px; border: 1px solid #c8e6c9; border-radius: 8px; font-size: 0.82em; outline: none; margin-top: 5px; }
 
         /* ── MODAL MI PERFIL ── */
-        .modal-miperfil-box { background: white; border-radius: 20px; overflow: hidden; max-width: 360px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.18); }
-        .miperfil-header { background: linear-gradient(135deg, #2E7D32, #1b5e20); padding: 28px 20px; text-align: center; }
+        .modal-miperfil-box { background: white; border-radius: 20px; overflow: hidden; max-width: 360px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.18); display: flex; flex-direction: column; max-height: 90vh; }
+        .miperfil-header { background: linear-gradient(135deg, #2E7D32, #1b5e20); padding: 28px 20px; text-align: center; flex-shrink: 0; }
         .miperfil-avatar-wrap { position: relative; display: inline-block; cursor: pointer; }
         .miperfil-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 3px 10px rgba(0,0,0,0.2); }
         .miperfil-avatar-edit { position: absolute; bottom: 0; right: 0; background: white; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.85em; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
         .miperfil-nombre { margin: 10px 0 2px; font-weight: 800; font-size: 1.1em; color: white; }
         .miperfil-email { margin: 0; font-size: 0.78em; color: rgba(255,255,255,0.8); }
-        .miperfil-body { padding: 18px; }
+        .miperfil-body { padding: 18px; overflow-y: auto; flex: 1; }
         .miperfil-dato { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.88em; gap: 10px; }
         .miperfil-dato:last-of-type { border-bottom: none; }
         .miperfil-dato .etiqueta { color: #999; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
@@ -408,6 +408,30 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <div class="miperfil-dato"><span class="etiqueta">Dirección</span><input class="miperfil-input" id="miperfil-direccion" placeholder="Tu dirección"></div>
                 <div class="miperfil-dato"><span class="etiqueta">Ciudad</span><input class="miperfil-input" id="miperfil-ciudad" placeholder="Tu ciudad"></div>
                 <div class="miperfil-dato"><span class="etiqueta">Provincia</span><input class="miperfil-input" id="miperfil-provincia" placeholder="Tu provincia"></div>
+
+                <!-- Sección cuenta negocio -->
+                <div style="margin:14px 0 6px; border-top:1px solid #eee; padding-top:14px;">
+                    <label style="display:flex; align-items:center; gap:10px; font-size:0.88em; font-weight:600; color:#555; cursor:pointer;">
+                        <input type="checkbox" id="miperfil-es-negocio" style="width:18px;height:18px;accent-color:var(--rosa);" onchange="toggleSeccionNegocio(this.checked)">
+                        🏪 Cuenta negocio / comercio
+                    </label>
+                </div>
+                <div id="bloque-negocio" style="display:none;">
+                    <div class="miperfil-dato"><span class="etiqueta">Nombre del comercio</span><input class="miperfil-input" id="miperfil-nombre-comercio" placeholder="Ej: Vivero El Verde"></div>
+                    <div class="miperfil-dato"><span class="etiqueta">Descripción</span><textarea class="miperfil-input" id="miperfil-desc-comercio" rows="2" placeholder="Qué vendés, tu especialidad..." style="resize:vertical;font-size:1em;font-family:inherit;"></textarea></div>
+                    <div class="miperfil-dato"><span class="etiqueta">Horario de atención</span><input class="miperfil-input" id="miperfil-horario" placeholder="Ej: Lun-Vie 9 a 18hs"></div>
+                    <div class="miperfil-dato"><span class="etiqueta">Tiempo de retiro</span><input class="miperfil-input" id="miperfil-tiempo-retiro" placeholder="Ej: 24 a 48 horas"></div>
+                    <div style="margin:8px 0 4px;">
+                        <label style="display:flex; align-items:center; gap:8px; font-size:0.85em; font-weight:600; color:#555; cursor:pointer;">
+                            <input type="checkbox" id="miperfil-tiene-delivery" style="width:16px;height:16px;accent-color:var(--rosa);" onchange="toggleDelivery(this.checked)">
+                            🚚 Ofrezco delivery
+                        </label>
+                    </div>
+                    <div id="bloque-costo-delivery" style="display:none;">
+                        <div class="miperfil-dato"><span class="etiqueta">Costo delivery ($)</span><input class="miperfil-input" id="miperfil-costo-delivery" type="number" min="0" placeholder="0 = gratis"></div>
+                    </div>
+                </div>
+
                 <div id="miperfil-msg" style="text-align:center;font-size:0.82em;margin:8px 0;min-height:20px;"></div>
                 <div id="miperfil-mp-status" style="margin:10px 0 6px;"></div>
                 <div style="display:flex;gap:8px;margin-top:4px;">
@@ -1118,7 +1142,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 usuarioActualId = user.id;
                 cargarMisSolicitudes();
                 const [{ data: perfil, error: perfilError }, { data: misCals }] = await Promise.all([
-                    _supabase.from('perfiles').select('nombre_completo, apodo, mp_access_token, telefono, ciudad, verificado').eq('id', user.id).maybeSingle(),
+                    _supabase.from('perfiles').select('nombre_completo, apodo, mp_access_token, telefono, ciudad, verificado, tipo_cuenta, nombre_comercio').eq('id', user.id).maybeSingle(),
                     _supabase.from('calificaciones').select('puntaje').eq('vendedor_id', user.id)
                 ]);
                 if (perfilError) console.error('Error cargando perfil:', perfilError.message);
@@ -1340,13 +1364,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             `;
             lista.appendChild(div);
 
-            _supabase.from('perfiles').select('apodo, nombre_completo, ciudad, verificado').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
+            _supabase.from('perfiles').select('apodo, nombre_completo, ciudad, verificado, tipo_cuenta, nombre_comercio').eq('id', art.perfil_id).maybeSingle().then(({ data: perfil }) => {
                 const apodoEl = document.getElementById('apodo-' + art.id);
                 if (apodoEl && perfil) {
-                    const nombre = perfil.apodo || perfil.nombre_completo || 'Usuario';
-                    const ciudad = perfil.ciudad ? ' · 📍 ' + perfil.ciudad : '';
-                    const badgeVerif = perfil.verificado ? ' <span class="badge-verificado">✅ Verificado</span>' : '';
-                    apodoEl.innerHTML = '👤 ' + nombre + ciudad + badgeVerif;
+                    if (perfil.tipo_cuenta === 'negocio' && perfil.nombre_comercio) {
+                        apodoEl.innerHTML = `🏪 <a href="tienda.html?id=${art.perfil_id}" style="color:var(--rosa);text-decoration:none;font-weight:700;">${escapeHtml(perfil.nombre_comercio)}</a> <a href="tienda.html?id=${art.perfil_id}" style="display:inline-block;margin-left:6px;background:var(--rosa);color:white;font-size:0.72em;font-weight:700;padding:2px 8px;border-radius:10px;text-decoration:none;">Ver tienda →</a>`;
+                        apodoEl.onclick = null;
+                    } else {
+                        const nombre = perfil.apodo || perfil.nombre_completo || 'Usuario';
+                        const ciudad = perfil.ciudad ? ' · 📍 ' + perfil.ciudad : '';
+                        const badgeVerif = perfil.verificado ? ' <span class="badge-verificado">✅ Verificado</span>' : '';
+                        apodoEl.innerHTML = '👤 ' + nombre + ciudad + badgeVerif;
+                    }
                 }
             });
 
@@ -2206,6 +2235,19 @@ async function eliminarPublicacion(id) {
                 document.getElementById('miperfil-provincia').value = perfil.provincia || '';
                 if (perfil.avatar_url) document.getElementById('miperfil-avatar-img').src = perfil.avatar_url;
 
+                const esNegocio = perfil.tipo_cuenta === 'negocio';
+                document.getElementById('miperfil-es-negocio').checked = esNegocio;
+                toggleSeccionNegocio(esNegocio);
+                if (esNegocio) {
+                    document.getElementById('miperfil-nombre-comercio').value = perfil.nombre_comercio || '';
+                    document.getElementById('miperfil-desc-comercio').value = perfil.descripcion_comercio || '';
+                    document.getElementById('miperfil-horario').value = perfil.horario_atencion || '';
+                    document.getElementById('miperfil-tiempo-retiro').value = perfil.tiempo_retiro || '';
+                    document.getElementById('miperfil-tiene-delivery').checked = !!perfil.tiene_delivery;
+                    toggleDelivery(!!perfil.tiene_delivery);
+                    document.getElementById('miperfil-costo-delivery').value = perfil.costo_delivery || 0;
+                }
+
                 const mpStatus = document.getElementById('miperfil-mp-status');
                 if (perfil.mp_access_token) {
                     mpStatus.innerHTML = `<div style="background:#e8f5e9;border-radius:10px;padding:10px 14px;font-size:0.85em;color:#2e7d32;text-align:center;">✅ <b>Mercado Pago conectado</b><br><span style="font-size:0.9em;color:#555;">Podés cobrar pagos online.</span></div>`;
@@ -2225,13 +2267,30 @@ async function eliminarPublicacion(id) {
             const ciudad   = document.getElementById('miperfil-ciudad').value.trim();
             const provincia = document.getElementById('miperfil-provincia').value.trim();
             if (!apodo) { msg.style.color = 'red'; msg.innerText = '⚠️ El apodo no puede estar vacío.'; return; }
+            const esNegocio = document.getElementById('miperfil-es-negocio').checked;
+            const datosNegocio = esNegocio ? {
+                tipo_cuenta: 'negocio',
+                nombre_comercio: document.getElementById('miperfil-nombre-comercio').value.trim(),
+                descripcion_comercio: document.getElementById('miperfil-desc-comercio').value.trim(),
+                horario_atencion: document.getElementById('miperfil-horario').value.trim(),
+                tiempo_retiro: document.getElementById('miperfil-tiempo-retiro').value.trim(),
+                tiene_delivery: document.getElementById('miperfil-tiene-delivery').checked,
+                costo_delivery: parseInt(document.getElementById('miperfil-costo-delivery').value || '0'),
+            } : { tipo_cuenta: 'personal' };
             msg.style.color = 'blue'; msg.innerText = '⏳ Guardando...';
-            const { error } = await _supabase.from('perfiles').upsert({ id: usuarioActualId, apodo, telefono, direccion, ciudad, provincia });
+            const { error } = await _supabase.from('perfiles').upsert({ id: usuarioActualId, apodo, telefono, direccion, ciudad, provincia, ...datosNegocio });
             if (error) { msg.style.color = 'red'; msg.innerText = '❌ Error: ' + error.message; return; }
             msg.style.color = 'green'; msg.innerText = '✅ ¡Datos actualizados!';
             // actualizar apodo en el header
             document.getElementById('usuario-nombre').innerText = apodo;
         }
+        function toggleSeccionNegocio(activo) {
+            document.getElementById('bloque-negocio').style.display = activo ? 'block' : 'none';
+        }
+        function toggleDelivery(activo) {
+            document.getElementById('bloque-costo-delivery').style.display = activo ? 'block' : 'none';
+        }
+
         async function subirAvatar(input) {
             if (!input.files[0]) return;
             const msg = document.getElementById('miperfil-msg');
