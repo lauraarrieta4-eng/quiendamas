@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WHNJDJTG');</script>
+  <!-- End Google Tag Manager -->
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CZM8RP5VTP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-CZM8RP5VTP');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel Admin - Quiéndamas</title>
@@ -51,10 +66,60 @@
   </style>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WHNJDJTG"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <div id="contenido" style="display:none;">
   <h1>🛠️ Panel Admin</h1>
   <div class="subtitulo">Quiéndamas — gestión de ventas y fondos</div>
+
+  <!-- TAREAS DIARIAS -->
+  <div style="background:white;border-radius:14px;padding:20px 24px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,0.07);border-left:5px solid #E04891;">
+    <div style="font-weight:700;color:#E04891;font-size:1em;margin-bottom:14px;">📋 Tareas diarias</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;">
+
+      <div style="background:#fff8fb;border-radius:10px;padding:12px 14px;border:1px solid #f5c6e0;">
+        <div style="font-weight:700;font-size:0.85em;color:#c2185b;margin-bottom:6px;">👤 Usuarios nuevos</div>
+        <div style="font-size:0.78em;color:#666;line-height:1.5;">Verificar registros nuevos en Supabase → <b>perfiles</b>.<br>Controlar que el CUIL y datos sean reales.<br>Si son legítimos: activar <b>verificado = true</b>.</div>
+        <a href="https://supabase.com/dashboard/project/bzznyvzzwfqqxqddjqwh/editor?table=perfiles" target="_blank" style="display:inline-block;margin-top:8px;font-size:0.75em;background:#E04891;color:white;padding:4px 12px;border-radius:20px;text-decoration:none;font-weight:600;">Ir a perfiles →</a>
+      </div>
+
+      <div style="background:#fff8fb;border-radius:10px;padding:12px 14px;border:1px solid #f5c6e0;">
+        <div style="font-weight:700;font-size:0.85em;color:#c2185b;margin-bottom:6px;">💸 Comisiones presenciales</div>
+        <div style="font-size:0.78em;color:#666;line-height:1.5;">
+          <b>Artículo único:</b> ir a Supabase → <b>articulos</b> y poner <b>pago_confirmado = true</b>.<br>
+          <b>Stock presencial:</b> usar el botón <b>💸 Liberar</b> en la tabla de ventas de abajo (filtrá por "Retenidos").
+        </div>
+        <a href="https://supabase.com/dashboard/project/bzznyvzzwfqqxqddjqwh/editor?table=articulos" target="_blank" style="display:inline-block;margin-top:8px;font-size:0.75em;background:#E04891;color:white;padding:4px 12px;border-radius:20px;text-decoration:none;font-weight:600;">Ir a artículos →</a>
+      </div>
+
+      <div style="background:#fff8fb;border-radius:10px;padding:12px 14px;border:1px solid #f5c6e0;">
+        <div style="font-weight:700;font-size:0.85em;color:#c2185b;margin-bottom:6px;">✅ Fondos para liberar</div>
+        <div style="font-size:0.78em;color:#666;line-height:1.5;">Revisar la tabla de ventas de abajo filtrada por <b>Entregados</b>. Si el comprador confirmó la recepción, liberar los fondos al vendedor.</div>
+        <button onclick="filtrar('entregado', document.querySelectorAll('.filtro-btn')[2])" style="display:inline-block;margin-top:8px;font-size:0.75em;background:#1565c0;color:white;padding:4px 12px;border-radius:20px;border:none;cursor:pointer;font-weight:600;">Ver entregados ↓</button>
+      </div>
+
+      <div style="background:#fff8fb;border-radius:10px;padding:12px 14px;border:1px solid #f5c6e0;">
+        <div style="font-weight:700;font-size:0.85em;color:#c2185b;margin-bottom:6px;">📦 Publicaciones a revisar</div>
+        <div style="font-size:0.78em;color:#666;line-height:1.5;">Revisar publicaciones nuevas por contenido inapropiado o datos de contacto en el texto. Eliminar desde la vidriera si es necesario.</div>
+        <a href="vidriera.html" target="_blank" style="display:inline-block;margin-top:8px;font-size:0.75em;background:#43a047;color:white;padding:4px 12px;border-radius:20px;text-decoration:none;font-weight:600;">Ir a vidriera →</a>
+      </div>
+
+    </div>
+
+    <!-- MANTENIMIENTO -->
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid #f5e1e2;">
+      <div style="font-weight:700;color:#888;font-size:0.82em;margin-bottom:10px;">🧹 MANTENIMIENTO (hacer cada 2 semanas)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <button onclick="limpiarNotificaciones(this)" style="font-size:0.75em;background:#f5f5f5;border:1px solid #ddd;color:#555;padding:6px 14px;border-radius:20px;cursor:pointer;font-weight:600;">🔔 Borrar notificaciones +60 días</button>
+        <button onclick="limpiarSubastasViejas(this)" style="font-size:0.75em;background:#f5f5f5;border:1px solid #ddd;color:#555;padding:6px 14px;border-radius:20px;cursor:pointer;font-weight:600;">🗑️ Borrar subastas sin ganador +30 días</button>
+        <a href="https://supabase.com/dashboard/project/bzznyvzzwfqqxqddjqwh/storage/buckets" target="_blank" style="font-size:0.75em;background:#f5f5f5;border:1px solid #ddd;color:#555;padding:6px 14px;border-radius:20px;text-decoration:none;font-weight:600;">🖼️ Revisar storage de fotos</a>
+      </div>
+      <div id="resultado-limpieza" style="margin-top:8px;font-size:0.78em;color:#666;"></div>
+    </div>
+  </div>
 
   <div class="stats" id="stats"></div>
 
@@ -196,6 +261,20 @@ async function liberar(ventaId, mpPaymentId, btn) {
   btn.disabled = true;
   btn.innerText = '⏳...';
 
+  // Venta presencial (sin MP): liberar directo en la BD
+  if (!mpPaymentId || mpPaymentId === 'null') {
+    const { error } = await _supabase.from('ventas').update({ estado_entrega: 'liberado' }).eq('id', ventaId);
+    if (error) {
+      alert('❌ Error: ' + error.message);
+      btn.disabled = false; btn.innerText = '💸 Liberar';
+    } else {
+      alert('✅ Venta desbloqueada. El vendedor ya puede ver los datos del comprador.');
+      await cargarVentas();
+    }
+    return;
+  }
+
+  // Venta online (con MP): liberar fondos vía MP
   const { data: { session } } = await _supabase.auth.getSession();
   const res = await fetch(`${SUPABASE_URL_FN}/functions/v1/mp-liberar`, {
     method: 'POST',
@@ -240,6 +319,35 @@ async function reembolsar(ventaId, mpPaymentId, montoTotal, btn) {
     btn.disabled = false;
     btn.innerText = '↩️ Reembolsar';
   }
+}
+
+async function limpiarNotificaciones(btn) {
+  if (!confirm('¿Borrar notificaciones leídas con más de 60 días?')) return;
+  btn.disabled = true; btn.innerText = '⏳...';
+  const hace60 = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
+  const { count, error } = await _supabase.from('notificaciones')
+    .delete({ count: 'exact' })
+    .eq('leida', true)
+    .lt('created_at', hace60);
+  document.getElementById('resultado-limpieza').innerText = error
+    ? '❌ Error: ' + error.message
+    : `✅ ${count || 0} notificaciones eliminadas.`;
+  btn.disabled = false; btn.innerText = '🔔 Borrar notificaciones +60 días';
+}
+
+async function limpiarSubastasViejas(btn) {
+  if (!confirm('¿Borrar subastas terminadas sin ganador con más de 30 días?')) return;
+  btn.disabled = true; btn.innerText = '⏳...';
+  const hace30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const { count, error } = await _supabase.from('articulos')
+    .delete({ count: 'exact' })
+    .eq('tipo_venta', 'subasta')
+    .is('ganador_id', null)
+    .lt('finaliza_en', hace30);
+  document.getElementById('resultado-limpieza').innerText = error
+    ? '❌ Error: ' + error.message
+    : `✅ ${count || 0} subastas sin ganador eliminadas.`;
+  btn.disabled = false; btn.innerText = '🗑️ Borrar subastas sin ganador +30 días';
 }
 
 init();
