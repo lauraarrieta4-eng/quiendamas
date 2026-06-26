@@ -210,6 +210,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         .btn-preguntar:hover { background: var(--rosa); color: white; }
         .btn-eliminar  { border-color: #e53935; color: #e53935; }
         .btn-eliminar:hover  { background: #e53935; color: white; }
+        .btn-pausar { border-color: #f57c00; color: #f57c00; }
+        .btn-pausar:hover { background: #f57c00; color: white; }
+        .btn-pausar.reactivar { border-color: #2e7d32; color: #2e7d32; }
+        .btn-pausar.reactivar:hover { background: #2e7d32; color: white; }
         .btn-calificar { border-color: #43a047; color: #2e7d32; }
         .btn-calificar:hover { background: #e8f5e9; }
         .badge-verificado { display: inline-block; font-size: 0.8em; background: #e8f5e9; color: #2e7d32; border-radius: 10px; padding: 1px 6px; margin-left: 4px; font-weight: bold; vertical-align: middle; }
@@ -519,7 +523,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="modal-carrusel" id="modal-carrusel">
         <button class="carrusel-cerrar" onclick="cerrarCarrusel()">✕</button>
-        <img class="carrusel-img" id="carrusel-img" src="" alt="foto">
+        <div id="carrusel-media"></div>
         <div class="carrusel-controles">
             <button class="carrusel-btn" onclick="cambiarFoto(-1)">‹</button>
             <span class="carrusel-contador" id="carrusel-contador">1 / 1</span>
@@ -1049,13 +1053,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 if (filtroVenta) consulta = consulta.eq('tipo_venta', filtroVenta);
                 const { data: articulos, error } = await consulta.order('created_at', { ascending: false }).limit(80);
                 if (error) throw error;
+
+                // También traer publicaciones pausadas propias
+                let pausadas = [];
+                if (usuarioActualId) {
+                    const { data: dp } = await _supabase.from('articulos').select('*')
+                        .eq('perfil_id', usuarioActualId).eq('activo', false).neq('tipo_venta', 'subasta').is('comprador_id', null).is('ganador_id', null)
+                        .order('created_at', { ascending: false });
+                    pausadas = dp || [];
+                }
+
                 const lista = document.getElementById('articulos-lista');
                 lista.innerHTML = '';
-                if (articulos.length === 0) {
+                if (articulos.length === 0 && pausadas.length === 0) {
                     lista.innerHTML = `<div class="sin-resultados">😕 No hay publicaciones en esta categoría todavía.</div>`;
                     return;
                 }
                 articulos.forEach(art => renderTarjeta(art, lista));
+                pausadas.forEach(art => renderTarjeta(art, lista, true, true));
             } catch (e) { console.error("Error al cargar:", e); }
         }
 
@@ -1197,11 +1212,30 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             } catch (e) { console.error("Error al buscar:", e); }
         }
 
-        function renderTarjeta(art, lista, esMia = false) {
+        function renderTarjeta(art, lista, esMia = false, esPausada = false) {
             const div = document.createElement('div');
             div.className = 'tarjeta';
-            div.id = 'tarjeta-' + art.id;
+            div.id = 'art-' + art.id;
             if (esMia) div.style.border = "2px solid var(--rosa)";
+
+            if (esPausada) {
+                div.style.opacity = '0.5';
+                div.style.border = '2px dashed #f57c00';
+                const todasFotos = [art.foto_url].concat(art.fotos_extra || []).filter(Boolean);
+                div.innerHTML = `
+                    <span class="tag-cat">${escapeHtml(labelCat(art.categoria))}</span>
+                    <span class="tag-tipo" style="background:#fff3e0;color:#e65100;">⏸ Pausada</span>
+                    ${mediaTag(art.foto_url, '')}
+                    <div class="titulo">${escapeHtml(art.Titulo)}</div>
+                    <div class="precio">$<span>${(art.precio_base || art.precio_actual || 0).toLocaleString('es-AR')}</span></div>
+                    <div class="acciones-sec">
+                        <button class="btn-pausar reactivar" id="btn-pausa-${art.id}" onclick="pausarPublicacion('${art.id}', false)">▶️ <span class="btn-txt">Reactivar</span></button>
+                        <button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ <span class="btn-txt">Eliminar</span></button>
+                    </div>
+                `;
+                lista.appendChild(div);
+                return;
+            }
 
             const esVentaDirecta = art.tipo_venta === 'venta';
             const esServicio = CATEGORIAS_SERVICIOS.includes(art.categoria);
@@ -1220,7 +1254,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             let badgeTipo = '';
             let relojHtml = '';
 
-            if (esServicio) {
+            if (esPausada) {
+                badgeTipo = `<span class="tag-tipo" style="background:#fff3e0;color:#e65100;">⏸ Pausada</span>`;
+            } else if (esServicio) {
                 badgeTipo = `<span class="tag-tipo" style="background:#e8f5e9;color:#2e7d32;">🛠️ Servicio</span>`;
             } else if (esAviso) {
                 const esInmueble = art.categoria?.startsWith('Inmuebles');
@@ -1359,6 +1395,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">${(esServicio || esAviso) ? '💬' : '❓'} <span class="btn-txt">${(esServicio || esAviso) ? 'Consultar' : 'Preguntas'}</span></button>
                     <button class="btn-compartir" onclick="abrirDescripcion('${art.id}')">📄 <span class="btn-txt">Descripción</span></button>
                     <button class="btn-compartir-icono" onclick="compartir('${art.Titulo}', '${art.id}')" title="Compartir"><img src="share_8539544.png" style="width:18px;height:18px;object-fit:contain;opacity:0.6;"></button>
+                    ${esMia && art.tipo_venta !== 'subasta' ? `<button class="btn-pausar ${art.activo ? '' : 'reactivar'}" id="btn-pausa-${art.id}" onclick="pausarPublicacion('${art.id}', ${art.activo})">${art.activo ? '⏸' : '▶️'} <span class="btn-txt">${art.activo ? 'Pausar' : 'Reactivar'}</span></button>` : ''}
                     ${esMia ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ <span class="btn-txt">Eliminar</span></button>` : ''}
                 </div>
             `;
@@ -1709,7 +1746,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     _supabase.from('ventas').select('id, articulo_id, comprador_id, monto_total, created_at, estado_entrega').eq('vendedor_id', usuarioActualId)
                 ]);
                 if (error) throw error;
-                _ventasStockMap = {};
+_ventasStockMap = {};
                 (misVentas || []).forEach(v => {
                     if (!_ventasStockMap[v.articulo_id]) _ventasStockMap[v.articulo_id] = [];
                     _ventasStockMap[v.articulo_id].push(v);
@@ -1717,10 +1754,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 const lista = document.getElementById('articulos-lista');
                 lista.innerHTML = articulos.length ? "" : "<div class='sin-resultados'>No publicaste nada todavía.</div>";
                 articulos.forEach(art => {
-                    if (!art.activo) {
+                    const estaPausada = !art.activo && !art.comprador_id && art.tipo_venta !== 'subasta';
+                    const estaCerrada = !art.activo && (art.comprador_id || (art.tipo_venta === 'subasta' && art.ganador_id));
+                    if (estaCerrada) {
                         const div = document.createElement('div');
                         div.className = 'tarjeta';
-                        div.id = 'tarjeta-' + art.id;
+                        div.id = 'art-' + art.id;
                         div.style.opacity = '0.55';
                         div.style.border = '2px dashed #ccc';
                         const esSubastaCerrada = art.tipo_venta === 'subasta';
@@ -1730,6 +1769,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             <div style="font-size:0.82em;color:#aaa;margin:6px 0;">$${(art.precio_base||0).toLocaleString('es-AR')}</div>
                         `;
                         lista.appendChild(div);
+                    } else if (estaPausada) {
+                        renderTarjeta(art, lista, true, true);
                     } else {
                         renderTarjeta(art, lista, true);
                     }
@@ -2180,12 +2221,29 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             actualizarCarrusel();
         }
         function actualizarCarrusel() {
-            document.getElementById('carrusel-img').src = carruselFotos[carruselIndex];
+            const url = carruselFotos[carruselIndex];
+            const esVideo = /\.(mp4|mov|webm|avi|mkv|m4v)(\?|#|$)/i.test(url);
+            const contenedor = document.getElementById('carrusel-media');
+            if (esVideo) {
+                contenedor.innerHTML = `<video src="${url}" class="carrusel-img" controls autoplay muted playsinline style="max-width:95vw;max-height:75vh;border-radius:14px;"></video>`;
+            } else {
+                contenedor.innerHTML = `<img src="${url}" class="carrusel-img" alt="foto">`;
+            }
             document.getElementById('carrusel-contador').innerText = `${carruselIndex + 1} / ${carruselFotos.length}`;
         }
         document.getElementById('modal-carrusel').addEventListener('click', function(e) {
             if (e.target === this) cerrarCarrusel();
         });
+
+async function pausarPublicacion(id, activo) {
+    const accion = activo ? 'pausar' : 'reactivar';
+    if (!confirm(`¿Querés ${accion} esta publicación?`)) return;
+    const nuevoEstado = !activo;
+    const { data, error } = await _supabase.from('articulos').update({ activo: nuevoEstado }).eq('id', id).select();
+    if (error) { alert('❌ Error: ' + error.message); return; }
+    if (!data || data.length === 0) { alert('⚠️ No se pudo actualizar. Intentá de nuevo.'); return; }
+    filtrarMisPublicaciones();
+}
 
 async function eliminarPublicacion(id) {
     const { data: art } = await _supabase.from('articulos').select('comprador_id, ganador_id, pago_confirmado, tipo_venta, finaliza_en, precio_actual, precio_base').eq('id', id).maybeSingle();
