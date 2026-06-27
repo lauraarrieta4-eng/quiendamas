@@ -331,9 +331,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
     let _vendedorId = null;
     let _negocio = null;
-    let _carrito = []; // [{art, cantidad}]
+    let _carrito = [];
     let _entregaSeleccionada = 'retiro';
     let _usuarioId = null;
+
+    function escapeHtml(str) {
+        return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    function _guardarCarritoLocal() {
+        try { localStorage.setItem('qdm-carrito-' + _vendedorId, JSON.stringify(_carrito)); } catch(_) {}
+    }
+    function _limpiarCarritoLocal() {
+        try { localStorage.removeItem('qdm-carrito-' + _vendedorId); } catch(_) {}
+    }
 
     // ── INIT ──────────────────────────────────────────────────────────
     (async () => {
@@ -341,10 +352,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         _vendedorId = params.get('id');
         if (!_vendedorId) { document.getElementById('tienda-nombre').innerText = 'Tienda no encontrada'; return; }
 
+        try { _carrito = JSON.parse(localStorage.getItem('qdm-carrito-' + _vendedorId) || '[]'); } catch(_) { _carrito = []; }
+
         const { data: { user } } = await _supabase.auth.getUser();
         _usuarioId = user?.id || null;
 
         await Promise.all([cargarNegocio(), cargarProductos()]);
+        actualizarBtnCarrito();
     })();
 
     // ── NEGOCIO ───────────────────────────────────────────────────────
@@ -511,7 +525,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <div onclick="abrirDetalle('${art.id}')" style="cursor:pointer;">
                     ${imgHtml}
                     <div class="prod-body">
-                        <div class="prod-titulo">${art.Titulo}</div>
+                        <div class="prod-titulo">${escapeHtml(art.Titulo)}</div>
                         <div class="prod-precio">$${precio}</div>
                         ${stockHtml}
                     </div>
@@ -584,6 +598,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     function vaciarCarrito() {
         if (!confirm('¿Vaciar el carrito?')) return;
         _carrito = [];
+        _limpiarCarritoLocal();
         actualizarBtnCarrito();
         renderDrawer();
     }
@@ -604,6 +619,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         const badge = document.getElementById('badge-carrito');
         btn.style.display = total > 0 ? 'flex' : 'none';
         badge.innerText = total;
+        _guardarCarritoLocal();
     }
 
     function subtotalCarrito() {
@@ -646,7 +662,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <div class="carrito-item" data-id="${item.art.id}">
                     ${img}
                     <div class="carrito-item-info">
-                        <div class="carrito-item-titulo">${item.art.Titulo}</div>
+                        <div class="carrito-item-titulo">${escapeHtml(item.art.Titulo)}</div>
                         <div class="carrito-item-precio">$${precio} c/u</div>
                     </div>
                     <div class="carrito-item-controles">
@@ -731,9 +747,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             });
             const data = await res.json();
             if (data.init_point) {
+                _limpiarCarritoLocal();
                 window.location.href = data.init_point;
             } else {
-                throw new Error(data.error || 'No se pudo crear el pago');
+                // Si el servidor rechaza por stock insuficiente, limpiar items afectados del carrito
+                if (data.sin_stock && Array.isArray(data.sin_stock)) {
+                    _carrito = _carrito.filter(i => !data.sin_stock.includes(String(i.art.id)));
+                    _guardarCarritoLocal();
+                    actualizarBtnCarrito();
+                    renderDrawer();
+                    alert('❌ Algunos productos ya no tienen stock y fueron removidos del carrito.');
+                } else {
+                    throw new Error(data.error || 'No se pudo crear el pago');
+                }
             }
         } catch (err) {
             alert('❌ Error al procesar el pago: ' + err.message);

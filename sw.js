@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quiendamas-v1';
+const CACHE_NAME = 'quiendamas-v20260627';
 
 const ARCHIVOS_CACHE = [
   '/vidriera.html',

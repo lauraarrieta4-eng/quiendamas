@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WHNJDJTG');</script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mis Pedidos - Quiéndamas</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <style>
+        :root {
+            --verde: #2E7D32;
+            --verde-claro: #43a047;
+            --verde-suave: #E8F5E9;
+            --lila: #C8E6C9;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f8e9; min-height: 100vh; }
+
+        /* ── HEADER ── */
+        .header {
+            background: #43a047;
+            color: white;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .btn-volver {
+            background: rgba(255,255,255,0.2); border: none; color: white;
+            border-radius: 20px; padding: 7px 14px; font-size: 0.82em;
+            cursor: pointer; font-family: inherit;
+        }
+        .btn-volver:hover { background: rgba(255,255,255,0.3); }
+        .header-titulo { font-size: 1.1em; font-weight: 800; }
+        .badge-nuevos {
+            background: #E04891; color: white;
+            border-radius: 20px; padding: 3px 10px;
+            font-size: 0.78em; font-weight: 700;
+            display: none;
+        }
+
+        /* ── FILTROS ── */
+        .filtros-wrap {
+            display: flex; gap: 8px; padding: 12px 16px;
+            overflow-x: auto; background: white;
+            border-bottom: 1px solid #eee;
+        }
+        .filtros-wrap::-webkit-scrollbar { display: none; }
+        .btn-filtro {
+            padding: 7px 16px; border-radius: 20px;
+            border: 2px solid #43a047; background: white;
+            color: #2e7d32; font-size: 0.82em; font-weight: 600;
+            cursor: pointer; white-space: nowrap; transition: all 0.15s;
+        }
+        .btn-filtro.activo { background: #43a047; color: white; }
+
+        /* ── LISTA PEDIDOS ── */
+        .pedidos-body { padding: 12px; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #aaa; }
+        .empty-state div { font-size: 3em; margin-bottom: 12px; }
+        .loading { text-align: center; padding: 40px; color: #aaa; }
+
+        .pedido-card {
+            background: white; border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            margin-bottom: 12px; overflow: hidden;
+        }
+        .pedido-header {
+            padding: 14px 16px 10px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .pedido-id { font-size: 0.72em; color: #bbb; font-weight: 600; }
+        .pedido-fecha { font-size: 0.78em; color: #aaa; }
+        .badge-estado {
+            display: inline-block; padding: 4px 12px;
+            border-radius: 20px; font-size: 0.75em; font-weight: 700;
+        }
+        .badge-estado.pendiente { background: #fff3e0; color: #e65100; }
+        .badge-estado.en_preparacion { background: #e3f2fd; color: #1565c0; }
+        .badge-estado.listo { background: #e8f5e9; color: #2e7d32; }
+        .badge-estado.entregado { background: #f3e5f5; color: #6a1b9a; }
+        .badge-estado.cancelado { background: #fce4ec; color: #c62828; }
+
+        .pedido-items { padding: 10px 16px; }
+        .pedido-item-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: 7px 0; border-bottom: 1px solid #f9f9f9;
+        }
+        .pedido-item-row:last-child { border-bottom: none; }
+        .pedido-item-img {
+            width: 44px; height: 44px; object-fit: cover;
+            border-radius: 8px; background: #f5f5f5; flex-shrink: 0;
+        }
+        .pedido-item-titulo { font-size: 0.85em; font-weight: 600; color: #333; }
+        .pedido-item-cant { font-size: 0.78em; color: #888; }
+        .pedido-item-precio { font-size: 0.88em; font-weight: 700; color: #2e7d32; margin-left: auto; white-space: nowrap; }
+
+        .pedido-footer {
+            padding: 12px 16px;
+            background: #fafafa;
+            border-top: 1px solid #f0f0f0;
+        }
+        .pedido-entrega {
+            font-size: 0.8em; color: #888; margin-bottom: 10px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .pedido-total {
+            display: flex; justify-content: space-between;
+            font-weight: 700; font-size: 1em; color: #222;
+            margin-bottom: 12px;
+        }
+        .pedido-pago {
+            font-size: 0.75em; color: #888;
+            margin-bottom: 10px;
+        }
+
+        /* ── DATOS COMPRADOR ── */
+        .datos-comprador-wrap {
+            background: #e3f2fd; border-radius: 10px;
+            padding: 10px 14px; margin-bottom: 10px;
+            font-size: 0.82em; line-height: 1.8; color: #1a237e;
+        }
+        .datos-comprador-wrap strong { color: #0d47a1; }
+
+        /* ── BOTONES ACCIÓN ── */
+        .acciones-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-accion {
+            flex: 1; min-width: 120px;
+            padding: 10px; border: none; border-radius: 10px;
+            font-size: 0.85em; font-weight: 700; cursor: pointer;
+            transition: opacity 0.15s; font-family: inherit;
+        }
+        .btn-accion:hover { opacity: 0.85; }
+        .btn-accion:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-preparar { background: #1565c0; color: white; }
+        .btn-listo { background: #2e7d32; color: white; }
+        .btn-entregar { background: #6a1b9a; color: white; }
+        .btn-cancelar { background: white; border: 2px solid #e53935; color: #e53935; }
+
+        /* ── MODAL CONTACTO ── */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.activo { display: flex; }
+        .modal-box { background: white; border-radius: 20px; padding: 24px 20px; max-width: 380px; width: 100%; border-top: 5px solid #1565c0; }
+        .modal-box h2 { font-size: 1em; margin-bottom: 16px; color: #1565c0; }
+        .contacto-dato { padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.9em; display: flex; justify-content: space-between; gap: 10px; }
+        .contacto-dato:last-of-type { border-bottom: none; }
+        .contacto-label { color: #999; font-weight: 600; flex-shrink: 0; }
+        .contacto-val { font-weight: 600; color: #222; text-align: right; }
+        .btn-cerrar-modal { width: 100%; background: #f5f5f5; border: none; border-radius: 10px; padding: 12px; font-size: 0.9em; font-weight: 600; cursor: pointer; margin-top: 16px; }
+    </style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WHNJDJTG"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<div class="header">
+    <div class="header-left">
+        <button class="btn-volver" onclick="window.location.href='vidriera.html'">← Vidriera</button>
+        <span class="header-titulo">📦 Mis Pedidos</span>
+        <span class="badge-nuevos" id="badge-nuevos">0 nuevos</span>
+    </div>
+</div>
+
+<div class="filtros-wrap">
+    <button class="btn-filtro activo" onclick="setFiltro('todos', this)">📦 Todos</button>
+    <button class="btn-filtro" onclick="setFiltro('pendiente', this)">⏳ Pendientes</button>
+    <button class="btn-filtro" onclick="setFiltro('en_preparacion', this)">🔵 En preparación</button>
+    <button class="btn-filtro" onclick="setFiltro('listo', this)">✅ Listos</button>
+    <button class="btn-filtro" onclick="setFiltro('entregado', this)">🟣 Entregados</button>
+</div>
+
+<div class="pedidos-body">
+    <div id="estado-carga" class="loading">⏳ Cargando pedidos...</div>
+    <div id="lista-pedidos"></div>
+</div>
+
+<!-- Modal datos comprador -->
+<div class="modal-overlay" id="modal-contacto">
+    <div class="modal-box">
+        <h2>👤 Datos del comprador</h2>
+        <div id="contacto-contenido"></div>
+        <button class="btn-cerrar-modal" onclick="cerrarModalContacto()">Cerrar</button>
+    </div>
+</div>
+
+<script>
+    function escapeHtml(str) {
+        return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    let _usuarioId = null;
+    let _pedidos = [];
+    let _filtroActual = 'todos';
+    let _perfilesCache = {};
+
+    const ESTADO_LABELS = {
+        pendiente: '⏳ Pendiente',
+        en_preparacion: '🔵 En preparación',
+        listo: '✅ Listo para retirar',
+        entregado: '🟣 Entregado',
+        cancelado: '❌ Cancelado',
+    };
+
+    (async () => {
+        const { data: { user } } = await _supabase.auth.getUser();
+        if (!user) { window.location.href = 'login.html'; return; }
+        _usuarioId = user.id;
+
+        const { data: perfil } = await _supabase.from('perfiles')
+            .select('tipo_cuenta, nombre_comercio')
+            .eq('id', _usuarioId).maybeSingle();
+
+        if (!perfil || perfil.tipo_cuenta !== 'negocio') {
+            document.getElementById('estado-carga').innerHTML =
+                '<div class="empty-state"><div>🏪</div>Esta página es para comercios.<br><a href="vidriera.html">Ir a la vidriera</a></div>';
+            return;
+        }
+
+        await cargarPedidos();
+        suscribirNuevosPedidos();
+    })();
+
+    async function cargarPedidos() {
+        const { data, error } = await _supabase
+            .from('carrito')
+            .select('*')
+            .eq('vendedor_id', _usuarioId)
+            .order('created_at', { ascending: false });
+
+        document.getElementById('estado-carga').style.display = 'none';
+
+        if (error) {
+            document.getElementById('lista-pedidos').innerHTML =
+                '<div class="empty-state"><div>❌</div>Error al cargar pedidos.</div>';
+            return;
+        }
+
+        _pedidos = data || [];
+        agruparYRenderizar();
+    }
+
+    function agruparYRenderizar() {
+        // Agrupar items por checkout_id
+        const grupos = {};
+        for (const item of _pedidos) {
+            const key = item.checkout_id || item.id;
+            if (!grupos[key]) {
+                grupos[key] = {
+                    checkout_id: key,
+                    usuario_id: item.usuario_id,
+                    vendedor_id: item.vendedor_id,
+                    tipo_entrega: item.tipo_entrega,
+                    estado: item.estado_pedido || 'pendiente',
+                    created_at: item.created_at,
+                    mp_payment_id: item.mp_payment_id,
+                    items: [],
+                };
+            }
+            grupos[key].items.push(item);
+        }
+
+        let pedidosGrupo = Object.values(grupos);
+
+        // Filtrar
+        if (_filtroActual !== 'todos') {
+            pedidosGrupo = pedidosGrupo.filter(g => g.estado === _filtroActual);
+        }
+
+        const lista = document.getElementById('lista-pedidos');
+        if (pedidosGrupo.length === 0) {
+            lista.innerHTML = '<div class="empty-state"><div>📭</div>Sin pedidos en esta categoría.</div>';
+            return;
+        }
+
+        // Cargar perfiles de compradores en batch
+        const compradorIds = [...new Set(pedidosGrupo.map(g => g.usuario_id).filter(Boolean))];
+        cargarPerfiles(compradorIds).then(() => {
+            lista.innerHTML = '';
+            for (const grupo of pedidosGrupo) {
+                lista.appendChild(renderPedidoCard(grupo));
+            }
+        });
+
+        // Badge nuevos
+        const nuevos = pedidosGrupo.filter(g => g.estado === 'pendiente').length;
+        const badge = document.getElementById('badge-nuevos');
+        if (nuevos > 0) {
+            badge.style.display = 'inline-block';
+            badge.innerText = nuevos === 1 ? '1 nuevo' : `${nuevos} nuevos`;
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    async function cargarPerfiles(ids) {
+        const faltantes = ids.filter(id => !_perfilesCache[id]);
+        if (!faltantes.length) return;
+        const { data } = await _supabase.from('perfiles')
+            .select('id, nombre_completo, apodo, telefono, email')
+            .in('id', faltantes);
+        for (const p of (data || [])) {
+            _perfilesCache[p.id] = p;
+        }
+    }
+
+    function renderPedidoCard(grupo) {
+        const card = document.createElement('div');
+        card.className = 'pedido-card';
+        card.id = 'pedido-' + grupo.checkout_id;
+
+        const fecha = new Date(grupo.created_at).toLocaleDateString('es-AR', {
+            day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+        });
+
+        const subtotal = grupo.items.reduce((s, i) => s + (i.precio_unitario || 0) * (i.cantidad || 1), 0);
+        const esPagoOnline = !!grupo.mp_payment_id;
+        const pagoLabel = esPagoOnline ? '💳 Pago online (MP)' : '💵 Efectivo al retirar';
+        const entregaLabel = grupo.tipo_entrega === 'delivery' ? '🚚 Delivery' : '🏪 Retiro en sucursal';
+        const estadoLabel = ESTADO_LABELS[grupo.estado] || grupo.estado;
+        const badgeClass = grupo.estado || 'pendiente';
+
+        const itemsHtml = grupo.items.map(item => `
+            <div class="pedido-item-row">
+                ${item.art_foto_url
+                    ? `<img src="${escapeHtml(item.art_foto_url)}" class="pedido-item-img">`
+                    : `<div class="pedido-item-img" style="display:flex;align-items:center;justify-content:center;font-size:1.5em;">📦</div>`}
+                <div style="flex:1;min-width:0;">
+                    <div class="pedido-item-titulo">${escapeHtml(item.art_titulo || 'Producto')}</div>
+                    <div class="pedido-item-cant">x${item.cantidad || 1}</div>
+                </div>
+                <div class="pedido-item-precio">$${((item.precio_unitario || 0) * (item.cantidad || 1)).toLocaleString('es-AR')}</div>
+            </div>
+        `).join('');
+
+        // Botones según estado
+        let botonesHtml = '';
+        const estado = grupo.estado || 'pendiente';
+        if (estado === 'pendiente') {
+            botonesHtml = `
+                <button class="btn-accion btn-preparar" onclick="cambiarEstado('${grupo.checkout_id}', 'en_preparacion', this)">🔵 Empezar preparación</button>
+                <button class="btn-accion btn-cancelar" onclick="cancelarPedido('${grupo.checkout_id}', this)">Cancelar</button>
+            `;
+        } else if (estado === 'en_preparacion') {
+            botonesHtml = `
+                <button class="btn-accion btn-listo" onclick="cambiarEstado('${grupo.checkout_id}', 'listo', this)">✅ Marcar listo para retirar</button>
+            `;
+        } else if (estado === 'listo') {
+            botonesHtml = `
+                <button class="btn-accion btn-entregar" onclick="cambiarEstado('${grupo.checkout_id}', 'entregado', this)">🟣 Confirmar entrega</button>
+            `;
+        }
+
+        const perfil = _perfilesCache[grupo.usuario_id];
+        let datosCompradorHtml = '';
+        if (esPagoOnline && perfil) {
+            datosCompradorHtml = `
+                <div class="datos-comprador-wrap">
+                    <strong>👤 Comprador:</strong> ${escapeHtml(perfil.apodo || perfil.nombre_completo || 'Usuario')}<br>
+                    ${perfil.telefono ? `<strong>📞 Tel:</strong> ${escapeHtml(perfil.telefono)}<br>` : ''}
+                    ${perfil.email ? `<strong>✉️ Email:</strong> ${escapeHtml(perfil.email)}` : ''}
+                </div>
+            `;
+        } else if (!esPagoOnline) {
+            datosCompradorHtml = `
+                <div class="pedido-pago" style="background:#fff8e1;padding:8px 12px;border-radius:8px;color:#795548;">
+                    💵 El cliente paga en efectivo al retirar.
+                    <button style="background:none;border:none;color:#1565c0;font-weight:700;cursor:pointer;font-size:inherit;"
+                        onclick="verContacto('${grupo.usuario_id}')">Ver datos del comprador →</button>
+                </div>
+            `;
+        }
+
+        card.innerHTML = `
+            <div class="pedido-header">
+                <div>
+                    <div class="pedido-id">Pedido #${escapeHtml(grupo.checkout_id.slice(0, 8))}</div>
+                    <div class="pedido-fecha">${escapeHtml(fecha)}</div>
+                </div>
+                <span class="badge-estado ${badgeClass}">${escapeHtml(estadoLabel)}</span>
+            </div>
+            <div class="pedido-items">${itemsHtml}</div>
+            <div class="pedido-footer">
+                <div class="pedido-entrega">${escapeHtml(entregaLabel)}</div>
+                <div class="pedido-total">
+                    <span>Total</span>
+                    <span>$${subtotal.toLocaleString('es-AR')}</span>
+                </div>
+                <div class="pedido-pago">${escapeHtml(pagoLabel)}</div>
+                ${datosCompradorHtml}
+                <div class="acciones-wrap">${botonesHtml}</div>
+            </div>
+        `;
+        return card;
+    }
+
+    async function cambiarEstado(checkoutId, nuevoEstado, btn) {
+        btn.disabled = true;
+        const { error } = await _supabase
+            .from('carrito')
+            .update({ estado_pedido: nuevoEstado })
+            .eq('checkout_id', checkoutId);
+
+        if (error) {
+            alert('❌ Error al actualizar: ' + error.message);
+            btn.disabled = false;
+            return;
+        }
+
+        // Actualizar estado local
+        for (const p of _pedidos) {
+            if ((p.checkout_id || p.id) === checkoutId) p.estado_pedido = nuevoEstado;
+        }
+        agruparYRenderizar();
+    }
+
+    async function cancelarPedido(checkoutId, btn) {
+        if (!confirm('¿Cancelar este pedido?')) return;
+        await cambiarEstado(checkoutId, 'cancelado', btn);
+    }
+
+    async function verContacto(usuarioId) {
+        if (!_perfilesCache[usuarioId]) {
+            await cargarPerfiles([usuarioId]);
+        }
+        const perfil = _perfilesCache[usuarioId];
+        const cont = document.getElementById('contacto-contenido');
+        if (!perfil) {
+            cont.innerHTML = '<p style="color:#aaa;">Sin datos de contacto.</p>';
+        } else {
+            cont.innerHTML = `
+                <div class="contacto-dato"><span class="contacto-label">Nombre</span><span class="contacto-val">${escapeHtml(perfil.apodo || perfil.nombre_completo || '—')}</span></div>
+                <div class="contacto-dato"><span class="contacto-label">Teléfono</span><span class="contacto-val">${escapeHtml(perfil.telefono || '—')}</span></div>
+                <div class="contacto-dato"><span class="contacto-label">Email</span><span class="contacto-val">${escapeHtml(perfil.email || '—')}</span></div>
+            `;
+        }
+        document.getElementById('modal-contacto').classList.add('activo');
+    }
+
+    function cerrarModalContacto() {
+        document.getElementById('modal-contacto').classList.remove('activo');
+    }
+
+    function setFiltro(filtro, btn) {
+        _filtroActual = filtro;
+        document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('activo'));
+        btn.classList.add('activo');
+        agruparYRenderizar();
+    }
+
+    function suscribirNuevosPedidos() {
+        _supabase.channel('pedidos-' + _usuarioId)
+            .on('postgres_changes', {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'carrito',
+                filter: `vendedor_id=eq.${_usuarioId}`
+            }, async () => {
+                await cargarPedidos();
+            })
+            .on('postgres_changes', {
+                event: 'UPDATE',
+                schema: 'public',
+                table: 'carrito',
+                filter: `vendedor_id=eq.${_usuarioId}`
+            }, async () => {
+                await cargarPedidos();
+            })
+            .subscribe();
+    }
+</script>
+</body>
+</html>

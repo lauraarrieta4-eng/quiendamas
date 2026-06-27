@@ -631,6 +631,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     <div id="articulos-lista" class="contenedor"></div>
+    <div style="text-align:center;padding:12px 0 24px;">
+        <button id="btn-cargar-mas" onclick="cargarMasArticulos()" style="display:none;background:#43a047;color:white;border:none;border-radius:24px;padding:12px 32px;font-size:0.9em;font-weight:700;cursor:pointer;font-family:inherit;">Cargar más ↓</button>
+    </div>
 
     <script>
         function escapeHtml(str) {
@@ -649,6 +652,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         let tipoActual = 'productos';
         let categoriaActual = 'Todos';
         let filtroVenta = null; // null = todos, 'subasta', 'venta'
+        const _PAGE_SIZE = 50;
+        let _paginaOffset = 0;
 
         function toggleMenuFiltro() {
             const menu = document.getElementById('menu-filtro-venta');
@@ -1039,6 +1044,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 document.querySelectorAll('#filtros-subcats .btn-filtro.subcat').forEach(b => b.classList.remove('activo'));
                 btnEl.classList.add('activo');
             }
+            _paginaOffset = 0;
+            document.getElementById('btn-cargar-mas').style.display = 'none';
             try {
                 let consulta = _supabase.from('articulos').select('*').eq('activo', true);
                 if (filtro === 'Todos') {
@@ -1051,7 +1058,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     consulta = consulta.eq('categoria', filtro);
                 }
                 if (filtroVenta) consulta = consulta.eq('tipo_venta', filtroVenta);
-                const { data: articulos, error } = await consulta.order('created_at', { ascending: false }).limit(80);
+                const { data: articulos, error } = await consulta
+                    .order('created_at', { ascending: false })
+                    .range(0, _PAGE_SIZE - 1);
                 if (error) throw error;
 
                 // También traer publicaciones pausadas propias
@@ -1071,7 +1080,46 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 }
                 articulos.forEach(art => renderTarjeta(art, lista));
                 pausadas.forEach(art => renderTarjeta(art, lista, true, true));
+                _paginaOffset = _PAGE_SIZE;
+                if (articulos.length === _PAGE_SIZE) {
+                    document.getElementById('btn-cargar-mas').style.display = 'inline-block';
+                }
             } catch (e) { console.error("Error al cargar:", e); }
+        }
+
+        async function cargarMasArticulos() {
+            const btn = document.getElementById('btn-cargar-mas');
+            btn.disabled = true; btn.innerText = 'Cargando...';
+            try {
+                let consulta = _supabase.from('articulos').select('*').eq('activo', true);
+                if (categoriaActual === 'Todos') {
+                    consulta = consulta.not('categoria', 'in', `(${CATEGORIAS_SERVICIOS.join(',')})`);
+                } else if (categoriaActual === 'Todos-Servicios') {
+                    consulta = consulta.in('categoria', CATEGORIAS_SERVICIOS);
+                } else if (VALORES_CAT[categoriaActual]) {
+                    consulta = consulta.in('categoria', VALORES_CAT[categoriaActual]);
+                } else {
+                    consulta = consulta.eq('categoria', categoriaActual);
+                }
+                if (filtroVenta) consulta = consulta.eq('tipo_venta', filtroVenta);
+                const { data: articulos, error } = await consulta
+                    .order('created_at', { ascending: false })
+                    .range(_paginaOffset, _paginaOffset + _PAGE_SIZE - 1);
+                if (error) throw error;
+
+                const lista = document.getElementById('articulos-lista');
+                (articulos || []).forEach(art => renderTarjeta(art, lista));
+                _paginaOffset += _PAGE_SIZE;
+                btn.disabled = false;
+                if ((articulos || []).length < _PAGE_SIZE) {
+                    btn.style.display = 'none';
+                } else {
+                    btn.innerText = 'Cargar más ↓';
+                }
+            } catch (e) {
+                console.error("Error al cargar más:", e);
+                btn.disabled = false; btn.innerText = 'Cargar más ↓';
+            }
         }
 
         // ── NOTIFICACIONES ───────────────────────────────────────────
