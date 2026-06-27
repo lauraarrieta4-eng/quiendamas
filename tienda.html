@@ -32,6 +32,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         body { font-family: 'Segoe UI', sans-serif; background: var(--rosa-claro); min-height: 100vh; }
 
         /* ── HEADER TIENDA ── */
+        .tienda-banner {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+        }
+        .tienda-banner-placeholder { display: none; }
         .tienda-header {
             background: #43a047;
             color: white;
@@ -247,6 +254,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
+<!-- Banner portada -->
+<div id="tienda-banner-wrap"></div>
+
 <!-- Header tienda -->
 <div class="tienda-header">
     <button class="btn-volver" onclick="window.location.href='vidriera.html'">← Volver a la vidriera</button>
@@ -364,10 +374,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     // ── NEGOCIO ───────────────────────────────────────────────────────
     async function cargarNegocio() {
         const { data: p } = await _supabase.from('perfiles')
-            .select('nombre_comercio, descripcion_comercio, horario_atencion, tiempo_retiro, tiene_delivery, costo_delivery, avatar_url, ventas_count, verificado, ciudad')
+            .select('nombre_comercio, descripcion_comercio, horario_atencion, tiempo_retiro, tiene_delivery, costo_delivery, avatar_url, banner_url, ventas_count, verificado, ciudad')
             .eq('id', _vendedorId).maybeSingle();
         if (!p) return;
         _negocio = p;
+
+        if (p.banner_url) {
+            document.getElementById('tienda-banner-wrap').innerHTML =
+                `<img src="${escapeHtml(p.banner_url)}" class="tienda-banner" alt="Portada">`;
+        }
 
         document.title = (p.nombre_comercio || 'Tienda') + ' - Quiéndamas';
         document.getElementById('tienda-nombre').innerText = p.nombre_comercio || 'Tienda';

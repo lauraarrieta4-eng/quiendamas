@@ -425,6 +425,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="miperfil-dato"><span class="etiqueta">Descripción</span><textarea class="miperfil-input" id="miperfil-desc-comercio" rows="2" placeholder="Qué vendés, tu especialidad..." style="resize:vertical;font-size:1em;font-family:inherit;"></textarea></div>
                     <div class="miperfil-dato"><span class="etiqueta">Horario de atención</span><input class="miperfil-input" id="miperfil-horario" placeholder="Ej: Lun-Vie 9 a 18hs"></div>
                     <div class="miperfil-dato"><span class="etiqueta">Tiempo de retiro</span><input class="miperfil-input" id="miperfil-tiempo-retiro" placeholder="Ej: 24 a 48 horas"></div>
+                    <div class="miperfil-dato" style="flex-direction:column;align-items:flex-start;gap:8px;">
+                        <span class="etiqueta">Foto de portada de la tienda</span>
+                        <div id="miperfil-banner-preview" style="width:100%;height:90px;border-radius:10px;overflow:hidden;background:#f0f0f0;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:0.85em;">Sin portada</div>
+                        <label style="cursor:pointer;background:#f5f5f5;border:1px solid #ddd;border-radius:8px;padding:8px 14px;font-size:0.82em;font-weight:600;color:#555;">
+                            📷 Subir foto de portada
+                            <input type="file" accept="image/*" style="display:none;" onchange="subirBanner(this)">
+                        </label>
+                    </div>
                     <div style="margin:8px 0 4px;">
                         <label style="display:flex; align-items:center; gap:8px; font-size:0.85em; font-weight:600; color:#555; cursor:pointer;">
                             <input type="checkbox" id="miperfil-tiene-delivery" style="width:16px;height:16px;accent-color:var(--rosa);" onchange="toggleDelivery(this.checked)">
@@ -1206,7 +1214,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 usuarioActualId = user.id;
                 cargarMisSolicitudes();
                 const [{ data: perfil, error: perfilError }, { data: misCals }] = await Promise.all([
-                    _supabase.from('perfiles').select('nombre_completo, apodo, mp_access_token, telefono, ciudad, verificado, tipo_cuenta, nombre_comercio').eq('id', user.id).maybeSingle(),
+                    _supabase.from('perfiles').select('nombre_completo, apodo, mp_access_token, telefono, ciudad, verificado, tipo_cuenta, nombre_comercio, descripcion_comercio, horario_atencion, tiempo_retiro, tiene_delivery, costo_delivery, banner_url').eq('id', user.id).maybeSingle(),
                     _supabase.from('calificaciones').select('puntaje').eq('vendedor_id', user.id)
                 ]);
                 if (perfilError) console.error('Error cargando perfil:', perfilError.message);
@@ -2354,6 +2362,10 @@ async function eliminarPublicacion(id) {
                     document.getElementById('miperfil-tiene-delivery').checked = !!perfil.tiene_delivery;
                     toggleDelivery(!!perfil.tiene_delivery);
                     document.getElementById('miperfil-costo-delivery').value = perfil.costo_delivery || 0;
+                    if (perfil.banner_url) {
+                        document.getElementById('miperfil-banner-preview').innerHTML =
+                            `<img src="${escapeHtml(perfil.banner_url)}" style="width:100%;height:100%;object-fit:cover;">`;
+                    }
                 }
 
                 const mpStatus = document.getElementById('miperfil-mp-status');
@@ -2398,6 +2410,23 @@ async function eliminarPublicacion(id) {
         }
         function toggleDelivery(activo) {
             document.getElementById('bloque-costo-delivery').style.display = activo ? 'block' : 'none';
+        }
+
+        async function subirBanner(input) {
+            if (!input.files[0]) return;
+            const msg = document.getElementById('miperfil-msg');
+            msg.style.color = 'blue'; msg.innerText = '⏳ Subiendo portada...';
+            const archivo = input.files[0];
+            const nombre = `banner_${usuarioActualId}_${Date.now()}`;
+            const { error: errorUp } = await _supabase.storage.from('fotos_subastas').upload(nombre, archivo, { upsert: true, contentType: archivo.type });
+            if (errorUp) { msg.style.color = 'red'; msg.innerText = '❌ Error: ' + errorUp.message; return; }
+            const { data: urlData } = _supabase.storage.from('fotos_subastas').getPublicUrl(nombre);
+            const bannerUrl = urlData.publicUrl;
+            const { error: errorUpdate } = await _supabase.from('perfiles').update({ banner_url: bannerUrl }).eq('id', usuarioActualId);
+            if (errorUpdate) { msg.style.color = 'red'; msg.innerText = '❌ Error BD: ' + errorUpdate.message; return; }
+            const preview = document.getElementById('miperfil-banner-preview');
+            preview.innerHTML = `<img src="${escapeHtml(bannerUrl)}" style="width:100%;height:100%;object-fit:cover;">`;
+            msg.style.color = 'green'; msg.innerText = '✅ ¡Portada actualizada!';
         }
 
         async function subirAvatar(input) {
