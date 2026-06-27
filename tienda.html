@@ -459,6 +459,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             .eq('perfil_id', _vendedorId)
             .eq('activo', true)
             .is('link_descarga', null)
+            .is('comprador_id', null)
+            .or('stock.is.null,stock.gt.0')
             .order('created_at', { ascending: false });
 
         const grid = document.getElementById('productos-grid');
@@ -477,8 +479,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             const noDisponible = sinStock || vendido;
 
             const precio = (art.precio_base || 0).toLocaleString('es-AR');
+            const esVideoUrl = /\.(mp4|mov|webm|avi|mkv|m4v)(\?|#|$)/i.test(art.foto_url || '');
             const imgHtml = art.foto_url
-                ? `<img src="${art.foto_url}" class="prod-img" alt="${art.Titulo}" onerror="this.parentElement.innerHTML='<div class=prod-img-placeholder>📷</div>'">`
+                ? esVideoUrl
+                    ? `<video src="${art.foto_url}" class="prod-img" muted autoplay loop playsinline style="object-fit:contain;"></video>`
+                    : `<img src="${art.foto_url}" class="prod-img" alt="${art.Titulo}" onerror="this.style.visibility='hidden'">`
                 : `<div class="prod-img-placeholder">📷</div>`;
 
             const stockHtml = esStock
