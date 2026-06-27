@@ -550,6 +550,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div id="lista-notif"><div class="notif-vacia">Sin notificaciones nuevas</div></div>
                 </div>
                 <button id="btn-instalar-pwa" onclick="instalarPWA()" class="btn-top" style="display:none;" title="Instalar la app en tu dispositivo">📲 Instalar</button>
+                <button id="btn-pedidos" onclick="window.location.href='pedidos.html'" class="btn-top" style="display:none;" title="Mis pedidos">📦 Pedidos</button>
                 <button id="btn-admin" onclick="window.location.href='admin.html'" class="btn-top" style="display:none;" title="Panel admin">🛠️</button>
                 <button id="btn-sesion" onclick="gestionarSesion()" class="btn-top primario">🔑 Ingresar</button>
                 <button onclick="window.location.href='publicar.html'" class="btn-top">➕ Publicar</button>
@@ -1220,6 +1221,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 // campanita
                 document.getElementById('btn-campana').style.display = 'flex';
                 if (user.email === 'lauraarrieta4@gmail.com') document.getElementById('btn-admin').style.display = 'inline-block';
+                if (perfil?.tipo_cuenta === 'negocio') document.getElementById('btn-pedidos').style.display = 'inline-block';
                 cargarNotificaciones();
                 // Realtime: notificaciones nuevas
                 _supabase.channel('notif-' + user.id)
