@@ -63,6 +63,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     @media (max-width: 700px) {
       table { display: block; overflow-x: auto; }
     }
+    .pagos-seccion { background: white; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); padding: 20px 24px; margin-bottom: 20px; border-left: 5px solid #43a047; }
+    .pagos-seccion h2 { font-size: 1em; color: #2e7d32; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .badge-count { background: #e53935; color: white; font-size: 0.75em; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .pago-card { background: #f9fafb; border: 1px solid #e0e0e0; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .pago-card:last-child { margin-bottom: 0; }
+    .pago-info { flex: 1; min-width: 200px; }
+    .pago-titulo { font-weight: 700; font-size: 0.9em; color: #222; margin-bottom: 4px; }
+    .pago-meta { font-size: 0.78em; color: #666; display: flex; flex-wrap: wrap; gap: 10px; }
+    .pago-monto { font-weight: 700; color: #2e7d32; }
+    .btn-confirmar { background: #43a047; color: white; border: none; border-radius: 8px; padding: 8px 16px; font-size: 0.82em; font-weight: 700; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; }
+    .btn-confirmar:hover { opacity: 0.85; }
+    .btn-confirmar:disabled { opacity: 0.4; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -86,13 +98,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a href="https://supabase.com/dashboard/project/bzznyvzzwfqqxqddjqwh/editor?table=perfiles" target="_blank" style="display:inline-block;margin-top:8px;font-size:0.75em;background:#E04891;color:white;padding:4px 12px;border-radius:20px;text-decoration:none;font-weight:600;">Ir a perfiles →</a>
       </div>
 
-      <div style="background:#fff8fb;border-radius:10px;padding:12px 14px;border:1px solid #f5c6e0;">
-        <div style="font-weight:700;font-size:0.85em;color:#c2185b;margin-bottom:6px;">💸 Comisiones presenciales</div>
+      <div style="background:#f1f8e9;border-radius:10px;padding:12px 14px;border:1px solid #c5e1a5;">
+        <div style="font-weight:700;font-size:0.85em;color:#2e7d32;margin-bottom:6px;">💳 Comisiones presenciales</div>
         <div style="font-size:0.78em;color:#666;line-height:1.5;">
-          <b>Artículo único:</b> ir a Supabase → <b>articulos</b> y poner <b>pago_confirmado = true</b>.<br>
-          <b>Stock presencial:</b> usar el botón <b>💸 Liberar</b> en la tabla de ventas de abajo (filtrá por "Retenidos").
+          Cuando alguien transfiere y te manda el comprobante, confirmá el pago desde la sección <b>verde</b> de arriba. Un clic y listo — no hace falta ir a Supabase.
         </div>
-        <a href="https://supabase.com/dashboard/project/bzznyvzzwfqqxqddjqwh/editor?table=articulos" target="_blank" style="display:inline-block;margin-top:8px;font-size:0.75em;background:#E04891;color:white;padding:4px 12px;border-radius:20px;text-decoration:none;font-weight:600;">Ir a artículos →</a>
+        <button onclick="document.getElementById('seccion-pagos-pendientes').scrollIntoView({behavior:'smooth'})" style="display:inline-block;margin-top:8px;font-size:0.75em;background:#43a047;color:white;padding:4px 12px;border-radius:20px;border:none;cursor:pointer;font-weight:600;">Ver pendientes ↓</button>
       </div>
 
       <div style="background:#fff8fb;border-radius:10px;padding:12px 14px;border:1px solid #f5c6e0;">
@@ -119,6 +130,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
       <div id="resultado-limpieza" style="margin-top:8px;font-size:0.78em;color:#666;"></div>
     </div>
+  </div>
+
+  <!-- PAGOS PRESENCIALES PENDIENTES -->
+  <div id="seccion-pagos-pendientes" class="pagos-seccion" style="display:none;">
+    <h2>💳 Pagos por transferencia a confirmar <span id="badge-pagos-pendientes" class="badge-count">0</span></h2>
+    <div id="lista-pagos-pendientes"></div>
   </div>
 
   <div class="stats" id="stats"></div>
@@ -168,6 +185,89 @@ const SUPABASE_URL_FN = 'https://bzznyvzzwfqqxqddjqwh.supabase.co';
 let todasLasVentas = [];
 let filtroActual = 'todos';
 
+function escapeHtml(str) {
+  return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function cargarPagosPendientes() {
+  const ahora = new Date().toISOString();
+
+  const [{ data: ventasPend }, { data: subastasPend }] = await Promise.all([
+    _supabase.from('articulos')
+      .select('id, Titulo, precio_base, tipo_venta, comprador_id, perfil_id, created_at')
+      .eq('pago_confirmado', false)
+      .eq('tipo_venta', 'venta')
+      .not('comprador_id', 'is', null)
+      .order('created_at', { ascending: false }),
+    _supabase.from('articulos')
+      .select('id, Titulo, precio_actual, tipo_venta, ganador_id, perfil_id, finaliza_en, created_at')
+      .eq('pago_confirmado', false)
+      .eq('tipo_venta', 'subasta')
+      .not('ganador_id', 'is', null)
+      .lt('finaliza_en', ahora)
+      .order('created_at', { ascending: false }),
+  ]);
+
+  const todos = [
+    ...(ventasPend || []).map(a => ({ ...a, comprador_uid: a.comprador_id, monto: a.precio_base })),
+    ...(subastasPend || []).map(a => ({ ...a, comprador_uid: a.ganador_id, monto: a.precio_actual })),
+  ];
+
+  const allIds = [...new Set(todos.flatMap(a => [a.comprador_uid, a.perfil_id]).filter(Boolean))];
+  let perfilesMap = {};
+  if (allIds.length) {
+    const { data: perfs } = await _supabase.from('perfiles').select('id, apodo, nombre_completo').in('id', allIds);
+    (perfs || []).forEach(p => { perfilesMap[p.id] = p; });
+  }
+
+  const seccion = document.getElementById('seccion-pagos-pendientes');
+  const lista = document.getElementById('lista-pagos-pendientes');
+  document.getElementById('badge-pagos-pendientes').innerText = todos.length;
+
+  if (!todos.length) { seccion.style.display = 'none'; return; }
+  seccion.style.display = 'block';
+
+  lista.innerHTML = todos.map(a => {
+    const comp = perfilesMap[a.comprador_uid];
+    const vend = perfilesMap[a.perfil_id];
+    const compradorNombre = comp?.apodo || comp?.nombre_completo || (a.comprador_uid?.slice(0,8) + '…');
+    const vendedorNombre = vend?.apodo || vend?.nombre_completo || (a.perfil_id?.slice(0,8) + '…');
+    const monto = '$' + (a.monto || 0).toLocaleString('es-AR', { maximumFractionDigits: 0 });
+    const fecha = new Date(a.created_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
+    const tipo = a.tipo_venta === 'subasta' ? '🔨 Subasta' : '🛒 Venta directa';
+    return `<div class="pago-card" id="pago-${a.id}">
+      <div class="pago-info">
+        <div class="pago-titulo">${escapeHtml(a.Titulo || '—')}</div>
+        <div class="pago-meta">
+          <span>${tipo}</span>
+          <span class="pago-monto">${monto}</span>
+          <span>📅 ${fecha}</span>
+          <span>👤 ${escapeHtml(compradorNombre)}</span>
+          <span>🏪 ${escapeHtml(vendedorNombre)}</span>
+        </div>
+      </div>
+      <button class="btn-confirmar" onclick="confirmarPago('${a.id}', this)">✅ Confirmar pago</button>
+    </div>`;
+  }).join('');
+}
+
+async function confirmarPago(articuloId, btn) {
+  if (!confirm('¿Confirmar la transferencia? El vendedor va a poder ver los datos del comprador.')) return;
+  btn.disabled = true;
+  btn.innerText = '⏳...';
+  const { error } = await _supabase.from('articulos').update({ pago_confirmado: true }).eq('id', articuloId);
+  if (error) {
+    alert('❌ Error: ' + error.message);
+    btn.disabled = false;
+    btn.innerText = '✅ Confirmar pago';
+  } else {
+    document.getElementById('pago-' + articuloId)?.remove();
+    const restantes = document.querySelectorAll('.pago-card').length;
+    document.getElementById('badge-pagos-pendientes').innerText = restantes;
+    if (!restantes) document.getElementById('seccion-pagos-pendientes').style.display = 'none';
+  }
+}
+
 async function init() {
   const { data: { session } } = await _supabase.auth.getSession();
   if (!session || session.user.email !== ADMIN_EMAIL) {
@@ -175,7 +275,7 @@ async function init() {
     return;
   }
   document.getElementById('contenido').style.display = 'block';
-  await cargarVentas();
+  await Promise.all([cargarPagosPendientes(), cargarVentas()]);
 }
 
 async function cargarVentas() {
