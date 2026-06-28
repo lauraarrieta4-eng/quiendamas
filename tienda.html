@@ -110,6 +110,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             display: flex; align-items: center; justify-content: center;
         }
 
+        /* ── FILTROS CATEGORÍA ── */
+        .cat-chip { display:inline-block; padding:6px 14px; border-radius:20px; border:1.5px solid #ddd; background:white; font-size:0.8em; font-weight:600; color:#555; cursor:pointer; margin-right:6px; white-space:nowrap; transition:all .15s; }
+        .cat-chip.activo { background:#c0392b; border-color:#c0392b; color:white; }
+
         /* ── GRILLA PRODUCTOS ── */
         .tienda-body { padding: 12px; }
         .productos-grid {
@@ -270,6 +274,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="tienda-chips" id="tienda-chips"></div>
     <div id="tienda-reputacion" style="margin-top:10px;font-size:0.82em;color:rgba(255,255,255,0.9);"></div>
 </div>
+
+<!-- Filtros de categoría -->
+<div id="filtros-cats" style="display:none;padding:10px 12px 0;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;"></div>
 
 <!-- Grilla de productos -->
 <div class="tienda-body">
@@ -483,6 +490,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
 
     // ── PRODUCTOS ─────────────────────────────────────────────────────
+    let _todosLosArts = [];
+    let _catActiva = 'Todos';
+
+    function renderFiltros() {
+        const cats = ['Todos', ...new Set(_todosLosArts.map(a => a.categoria).filter(Boolean))];
+        if (cats.length <= 2) return; // solo muestra si hay más de una categoría real
+        const wrap = document.getElementById('filtros-cats');
+        wrap.style.display = 'block';
+        wrap.innerHTML = cats.map(c =>
+            `<span class="cat-chip${c === _catActiva ? ' activo' : ''}" onclick="filtrarCat('${escapeHtml(c)}')">${escapeHtml(c)}</span>`
+        ).join('');
+    }
+
+    function filtrarCat(cat) {
+        _catActiva = cat;
+        renderFiltros();
+        const filtrados = cat === 'Todos' ? _todosLosArts : _todosLosArts.filter(a => a.categoria === cat);
+        renderProductos(filtrados);
+    }
+
     async function cargarProductos() {
         const { data: arts } = await _supabase.from('articulos')
             .select('*')
@@ -493,12 +520,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             .or('stock.is.null,stock.gt.0')
             .order('created_at', { ascending: false });
 
+        _todosLosArts = arts || [];
+        renderFiltros();
+
         const grid = document.getElementById('productos-grid');
-        if (!arts?.length) {
+        if (!_todosLosArts.length) {
             grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div>📦</div>Este comercio aún no tiene productos publicados.</div>';
             return;
         }
 
+        renderProductos(_todosLosArts);
+    }
+
+    function renderProductos(arts) {
+        const grid = document.getElementById('productos-grid');
         grid.innerHTML = '';
         for (const art of arts) {
             const esSubasta = art.tipo_venta === 'subasta';
