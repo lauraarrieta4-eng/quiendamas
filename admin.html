@@ -61,7 +61,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .login-card h2 { color: #E04891; margin-bottom: 10px; }
     .login-card p { color: #888; font-size: 0.9em; }
     @media (max-width: 700px) {
-      table { display: block; overflow-x: auto; }
+      .tabla-wrap { border-radius: 10px; }
+      table, thead, tbody, th, td, tr { display: block; }
+      thead { display: none; }
+      tr { background: white; border-bottom: 2px solid #f5e1e2; padding: 12px 14px; }
+      td { padding: 4px 0; border: none; font-size: 0.83em; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+      td::before { content: attr(data-label); color: #999; font-size: 0.78em; font-weight: 600; text-transform: uppercase; white-space: nowrap; flex-shrink: 0; }
+      td:empty { display: none; }
+      .acciones { justify-content: flex-end; }
+      .titulo-art { max-width: 160px; }
     }
     .pagos-seccion { background: white; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); padding: 20px 24px; margin-bottom: 20px; border-left: 5px solid #43a047; }
     .pagos-seccion h2 { font-size: 1em; color: #2e7d32; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
@@ -278,6 +286,8 @@ async function init() {
   await Promise.all([cargarPagosPendientes(), cargarVentas()]);
 }
 
+let _perfilesMap = {};
+
 async function cargarVentas() {
   const { data: ventas } = await _supabase
     .from('ventas')
@@ -285,6 +295,15 @@ async function cargarVentas() {
     .order('created_at', { ascending: false });
 
   todasLasVentas = ventas || [];
+
+  // Buscar nombres de compradores y vendedores
+  const ids = [...new Set((ventas || []).flatMap(v => [v.comprador_id, v.vendedor_id]).filter(Boolean))];
+  if (ids.length) {
+    const { data: perfs } = await _supabase.from('perfiles').select('id, apodo, nombre_completo').in('id', ids);
+    _perfilesMap = {};
+    (perfs || []).forEach(p => { _perfilesMap[p.id] = p.apodo || p.nombre_completo || null; });
+  }
+
   renderStats();
   renderTabla(todasLasVentas);
 }
@@ -323,8 +342,8 @@ function renderTabla(ventas) {
 
   document.getElementById('filas').innerHTML = ventas.map(v => {
     const fecha = new Date(v.created_at).toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'2-digit' });
-    const compradorLabel = v.comprador_id?.slice(0,8) + '…';
-    const vendedorLabel = v.vendedor_id?.slice(0,8) + '…';
+    const compradorLabel = _perfilesMap[v.comprador_id] || (v.comprador_id?.slice(0,8) + '…');
+    const vendedorLabel = _perfilesMap[v.vendedor_id] || (v.vendedor_id?.slice(0,8) + '…');
     const monto = '$' + (v.monto_total || 0).toLocaleString('es-AR', {maximumFractionDigits:0});
     const comision = '$' + (v.comision || 0).toLocaleString('es-AR', {maximumFractionDigits:0});
     const estado = v.estado_entrega || 'retenido';
@@ -333,14 +352,14 @@ function renderTabla(ventas) {
     const puedeReembolsar = estado !== 'reembolsado' && estado !== 'liberado';
 
     return `<tr id="fila-${v.id}">
-      <td>${fecha}</td>
-      <td><div class="titulo-art" title="${escapeHtml(v.titulo || '')}">${escapeHtml(v.titulo || '—')}</div></td>
-      <td>${compradorLabel}</td>
-      <td>${vendedorLabel}</td>
-      <td class="monto">${monto}</td>
-      <td class="comision">${comision}</td>
-      <td><span class="badge ${estado}">${estadoLabel(estado)}</span></td>
-      <td>
+      <td data-label="Fecha">${fecha}</td>
+      <td data-label="Artículo"><div class="titulo-art" title="${escapeHtml(v.titulo || '')}">${escapeHtml(v.titulo || '—')}</div></td>
+      <td data-label="Comprador">${escapeHtml(compradorLabel)}</td>
+      <td data-label="Vendedor">${escapeHtml(vendedorLabel)}</td>
+      <td data-label="Monto" class="monto">${monto}</td>
+      <td data-label="Comisión" class="comision">${comision}</td>
+      <td data-label="Estado"><span class="badge ${estado}">${estadoLabel(estado)}</span></td>
+      <td data-label="Acciones">
         <div class="acciones">
           ${puedeLiberar ? `<button class="btn-accion btn-liberar" onclick="liberar('${v.id}', '${v.mp_payment_id}', this)">💸 Liberar</button>` : ''}
           ${puedeReembolsar ? `<button class="btn-accion btn-reembolso" onclick="reembolsar('${v.id}', '${v.mp_payment_id}', ${v.monto_total}, this)">↩️ Reembolsar</button>` : ''}
