@@ -1542,7 +1542,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 const apodoEl = document.getElementById('apodo-' + art.id);
                 if (apodoEl && perfil) {
                     if (perfil.tipo_cuenta === 'negocio' && perfil.nombre_comercio) {
-                        apodoEl.innerHTML = `🏪 <a href="tienda.html?id=${art.perfil_id}" style="color:var(--rosa);text-decoration:none;font-weight:700;">${escapeHtml(perfil.nombre_comercio)}</a> <a href="tienda.html?id=${art.perfil_id}" style="display:inline-block;margin-left:6px;background:var(--rosa);color:white;font-size:0.72em;font-weight:700;padding:2px 8px;border-radius:10px;text-decoration:none;">Ver tienda →</a>`;
+                        apodoEl.innerHTML = `🏪 <a href="tienda.html?id=${art.perfil_id}" style="color:var(--rosa);text-decoration:none;font-weight:700;">${escapeHtml(perfil.nombre_comercio)}</a><br><a href="tienda.html?id=${art.perfil_id}" style="display:inline-block;margin-top:6px;background:var(--rosa);color:white;font-size:0.85em;font-weight:700;padding:7px 16px;border-radius:20px;text-decoration:none;letter-spacing:0.3px;">🏪 Ver tienda →</a>`;
                         apodoEl.onclick = null;
                     } else {
                         const nombre = perfil.apodo || perfil.nombre_completo || 'Usuario';
