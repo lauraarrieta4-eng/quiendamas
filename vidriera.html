@@ -602,15 +602,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <button class="btn-filtro cat" data-sub id="cat-btn-Tecnologia"   onclick="filtrarCategoria('Tecnologia')">📱 Tecnología</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Moda"         onclick="filtrarCategoria('Moda')">👗 Moda</button>
             <button class="btn-filtro cat"        id="cat-btn-Joyas"          onclick="filtrarCategoria('Joyas')">⌚ Joyas</button>
-            <button class="btn-filtro cat"        id="cat-btn-Belleza"        onclick="filtrarCategoria('Belleza')">💄 Belleza</button>
+            <button class="btn-filtro cat" data-sub id="cat-btn-Belleza"        onclick="filtrarCategoria('Belleza')">💄 Belleza</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Construccion" onclick="filtrarCategoria('Construccion')">🏗️ Construcción</button>
             <button class="btn-filtro cat"        id="cat-btn-Antiguedades" onclick="filtrarCategoria('Antiguedades')">🏺 Antigüedades y col.</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Vivero"       onclick="filtrarCategoria('Vivero')">🌿 Vivero</button>
-            <button class="btn-filtro cat"        id="cat-btn-Hogar"          onclick="filtrarCategoria('Hogar')">🏠 Hogar</button>
+            <button class="btn-filtro cat" data-sub id="cat-btn-Hogar"          onclick="filtrarCategoria('Hogar')">🏠 Hogar</button>
             <button class="btn-filtro cat"        id="cat-btn-Electro"        onclick="filtrarCategoria('Electro')">🔌 Electrodomésticos</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Alimentos"    onclick="filtrarCategoria('Alimentos')">🛒 Alimentos y Bebidas</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Infoproductos" onclick="filtrarCategoria('Infoproductos')">📚 Infoproductos</button>
             <button class="btn-filtro cat" data-sub id="cat-btn-Deporte"       onclick="filtrarCategoria('Deporte')">🏅 Deporte</button>
+            <button class="btn-filtro cat" data-sub id="cat-btn-Mascotas"      onclick="filtrarCategoria('Mascotas')">🐾 Mascotas</button>
+            <button class="btn-filtro cat"        id="cat-btn-Artesanias"     onclick="filtrarCategoria('Artesanias')">🧶 Artesanías</button>
             <button class="btn-filtro cat"        id="cat-btn-Otros"          onclick="filtrarCategoria('Otros')">📦 Otros</button>
         </div>
         <button class="filtros-arrow der" onclick="scrollFiltros('filtros-productos', 200)">›</button>
@@ -791,10 +793,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             // ── ALIMENTOS Y BEBIDAS ───────────────────────────────────
             'Alimentos': [
                 'Alimentos',
-                'Alimentos-Almacen',
-                'Alimentos-Bebidas',
-                'Alimentos-Gourmet',
+                'Alimentos-Almacen', 'Alimentos-Bebidas', 'Alimentos-Gourmet',
+                'Alimentos-Verduleria', 'Alimentos-Panaderia',
+                'Alimentos-Naturista', 'Alimentos-Limpieza',
             ],
+
+            // ── BELLEZA Y CUIDADO PERSONAL ────────────────────────────
+            'Belleza': [
+                'Belleza',
+                'Belleza-Fragancias', 'Belleza-Maquillaje',
+                'Belleza-Cabello', 'Belleza-Piel',
+            ],
+
+            // ── HOGAR Y MUEBLES ───────────────────────────────────────
+            'Hogar': [
+                'Hogar',
+                'Hogar-Living', 'Hogar-Cocina', 'Hogar-Dormitorio',
+                'Hogar-Guardado', 'Hogar-Iluminacion', 'Hogar-Jardin',
+            ],
+
+            // ── MASCOTAS ──────────────────────────────────────────────
+            'Mascotas': [
+                'Mascotas',
+                'Mascotas-Alimentos', 'Mascotas-Accesorios', 'Mascotas-Higiene',
+            ],
+
+            // ── ARTESANÍAS ────────────────────────────────────────────
+            'Artesanias': [ 'Artesanias' ],
         };
 
         // ─────────────────────────────────────────────────────────────
@@ -896,9 +921,38 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
             // ── ALIMENTOS Y BEBIDAS ───────────────────────────────────
             'Alimentos': [
-                { value: 'Alimentos-Almacen',  label: '🧺 Almacén' },
-                { value: 'Alimentos-Bebidas',  label: '🥤 Bebidas' },
-                { value: 'Alimentos-Gourmet',  label: '🍷 Productos Gourmet' },
+                { value: 'Alimentos-Verduleria', label: '🥦 Verdulería' },
+                { value: 'Alimentos-Panaderia',  label: '🥐 Panadería y Pastelería' },
+                { value: 'Alimentos-Almacen',    label: '🧺 Almacén' },
+                { value: 'Alimentos-Naturista',  label: '🌿 Naturista' },
+                { value: 'Alimentos-Bebidas',    label: '🥤 Bebidas' },
+                { value: 'Alimentos-Gourmet',    label: '🍷 Gourmet' },
+                { value: 'Alimentos-Limpieza',   label: '🧴 Limpieza' },
+            ],
+
+            // ── BELLEZA Y CUIDADO PERSONAL ────────────────────────────
+            'Belleza': [
+                { value: 'Belleza-Fragancias', label: '🌸 Fragancias' },
+                { value: 'Belleza-Maquillaje', label: '💄 Maquillaje' },
+                { value: 'Belleza-Cabello',    label: '💆 Cabello' },
+                { value: 'Belleza-Piel',       label: '✨ Cuidado piel' },
+            ],
+
+            // ── HOGAR Y MUEBLES ───────────────────────────────────────
+            'Hogar': [
+                { value: 'Hogar-Living',      label: '🛋️ Living y comedor' },
+                { value: 'Hogar-Cocina',      label: '🍳 Cocina y bazar' },
+                { value: 'Hogar-Dormitorio',  label: '🛏️ Dormitorio' },
+                { value: 'Hogar-Guardado',    label: '🗄️ Guardado' },
+                { value: 'Hogar-Iluminacion', label: '💡 Iluminación' },
+                { value: 'Hogar-Jardin',      label: '🪑 Jardín' },
+            ],
+
+            // ── MASCOTAS ──────────────────────────────────────────────
+            'Mascotas': [
+                { value: 'Mascotas-Alimentos',  label: '🦴 Alimentos' },
+                { value: 'Mascotas-Accesorios', label: '🎾 Accesorios' },
+                { value: 'Mascotas-Higiene',    label: '🛁 Higiene' },
             ],
         };
 
@@ -969,9 +1023,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             'Antiguedades-Coleccionables': 'Antigüedades y col.',
             // Alimentos y Bebidas
             'Alimentos': 'Alimentos y Bebidas',
-            'Alimentos-Almacen':  'Almacén',
-            'Alimentos-Bebidas':  'Bebidas',
-            'Alimentos-Gourmet':  'Productos Gourmet',
+            'Alimentos-Almacen':    'Almacén',
+            'Alimentos-Bebidas':    'Bebidas',
+            'Alimentos-Gourmet':    'Productos Gourmet',
+            'Alimentos-Verduleria': 'Verdulería',
+            'Alimentos-Panaderia':  'Panadería y Pastelería',
+            'Alimentos-Naturista':  'Almacén Naturista',
+            'Alimentos-Limpieza':   'Productos de Limpieza',
+            // Belleza y Cuidado Personal
+            'Belleza': 'Belleza y Cuidado Personal',
+            'Belleza-Fragancias': 'Fragancias',
+            'Belleza-Maquillaje': 'Maquillaje',
+            'Belleza-Cabello':    'Cuidado del cabello',
+            'Belleza-Piel':       'Cuidado de la piel',
+            // Hogar y Muebles
+            'Hogar': 'Hogar y Muebles',
+            'Hogar-Living':      'Living y comedor',
+            'Hogar-Cocina':      'Cocina y bazar',
+            'Hogar-Dormitorio':  'Muebles dormitorio',
+            'Hogar-Guardado':    'Muebles de guardado',
+            'Hogar-Iluminacion': 'Iluminación',
+            'Hogar-Jardin':      'Muebles de jardín',
+            // Mascotas
+            'Mascotas': 'Mascotas',
+            'Mascotas-Alimentos':  'Alimentos para mascotas',
+            'Mascotas-Accesorios': 'Accesorios para mascotas',
+            'Mascotas-Higiene':    'Higiene para mascotas',
+            // Artesanías
+            'Artesanias': 'Artesanías',
             // Servicios (nuevas categorías)
             'Profesionales-Administrativos': 'Profesionales y administrativos',
             'Tecnologia-Digital': 'Tecnología y servicios digitales',
