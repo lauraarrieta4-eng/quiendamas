@@ -389,7 +389,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         if (p.descripcion_comercio) document.getElementById('tienda-desc').innerText = p.descripcion_comercio;
 
         if (p.avatar_url) {
-            document.getElementById('tienda-logo-wrap').innerHTML = `<img src="${p.avatar_url}" class="tienda-logo" alt="logo">`;
+            document.getElementById('tienda-logo-wrap').innerHTML = `<img src="${escapeHtml(p.avatar_url)}" class="tienda-logo" alt="logo">`;
         }
 
         const chips = [];

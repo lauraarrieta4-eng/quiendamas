@@ -334,7 +334,7 @@ function renderTabla(ventas) {
 
     return `<tr id="fila-${v.id}">
       <td>${fecha}</td>
-      <td><div class="titulo-art" title="${v.titulo || ''}">${v.titulo || '—'}</div></td>
+      <td><div class="titulo-art" title="${escapeHtml(v.titulo || '')}">${escapeHtml(v.titulo || '—')}</div></td>
       <td>${compradorLabel}</td>
       <td>${vendedorLabel}</td>
       <td class="monto">${monto}</td>

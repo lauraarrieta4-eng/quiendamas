@@ -2463,7 +2463,7 @@ async function eliminarPublicacion(id) {
             if (perfil) {
                 const badgeVerif = perfil.verificado ? ' <span class="badge-verificado">✅ Verificado</span>' : '';
                 const apodoEl = document.getElementById('perfil-apodo');
-                apodoEl.innerHTML = (perfil.apodo || perfil.nombre_completo || 'Usuario') + badgeVerif;
+                apodoEl.innerHTML = escapeHtml(perfil.apodo || perfil.nombre_completo || 'Usuario') + badgeVerif;
                 const fecha = new Date(perfil.created_at);
                 const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
                 const ubicacion = [perfil.ciudad, perfil.provincia].filter(Boolean).join(', ');
@@ -2471,7 +2471,7 @@ async function eliminarPublicacion(id) {
                 document.getElementById('perfil-desde').innerText = `Miembro desde ${meses[fecha.getMonth()]} ${fecha.getFullYear()}${ciudadTexto}`;
                 const avatarEl = document.getElementById('perfil-avatar-container');
                 if (perfil.avatar_url) {
-                    avatarEl.innerHTML = `<img src="${perfil.avatar_url}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">`;
+                    avatarEl.innerHTML = `<img src="${escapeHtml(perfil.avatar_url)}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">`;
                 } else { avatarEl.innerHTML = '👤'; }
             }
             const [{ data: perfilVentas }, { data: comprasData }] = await Promise.all([
