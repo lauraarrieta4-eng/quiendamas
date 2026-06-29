@@ -2348,7 +2348,7 @@ _ventasStockMap = {};
                     <div id="modal-art-botones" style="margin-bottom:12px;">${boton}</div>
                     <div style="display:flex;gap:8px;">
                         <button onclick="cerrarModalArticulo();abrirModalPreguntas('${art.id}','${art.perfil_id}')" style="flex:1;background:#f7f7f7;border:none;border-radius:12px;padding:12px 8px;font-size:0.83em;cursor:pointer;font-weight:600;color:#444;">❓ Preguntas</button>
-                        <button onclick="compartir('${escapeHtml(art.Titulo||'')}','${art.id}')" style="flex:1;background:#f7f7f7;border:none;border-radius:12px;padding:12px 8px;font-size:0.83em;cursor:pointer;font-weight:600;color:#444;">📤 Compartir</button>
+                        <button onclick="compartirModalActual()" style="flex:1;background:#f7f7f7;border:none;border-radius:12px;padding:12px 8px;font-size:0.83em;cursor:pointer;font-weight:600;color:#444;">📤 Compartir</button>
                     </div>
                 </div>`;
 
@@ -2369,6 +2369,12 @@ _ventasStockMap = {};
 
         function cerrarModalArticulo() {
             document.getElementById('modal-deeplink').style.display = 'none';
+        }
+
+        function compartirModalActual() {
+            const entry = _articulosCache[_modalArtId];
+            if (!entry) return;
+            compartir(entry.art.Titulo || '', _modalArtId);
         }
 
         // Swipe táctil en el modal (se registra una sola vez)
