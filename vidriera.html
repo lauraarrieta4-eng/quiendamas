@@ -1546,7 +1546,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 const apodoEl = document.getElementById('apodo-' + art.id);
                 if (apodoEl && perfil) {
                     if (perfil.tipo_cuenta === 'negocio' && perfil.nombre_comercio) {
-                        apodoEl.innerHTML = `🏪 <a href="tienda.html?id=${art.perfil_id}" style="color:var(--rosa);text-decoration:none;font-weight:700;">${escapeHtml(perfil.nombre_comercio)}</a><br><a href="tienda.html?id=${art.perfil_id}" style="display:inline-block;margin-top:6px;background:var(--rosa);color:white;font-size:0.85em;font-weight:700;padding:7px 16px;border-radius:20px;text-decoration:none;letter-spacing:0.3px;">🏪 Ver tienda →</a>`;
+                        apodoEl.innerHTML = `🏪 <a href="tienda.html?id=${art.perfil_id}" style="color:var(--rosa);text-decoration:none;font-weight:700;">${escapeHtml(perfil.nombre_comercio)}</a><br><div style="display:flex;align-items:center;gap:8px;margin-top:6px;"><a href="tienda.html?id=${art.perfil_id}" style="display:inline-block;background:var(--rosa);color:white;font-size:0.82em;font-weight:700;padding:6px 14px;border-radius:20px;text-decoration:none;">🏪 Ver tienda →</a><button onclick="abrirModalPerfil('${art.perfil_id}')" style="background:#f5f5f5;border:none;border-radius:20px;padding:6px 12px;font-size:0.78em;font-weight:600;color:#555;cursor:pointer;">⭐ Reseñas</button></div>`;
                         apodoEl.onclick = null;
                     } else {
                         const nombre = perfil.apodo || perfil.nombre_completo || 'Usuario';
@@ -1564,7 +1564,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             // Toda la tarjeta abre el modal; los botones cortan la propagación
             div.style.cursor = 'pointer';
             div.addEventListener('click', () => abrirModalArticulo(art.id));
-            div.querySelectorAll('button, a').forEach(el => {
+            div.querySelectorAll('button, a, .apodo-art').forEach(el => {
                 el.addEventListener('click', e => e.stopPropagation());
             });
 
