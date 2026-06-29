@@ -2587,9 +2587,57 @@ async function eliminarPublicacion(id) {
         }
         function cerrarModalPerfil() { document.getElementById('modal-perfil').classList.remove('activo'); }
 
+        async function deepLinkArticulo() {
+            const artId = new URLSearchParams(window.location.search).get('art');
+            if (!artId) return;
+
+            // Si la tarjeta ya está en el feed, scrollear y resaltar
+            const card = document.getElementById('art-' + artId);
+            if (card) {
+                setTimeout(() => {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    card.style.transition = 'box-shadow 0.4s';
+                    card.style.boxShadow = '0 0 0 3px var(--rosa)';
+                    setTimeout(() => { card.style.boxShadow = ''; }, 2200);
+                }, 300);
+                return;
+            }
+
+            // No está en el feed: buscar en Supabase y mostrar modal
+            const { data: art } = await _supabase.from('articulos').select('*').eq('id', artId).eq('activo', true).maybeSingle();
+            if (!art) return;
+
+            const precio = (art.precio_base || 0).toLocaleString('es-AR');
+            const foto = art.foto_url
+                ? `<img src="${escapeHtml(art.foto_url)}" style="width:100%;height:220px;object-fit:cover;border-radius:16px 16px 0 0;">`
+                : `<div style="height:80px;background:#f5f5f5;border-radius:16px 16px 0 0;display:flex;align-items:center;justify-content:center;font-size:2em;">📷</div>`;
+
+            let botones = '';
+            if (!art.comprador_id) {
+                if (art.acepta_online && art.acepta_presencial) {
+                    botones = `<div style="display:flex;gap:8px;"><button onclick="pagarOnline('${art.id}',this);document.getElementById('modal-deeplink').style.display='none'" style="flex:1;background:#009ee3;color:white;border:none;padding:12px;border-radius:12px;font-weight:700;cursor:pointer;font-size:0.88em;">💳 Online</button><button onclick="comprarAhora('${art.id}');document.getElementById('modal-deeplink').style.display='none'" style="flex:1;background:#43a047;color:white;border:none;padding:12px;border-radius:12px;font-weight:700;cursor:pointer;font-size:0.88em;">🤝 En persona</button></div>`;
+                } else if (art.acepta_online) {
+                    botones = `<button onclick="pagarOnline('${art.id}',this);document.getElementById('modal-deeplink').style.display='none'" style="width:100%;background:#009ee3;color:white;border:none;padding:14px;border-radius:12px;font-weight:700;cursor:pointer;font-size:0.92em;">💳 Pagar online — $${precio}</button>`;
+                } else if (art.acepta_presencial) {
+                    botones = `<button onclick="comprarAhora('${art.id}');document.getElementById('modal-deeplink').style.display='none'" style="width:100%;background:#43a047;color:white;border:none;padding:14px;border-radius:12px;font-weight:700;cursor:pointer;font-size:0.92em;">🤝 Coordinar en persona — $${precio}</button>`;
+                }
+            }
+
+            document.getElementById('deeplink-content').innerHTML = `
+                ${foto}
+                <div style="padding:16px 18px 20px;">
+                    <div style="font-size:1.1em;font-weight:700;color:#222;margin-bottom:6px;">${escapeHtml(art.Titulo || '')}</div>
+                    <div style="font-size:1.5em;font-weight:800;color:var(--rosa);margin-bottom:12px;">$${precio}</div>
+                    ${art.descripcion ? `<div style="font-size:0.85em;color:#555;margin-bottom:14px;line-height:1.5;">${escapeHtml(art.descripcion)}</div>` : ''}
+                    ${botones}
+                </div>`;
+            document.getElementById('modal-deeplink').style.display = 'flex';
+        }
+
         (async () => {
             await revisarSesion();
-            cargarArticulos('Todos');
+            await cargarArticulos('Todos');
+            deepLinkArticulo();
         })();
     </script>
     <script>
@@ -2712,6 +2760,14 @@ async function eliminarPublicacion(id) {
     <button class="modal-desc-cerrar" onclick="cerrarDescripcion()">✕</button>
     <div class="modal-desc-titulo" id="modal-desc-titulo"></div>
     <div class="modal-desc-texto" id="modal-desc-texto"></div>
+  </div>
+</div>
+
+<!-- Modal deep link (artículo compartido) -->
+<div id="modal-deeplink" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:5000;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;">
+  <div style="background:white;border-radius:20px;max-width:420px;width:100%;max-height:88vh;overflow-y:auto;position:relative;">
+    <button onclick="document.getElementById('modal-deeplink').style.display='none'" style="position:absolute;top:10px;right:12px;background:rgba(0,0,0,0.35);color:white;border:none;border-radius:50%;width:30px;height:30px;font-size:1em;cursor:pointer;z-index:1;">✕</button>
+    <div id="deeplink-content"></div>
   </div>
 </div>
 
