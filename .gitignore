@@ -3,3 +3,4 @@ archivos relacionados/
 *.xlsx
 *.zip
 node_modules/
+og-worker.js
