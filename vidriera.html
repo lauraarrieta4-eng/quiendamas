@@ -1535,13 +1535,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 ${relojHtml}
                 ${boton}
                 ${btnCalificar}
-                <div class="acciones-sec">
-                    <button class="btn-preguntar" onclick="abrirModalPreguntas('${art.id}', '${art.perfil_id}')">${(esServicio || esAviso) ? '💬' : '❓'} <span class="btn-txt">${(esServicio || esAviso) ? 'Consultar' : 'Preguntas'}</span></button>
-                    <button class="btn-compartir" onclick="abrirDescripcion('${art.id}')">📄 <span class="btn-txt">Descripción</span></button>
-                    <button class="btn-compartir-icono" onclick="compartir('${art.Titulo}', '${art.id}')" title="Compartir"><img src="share_8539544.png" style="width:18px;height:18px;object-fit:contain;opacity:0.6;"></button>
-                    ${esMia && art.tipo_venta !== 'subasta' ? `<button class="btn-pausar ${art.activo ? '' : 'reactivar'}" id="btn-pausa-${art.id}" onclick="pausarPublicacion('${art.id}', ${art.activo})">${art.activo ? '⏸' : '▶️'} <span class="btn-txt">${art.activo ? 'Pausar' : 'Reactivar'}</span></button>` : ''}
-                    ${esMia ? `<button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ <span class="btn-txt">Eliminar</span></button>` : ''}
-                </div>
+                ${esMia ? `<div class="acciones-sec">
+                    ${art.tipo_venta !== 'subasta' ? `<button class="btn-pausar ${art.activo ? '' : 'reactivar'}" id="btn-pausa-${art.id}" onclick="pausarPublicacion('${art.id}', ${art.activo})">${art.activo ? '⏸' : '▶️'} <span class="btn-txt">${art.activo ? 'Pausar' : 'Reactivar'}</span></button>` : ''}
+                    <button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ <span class="btn-txt">Eliminar</span></button>
+                </div>` : ''}
             `;
             lista.appendChild(div);
 
@@ -1562,10 +1559,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
             fotosCache[art.id] = todasFotos;
             _descripciones[art.id] = { titulo: art.Titulo, texto: art.descripcion || 'Sin descripción.' };
-            const imgEl = div.querySelector('.foto-art');
-            if (imgEl) {
-                imgEl.addEventListener('click', () => abrirCarrusel(fotosCache[art.id], 0));
-            }
+            _articulosCache[art.id] = { art, boton };
+
+            // Toda la tarjeta abre el modal; los botones cortan la propagación
+            div.style.cursor = 'pointer';
+            div.addEventListener('click', () => abrirModalArticulo(art.id));
+            div.querySelectorAll('button, a').forEach(el => {
+                el.addEventListener('click', e => e.stopPropagation());
+            });
 
             if (!esVentaDirecta) iniciarReloj(art.id, art.finaliza_en);
 
@@ -2281,6 +2282,115 @@ _ventasStockMap = {};
         let carruselFotos = [];
         let carruselIndex = 0;
         let fotosCache = {};
+        const _articulosCache = {}; // id → { art, boton }
+        let _modalArtId = null;
+        let _modalFotoIdx = 0;
+
+        function abrirModalArticulo(artId) {
+            const entry = _articulosCache[artId];
+            if (!entry) return;
+            _modalArtId = artId;
+            _modalFotoIdx = 0;
+            _renderModalContenido();
+            document.getElementById('modal-deeplink').style.display = 'flex';
+        }
+
+        function _renderModalContenido() {
+            const entry = _articulosCache[_modalArtId];
+            if (!entry) return;
+            const { art, boton } = entry;
+            const fotos = fotosCache[_modalArtId] || [];
+            const esVD = art.tipo_venta === 'venta';
+            const precio = (esVD ? (art.precio_base || 0) : (art.precio_actual || art.precio_base || 0)).toLocaleString('es-AR');
+
+            // ── Foto actual ──────────────────────────────────────────────
+            const foto = fotos[_modalFotoIdx] || '';
+            const esVideo = /\.(mp4|mov|webm|avi|mkv|m4v)(\?|#|$)/i.test(foto);
+            let fotoHtml;
+            if (!foto) {
+                fotoHtml = `<div style="height:200px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:3em;color:#ddd;">📷</div>`;
+            } else if (esVideo) {
+                fotoHtml = `<video src="${escapeHtml(foto)}" style="width:100%;height:270px;object-fit:cover;" muted autoplay loop playsinline></video>`;
+            } else {
+                fotoHtml = `<img src="${escapeHtml(foto)}" style="width:100%;height:270px;object-fit:cover;cursor:zoom-in;display:block;user-select:none;" draggable="false" onclick="abrirCarrusel(fotosCache['${_modalArtId}'],${_modalFotoIdx})">`;
+            }
+
+            // ── Flechas ──────────────────────────────────────────────────
+            const btnPrev = (_modalFotoIdx > 0)
+                ? `<button onclick="_modalNavFoto(-1)" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.38);color:white;border:none;border-radius:50%;width:36px;height:36px;font-size:1.3em;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;">‹</button>` : '';
+            const btnNext = (_modalFotoIdx < fotos.length - 1)
+                ? `<button onclick="_modalNavFoto(1)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.38);color:white;border:none;border-radius:50%;width:36px;height:36px;font-size:1.3em;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;">›</button>` : '';
+
+            // ── Puntos indicadores ───────────────────────────────────────
+            const dots = fotos.length > 1
+                ? `<div style="display:flex;justify-content:center;gap:6px;padding:10px 0 2px;">
+                    ${fotos.map((_, i) => `<span onclick="_modalNavFotoDirect(${i})" style="width:${i===_modalFotoIdx?'20px':'7px'};height:7px;border-radius:10px;background:${i===_modalFotoIdx?'var(--rosa)':'#ddd'};cursor:pointer;transition:all .25s;display:inline-block;"></span>`).join('')}
+                   </div>` : '';
+
+            // ── Categoría ────────────────────────────────────────────────
+            const catHtml = art.categoria
+                ? `<span style="display:inline-block;background:#fff0f0;color:var(--rosa);font-size:0.72em;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:10px;">${escapeHtml(labelCat(art.categoria))}</span>` : '';
+
+            // ── Descripción ──────────────────────────────────────────────
+            const desc = art.descripcion
+                ? `<div style="font-size:0.86em;color:#666;line-height:1.6;margin-bottom:16px;white-space:pre-line;">${escapeHtml(art.descripcion)}</div>` : '';
+
+            document.getElementById('deeplink-content').innerHTML = `
+                <div style="position:relative;border-radius:20px 20px 0 0;overflow:hidden;background:#f0f0f0;">
+                    ${fotoHtml}${btnPrev}${btnNext}
+                </div>
+                ${dots}
+                <div style="padding:14px 18px 22px;">
+                    ${catHtml}
+                    <div style="font-size:1.1em;font-weight:700;color:#222;margin-bottom:6px;line-height:1.3;">${escapeHtml(art.Titulo || '')}</div>
+                    <div style="font-size:1.65em;font-weight:800;color:var(--rosa);margin-bottom:14px;">$${precio}</div>
+                    ${desc}
+                    <div id="modal-art-botones" style="margin-bottom:12px;">${boton}</div>
+                    <div style="display:flex;gap:8px;">
+                        <button onclick="cerrarModalArticulo();abrirModalPreguntas('${art.id}','${art.perfil_id}')" style="flex:1;background:#f7f7f7;border:none;border-radius:12px;padding:12px 8px;font-size:0.83em;cursor:pointer;font-weight:600;color:#444;">❓ Preguntas</button>
+                        <button onclick="compartir('${escapeHtml(art.Titulo||'')}','${art.id}')" style="flex:1;background:#f7f7f7;border:none;border-radius:12px;padding:12px 8px;font-size:0.83em;cursor:pointer;font-weight:600;color:#444;">📤 Compartir</button>
+                    </div>
+                </div>`;
+
+            document.querySelectorAll('#modal-art-botones button').forEach(btn => {
+                btn.addEventListener('click', cerrarModalArticulo);
+            });
+        }
+
+        function _modalNavFoto(dir) {
+            const fotos = fotosCache[_modalArtId] || [];
+            _modalFotoIdx = Math.max(0, Math.min(fotos.length - 1, _modalFotoIdx + dir));
+            _renderModalContenido();
+        }
+        function _modalNavFotoDirect(idx) {
+            _modalFotoIdx = idx;
+            _renderModalContenido();
+        }
+
+        function cerrarModalArticulo() {
+            document.getElementById('modal-deeplink').style.display = 'none';
+        }
+
+        // Swipe táctil en el modal (se registra una sola vez)
+        (function() {
+            let _sx = 0, _sy = 0;
+            document.addEventListener('DOMContentLoaded', () => {
+                const wrap = document.getElementById('modal-deeplink');
+                if (!wrap) return;
+                wrap.addEventListener('touchstart', e => {
+                    _sx = e.touches[0].clientX;
+                    _sy = e.touches[0].clientY;
+                }, { passive: true });
+                wrap.addEventListener('touchend', e => {
+                    if (!_modalArtId) return;
+                    const dx = e.changedTouches[0].clientX - _sx;
+                    const dy = e.changedTouches[0].clientY - _sy;
+                    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 45) {
+                        _modalNavFoto(dx < 0 ? 1 : -1);
+                    }
+                }, { passive: true });
+            });
+        })();
 
         function abrirCarrusel(fotos, index) {
             carruselFotos = fotos;
@@ -2596,9 +2706,7 @@ async function eliminarPublicacion(id) {
             if (card) {
                 setTimeout(() => {
                     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    card.style.transition = 'box-shadow 0.4s';
-                    card.style.boxShadow = '0 0 0 3px var(--rosa)';
-                    setTimeout(() => { card.style.boxShadow = ''; }, 2200);
+                    abrirModalArticulo(artId);
                 }, 300);
                 return;
             }
@@ -2763,10 +2871,10 @@ async function eliminarPublicacion(id) {
   </div>
 </div>
 
-<!-- Modal deep link (artículo compartido) -->
-<div id="modal-deeplink" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:5000;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;">
-  <div style="background:white;border-radius:20px;max-width:420px;width:100%;max-height:88vh;overflow-y:auto;position:relative;">
-    <button onclick="document.getElementById('modal-deeplink').style.display='none'" style="position:absolute;top:10px;right:12px;background:rgba(0,0,0,0.35);color:white;border:none;border-radius:50%;width:30px;height:30px;font-size:1em;cursor:pointer;z-index:1;">✕</button>
+<!-- Modal artículo (detalle + carrusel) -->
+<div id="modal-deeplink" onclick="if(event.target===this)cerrarModalArticulo()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:5000;align-items:flex-end;justify-content:center;padding:0;box-sizing:border-box;">
+  <div style="background:white;border-radius:20px 20px 0 0;max-width:480px;width:100%;max-height:92vh;overflow-y:auto;position:relative;-webkit-overflow-scrolling:touch;">
+    <button onclick="cerrarModalArticulo()" style="position:absolute;top:12px;right:14px;background:rgba(0,0,0,0.32);color:white;border:none;border-radius:50%;width:30px;height:30px;font-size:1em;cursor:pointer;z-index:10;line-height:1;">✕</button>
     <div id="deeplink-content"></div>
   </div>
 </div>
