@@ -2468,7 +2468,7 @@ _ventasStockMap = {};
         }
 
         async function compartir(titulo, id) {
-            const url = 'https://quiendamas-og.lauraarrieta4.workers.dev?art=' + id;
+            const url = 'https://quiendamasapp.com.ar/vidriera.html?art=' + id;
             if (navigator.share) {
                 try { await navigator.share({ title: titulo, text: '¡Mirá esta publicación en Quiéndamas!', url }); } catch(e) {}
             } else {
