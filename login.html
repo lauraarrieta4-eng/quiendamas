@@ -279,22 +279,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         }
 
         async function manejarCallbackGoogle(user) {
-            const { data: perfil } = await _supabase.from('perfiles').select('id').eq('id', user.id).maybeSingle();
-            if (!perfil) {
-                const meta = user.user_metadata;
-                const nombre = meta.full_name || meta.name || user.email?.split('@')[0] || 'Usuario';
-                const apodo = generarApodo(nombre);
-                await _supabase.from('perfiles').insert([{
-                    id: user.id,
-                    nombre_completo: nombre,
-                    apodo: apodo,
-                    cuil: '',
-                    direccion: '',
-                    telefono: '',
-                    ciudad: '',
-                    provincia: ''
-                }]);
-            }
+            try {
+                const { data: perfil } = await _supabase.from('perfiles').select('id').eq('id', user.id).maybeSingle();
+                if (!perfil) {
+                    const meta = user.user_metadata;
+                    const nombre = meta.full_name || meta.name || user.email?.split('@')[0] || 'Usuario';
+                    const apodo = generarApodo(nombre);
+                    await _supabase.from('perfiles').insert([{
+                        id: user.id,
+                        nombre_completo: nombre,
+                        apodo: apodo,
+                        cuil: '',
+                        direccion: '',
+                        telefono: '',
+                        ciudad: ''
+                    }]);
+                }
+            } catch(e) {}
             window.location.href = 'vidriera.html';
         }
 
@@ -305,15 +306,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 return;
             }
 
-            // Callback de Google OAuth (PKCE: viene con ?code= en la URL)
             const params = new URLSearchParams(window.location.search);
             if (params.get('code')) {
                 const msg = document.getElementById('mensaje');
                 msg.style.color = 'blue';
                 msg.innerText = '⏳ Completando inicio de sesión con Google...';
-                const { data, error } = await _supabase.auth.exchangeCodeForSession(params.get('code'));
-                if (error) { msg.style.color = 'red'; msg.innerText = '❌ ' + error.message; return; }
-                await manejarCallbackGoogle(data.session.user);
+
+                let procesado = false;
+
+                // Supabase v2 procesa el código automáticamente; esperamos el evento
+                _supabase.auth.onAuthStateChange(async (event, session) => {
+                    if (event === 'SIGNED_IN' && session && !procesado) {
+                        procesado = true;
+                        await manejarCallbackGoogle(session.user);
+                    }
+                });
+
+                // Por si ya está procesado antes del listener
+                const { data: { session } } = await _supabase.auth.getSession();
+                if (session && !procesado) {
+                    procesado = true;
+                    await manejarCallbackGoogle(session.user);
+                }
             }
         });
 
