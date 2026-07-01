@@ -280,9 +280,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         async function manejarCallbackGoogle(user) {
             try {
-                const { data: perfil } = await _supabase.from('perfiles').select('id').eq('id', user.id).maybeSingle();
+                const { data: perfil } = await _supabase.from('perfiles').select('id, cuil').eq('id', user.id).maybeSingle();
                 if (!perfil) {
-                    // Usuario nuevo de Google: crear perfil mínimo
+                    // Usuario nuevo de Google: crear perfil mínimo y pedir que complete datos
                     const meta = user.user_metadata;
                     const nombre = meta.full_name || meta.name || user.email?.split('@')[0] || 'Usuario';
                     const apodo = generarApodo(nombre);
@@ -295,6 +295,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         telefono: '',
                         ciudad: ''
                     }]);
+                    window.location.href = 'completar-perfil.html';
+                    return;
+                }
+                if (!perfil.cuil) {
+                    window.location.href = 'completar-perfil.html';
+                    return;
                 }
             } catch(e) {}
             window.location.href = 'vidriera.html';
