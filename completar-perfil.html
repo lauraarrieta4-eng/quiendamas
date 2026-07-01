@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#43a047">
+    <link rel="apple-touch-icon" href="logo.jpg">
+    <title>Completar perfil — Quiéndamas</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <style>
+        :root { --rosa: #2E7D32; --lila: #C8E6C9; --rosa-claro: #F1F8E9; --verde-suave: #E8F5E9; --verde-lima: #A5D6A7; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--rosa-claro); display: flex; justify-content: center; padding: 15px; margin: 0; min-height: 100vh; align-items: flex-start; }
+        .card { background: white; padding: 28px; border-radius: 16px; box-shadow: 0 6px 24px rgba(46,125,50,0.15); width: 100%; max-width: 400px; border-top: 5px solid var(--verde-lima); margin: 20px 0; }
+        .logo { text-align: center; margin-bottom: 18px; }
+        .logo img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid var(--verde-lima); }
+        .logo .app-name { margin-top: 6px; font-weight: 900; font-size: 1.1em; color: #43a047; }
+        h2 { color: var(--rosa); text-align: center; margin: 0 0 6px; font-size: 1.3em; }
+        .subtitulo { text-align: center; color: #777; font-size: 0.88em; margin-bottom: 20px; }
+        label { display: block; margin-top: 14px; font-weight: bold; font-size: 0.9em; color: #333; }
+        input, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid var(--lila); border-radius: 10px; font-size: 16px; outline: none; transition: border 0.2s; background: white; color: #333; }
+        input:focus, select:focus { border-color: var(--rosa); box-shadow: 0 0 0 2px rgba(46,125,50,0.1); }
+        select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+        .hint { font-size: 0.75em; color: #999; margin-top: 3px; }
+        button { background: var(--rosa); color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 22px; font-size: 1rem; transition: opacity 0.2s; }
+        button:hover { opacity: 0.88; }
+        .terminos { margin-top: 14px; font-size: 0.8em; color: #444; background: var(--rosa-claro); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--lila); }
+        #mensaje { margin-top: 15px; text-align: center; font-size: 0.9em; font-weight: bold; line-height: 1.4; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="logo">
+        <img src="logo.jpg" alt="Logo" onerror="this.style.display='none'">
+        <div class="app-name">🛍️ quiendamas</div>
+    </div>
+    <h2>Completar perfil</h2>
+    <p class="subtitulo">Necesitamos algunos datos más para activar tu cuenta.</p>
+
+    <div id="form-perfil">
+        <label>Apodo / Nombre de usuario:</label>
+        <input type="text" id="apodo" placeholder="Ej: juanito99">
+        <p class="hint">Solo letras, números y guiones bajos. Sin espacios.</p>
+
+        <label>CUIL:</label>
+        <input type="text" id="cuil" placeholder="Ej: 27123456789" maxlength="11" oninput="this.value=this.value.replace(/\D/g,'')">
+        <p class="hint">11 dígitos sin guiones.</p>
+
+        <label>Teléfono:</label>
+        <input type="tel" id="telefono" placeholder="Ej: 2944 123456" maxlength="13" oninput="formatearTelefono(this)">
+        <p class="hint">Sin el 0 ni el 15. Ej: 2944 123456</p>
+
+        <label>Dirección:</label>
+        <input type="text" id="direccion" placeholder="Calle y número">
+
+        <label>Provincia:</label>
+        <select id="provincia">
+            <option value="">Seleccioná tu provincia</option>
+            <option value="Río Negro">Río Negro</option>
+            <option value="Neuquén">Neuquén</option>
+            <option value="Chubut">Chubut</option>
+            <option value="Buenos Aires">Buenos Aires</option>
+            <option value="Ciudad Autónoma de Buenos Aires">Ciudad Autónoma de Buenos Aires</option>
+            <option value="Catamarca">Catamarca</option>
+            <option value="Chaco">Chaco</option>
+            <option value="Córdoba">Córdoba</option>
+            <option value="Corrientes">Corrientes</option>
+            <option value="Entre Ríos">Entre Ríos</option>
+            <option value="Formosa">Formosa</option>
+            <option value="Jujuy">Jujuy</option>
+            <option value="La Pampa">La Pampa</option>
+            <option value="La Rioja">La Rioja</option>
+            <option value="Mendoza">Mendoza</option>
+            <option value="Misiones">Misiones</option>
+            <option value="Salta">Salta</option>
+            <option value="San Juan">San Juan</option>
+            <option value="San Luis">San Luis</option>
+            <option value="Santa Cruz">Santa Cruz</option>
+            <option value="Santa Fe">Santa Fe</option>
+            <option value="Santiago del Estero">Santiago del Estero</option>
+            <option value="Tierra del Fuego">Tierra del Fuego</option>
+            <option value="Tucumán">Tucumán</option>
+        </select>
+
+        <label>Ciudad / Localidad:</label>
+        <input type="text" id="ciudad" placeholder="Ej: Bariloche, Rosario...">
+
+        <div class="terminos">
+            <input type="checkbox" id="acepto_terminos" style="width:auto;">
+            Acepto los <a href="terminos.html" target="_blank" style="color:var(--rosa);font-weight:bold;">Términos y Condiciones</a> de Quiéndamas.
+        </div>
+        <div class="terminos" style="margin-top:8px;">
+            <input type="checkbox" id="acepto_mayoria" style="width:auto;">
+            Declaro ser mayor de 18 años.
+        </div>
+
+        <button onclick="guardarPerfil()">Guardar y entrar →</button>
+    </div>
+
+    <div id="mensaje"></div>
+</div>
+
+<script>
+    function formatearTelefono(input) {
+        let digits = input.value.replace(/\D/g, '').slice(0, 10);
+        input.value = digits.length > 4 ? digits.slice(0, 4) + ' ' + digits.slice(4) : digits;
+    }
+
+    function validarCuil(cuil) {
+        if (!/^\d{11}$/.test(cuil)) return false;
+        const serie = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
+        const suma = serie.reduce((acc, f, i) => acc + f * parseInt(cuil[i]), 0);
+        const resto = suma % 11;
+        const v = resto === 0 ? 0 : resto === 1 ? 9 : 11 - resto;
+        return v === parseInt(cuil[10]);
+    }
+
+    async function guardarPerfil() {
+        const msg = document.getElementById('mensaje');
+        const apodo = document.getElementById('apodo').value.trim();
+        const cuil = document.getElementById('cuil').value;
+        const tel = document.getElementById('telefono').value;
+        const dir = document.getElementById('direccion').value.trim();
+        const prov = document.getElementById('provincia').value;
+        const ciudad = document.getElementById('ciudad').value.trim();
+        const acepto = document.getElementById('acepto_terminos').checked;
+        const mayoria = document.getElementById('acepto_mayoria').checked;
+
+        if (!apodo || !cuil || !tel || !dir || !prov || !ciudad || !acepto || !mayoria) {
+            msg.style.color = 'red';
+            msg.innerText = !mayoria && apodo && cuil && dir && tel && ciudad && acepto
+                ? '⚠️ Debés declarar ser mayor de 18 años.'
+                : '⚠️ Todos los campos son obligatorios y debés aceptar los términos.';
+            return;
+        }
+
+        if (!/^[a-zA-Z0-9_]+$/.test(apodo)) {
+            msg.style.color = 'red'; msg.innerText = '⚠️ El apodo solo puede tener letras, números y guiones bajos.'; return;
+        }
+
+        if (!validarCuil(cuil)) {
+            msg.style.color = 'red'; msg.innerText = '⚠️ El CUIL ingresado no es válido.'; return;
+        }
+
+        const digits = tel.replace(/\D/g, '');
+        if (digits.length < 8 || digits.length > 10) {
+            msg.style.color = 'red'; msg.innerText = '⚠️ El teléfono debe tener entre 8 y 10 dígitos.'; return;
+        }
+
+        msg.style.color = 'blue'; msg.innerText = '⏳ Guardando...';
+
+        const { data: { session } } = await _supabase.auth.getSession();
+        if (!session) { window.location.href = 'login.html'; return; }
+
+        // Verificar apodo único
+        const { data: apodoExistente } = await _supabase.from('perfiles').select('id').eq('apodo', apodo).neq('id', session.user.id).maybeSingle();
+        if (apodoExistente) {
+            msg.style.color = 'red'; msg.innerText = '❌ Ese apodo ya está en uso. Elegí otro.'; return;
+        }
+
+        // Verificar CUIL único
+        const { data: cuilExistente } = await _supabase.from('perfiles').select('id').eq('cuil', cuil).neq('id', session.user.id).maybeSingle();
+        if (cuilExistente) {
+            msg.style.color = 'red'; msg.innerText = '❌ Ese CUIL ya está registrado.'; return;
+        }
+
+        const { error } = await _supabase.from('perfiles').update({
+            apodo, cuil, telefono: tel, direccion: dir, provincia: prov, ciudad
+        }).eq('id', session.user.id);
+
+        if (error) { msg.style.color = 'red'; msg.innerText = '❌ Error al guardar. Intentá de nuevo.'; return; }
+
+        msg.style.color = 'green'; msg.innerText = '✅ ¡Perfil completado! Entrando...';
+        setTimeout(() => window.location.href = 'vidriera.html', 1200);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+        const { data: { session } } = await _supabase.auth.getSession();
+        if (!session) { window.location.href = 'login.html'; return; }
+
+        // Pre-cargar apodo ya generado
+        const { data: perfil } = await _supabase.from('perfiles').select('apodo').eq('id', session.user.id).maybeSingle();
+        if (perfil?.apodo) document.getElementById('apodo').value = perfil.apodo;
+    });
+</script>
+<script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+</script>
+</body>
+</html>
