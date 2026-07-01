@@ -140,6 +140,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </div>
 
+  <!-- PERFILES INCOMPLETOS (sin CUIL) -->
+  <div id="seccion-incompletos" style="background:white;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,0.07);padding:20px 24px;margin-bottom:20px;border-left:5px solid #ff9800;display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+      <h2 style="font-size:1em;color:#e65100;margin:0;display:flex;align-items:center;gap:8px;">
+        👤 Usuarios con perfil incompleto
+        <span id="badge-incompletos" style="background:#e53935;color:white;font-size:0.75em;font-weight:700;padding:2px 8px;border-radius:20px;">0</span>
+      </h2>
+      <button onclick="enviarRecordatorioTodos()" style="font-size:0.78em;background:#ff9800;color:white;border:none;padding:6px 14px;border-radius:20px;cursor:pointer;font-weight:700;">📧 Mandar recordatorio a todos</button>
+    </div>
+    <div id="lista-incompletos"></div>
+  </div>
+
   <!-- PAGOS PRESENCIALES PENDIENTES -->
   <div id="seccion-pagos-pendientes" class="pagos-seccion" style="display:none;">
     <h2>💳 Pagos por transferencia a confirmar <span id="badge-pagos-pendientes" class="badge-count">0</span></h2>
@@ -216,9 +228,11 @@ async function cargarPagosPendientes() {
       .order('created_at', { ascending: false }),
   ]);
 
+  const subastasFiltradas = (subastasPend || []).filter(a => a.ganador_id !== a.perfil_id);
+
   const todos = [
     ...(ventasPend || []).map(a => ({ ...a, comprador_uid: a.comprador_id, monto: a.precio_base })),
-    ...(subastasPend || []).map(a => ({ ...a, comprador_uid: a.ganador_id, monto: a.precio_actual })),
+    ...subastasFiltradas.map(a => ({ ...a, comprador_uid: a.ganador_id, monto: a.precio_actual })),
   ];
 
   const allIds = [...new Set(todos.flatMap(a => [a.comprador_uid, a.perfil_id]).filter(Boolean))];
@@ -276,6 +290,47 @@ async function confirmarPago(articuloId, btn) {
   }
 }
 
+async function cargarPerfilesIncompletos() {
+  const { data: perfiles } = await _supabase
+    .from('perfiles')
+    .select('id, nombre_completo, apodo, email, created_at')
+    .or('cuil.is.null,cuil.eq.')
+    .order('created_at', { ascending: false });
+
+  const lista = document.getElementById('lista-incompletos');
+  const seccion = document.getElementById('seccion-incompletos');
+  const badge = document.getElementById('badge-incompletos');
+
+  if (!perfiles?.length) { seccion.style.display = 'none'; return; }
+
+  seccion.style.display = 'block';
+  badge.innerText = perfiles.length;
+
+  lista.innerHTML = perfiles.map(p => {
+    const nombre = escapeHtml(p.nombre_completo || p.apodo || '—');
+    const apodo = escapeHtml(p.apodo || '—');
+    const email = p.email || '';
+    const fecha = new Date(p.created_at).toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'2-digit' });
+    return `<div style="background:#fff8f0;border:1px solid #ffe0b2;border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
+      <div style="flex:1;min-width:180px;">
+        <div style="font-weight:700;font-size:0.88em;color:#333;">${nombre} <span style="color:#999;font-weight:400;">@${apodo}</span></div>
+        <div style="font-size:0.76em;color:#888;margin-top:3px;">📅 ${fecha} · ${email ? `📧 ${escapeHtml(email)}` : '<span style="color:#ccc;">sin email guardado</span>'}</div>
+      </div>
+      ${email
+        ? `<a href="mailto:${escapeHtml(email)}?subject=Completá tu perfil en Quiéndamas&body=¡Hola ${escapeHtml(p.nombre_completo || p.apodo || '')}!%0A%0ATe registraste en Quiéndamas pero todavía no completaste tu perfil.%0AIngresá acá para completarlo: https://quiendamasapp.com.ar/completar-perfil.html%0A%0A¡Gracias!" style="font-size:0.78em;background:#ff9800;color:white;border:none;padding:6px 14px;border-radius:20px;text-decoration:none;font-weight:700;white-space:nowrap;">📧 Escribirle</a>`
+        : `<span style="font-size:0.75em;color:#bbb;">Sin email</span>`
+      }
+    </div>`;
+  }).join('');
+}
+
+function enviarRecordatorioTodos() {
+  const links = document.querySelectorAll('#lista-incompletos a[href^="mailto:"]');
+  if (!links.length) { alert('No hay usuarios con email para contactar.'); return; }
+  const emails = [...links].map(a => a.href.split('mailto:')[1].split('?')[0]).join(',');
+  window.location.href = `mailto:${emails}?subject=Completá tu perfil en Quiéndamas&body=¡Hola!%0A%0ATe registraste en Quiéndamas pero todavía no completaste tu perfil.%0AIngresá acá: https://quiendamasapp.com.ar/completar-perfil.html%0A%0A¡Gracias!`;
+}
+
 async function init() {
   const { data: { session } } = await _supabase.auth.getSession();
   if (!session || session.user.email !== ADMIN_EMAIL) {
@@ -283,7 +338,7 @@ async function init() {
     return;
   }
   document.getElementById('contenido').style.display = 'block';
-  await Promise.all([cargarPagosPendientes(), cargarVentas()]);
+  await Promise.all([cargarPerfilesIncompletos(), cargarPagosPendientes(), cargarVentas()]);
 }
 
 let _perfilesMap = {};
