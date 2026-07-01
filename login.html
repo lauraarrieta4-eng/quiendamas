@@ -280,8 +280,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         async function manejarCallbackGoogle(user) {
             try {
-                const { data: perfil } = await _supabase.from('perfiles').select('id').eq('id', user.id).maybeSingle();
+                const { data: perfil } = await _supabase.from('perfiles').select('id, cuil').eq('id', user.id).maybeSingle();
                 if (!perfil) {
+                    // Usuario nuevo de Google: crear perfil mínimo y pedir que complete datos
                     const meta = user.user_metadata;
                     const nombre = meta.full_name || meta.name || user.email?.split('@')[0] || 'Usuario';
                     const apodo = generarApodo(nombre);
@@ -294,6 +295,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         telefono: '',
                         ciudad: ''
                     }]);
+                    window.location.href = 'completar-perfil.html';
+                    return;
+                }
+                // Si ya tiene perfil pero le falta el CUIL (entró con Google antes sin completar)
+                if (!perfil.cuil) {
+                    window.location.href = 'completar-perfil.html';
+                    return;
                 }
             } catch(e) {}
             window.location.href = 'vidriera.html';
@@ -306,29 +314,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 return;
             }
 
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('code')) {
-                const msg = document.getElementById('mensaje');
-                msg.style.color = 'blue';
-                msg.innerText = '⏳ Completando inicio de sesión con Google...';
-
-                let procesado = false;
-
-                // Supabase v2 procesa el código automáticamente; esperamos el evento
-                _supabase.auth.onAuthStateChange(async (event, session) => {
-                    if (event === 'SIGNED_IN' && session && !procesado) {
-                        procesado = true;
-                        await manejarCallbackGoogle(session.user);
-                    }
-                });
-
-                // Por si ya está procesado antes del listener
-                const { data: { session } } = await _supabase.auth.getSession();
-                if (session && !procesado) {
-                    procesado = true;
-                    await manejarCallbackGoogle(session.user);
-                }
+            // Si hay sesión activa (post-OAuth o usuario ya logueado), ir a vidriera
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (session) {
+                await manejarCallbackGoogle(session.user);
+                return;
             }
+
+            // Escuchar sign-in por OAuth (hash o code)
+            _supabase.auth.onAuthStateChange(async (event, sess) => {
+                if (event === 'SIGNED_IN' && sess) {
+                    await manejarCallbackGoogle(sess.user);
+                }
+            });
         });
 
         function cambiarModo() {
