@@ -1537,7 +1537,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 ${btnCalificar}
                 ${esMia ? `<div class="acciones-sec">
                     ${art.tipo_venta !== 'subasta' ? `<button class="btn-pausar ${art.activo ? '' : 'reactivar'}" id="btn-pausa-${art.id}" onclick="pausarPublicacion('${art.id}', ${art.activo})">${art.activo ? '⏸' : '▶️'} <span class="btn-txt">${art.activo ? 'Pausar' : 'Reactivar'}</span></button>` : ''}
-                    ${esStock ? `<button class="btn-pausar" style="border-color:#1565c0;color:#1565c0;" onclick="sumarStock('${art.id}', ${art.stock || 0})">📦+ <span class="btn-txt">Stock</span></button>` : ''}
+                    ${esStock ? `<button class="btn-pausar" style="border-color:#1565c0;color:#1565c0;" onclick="sumarStock('${art.id}', ${art.stock || 0})">📦+ <span class="btn-txt">Sumar</span></button>` : ''}
+                    ${esStock ? `<button class="btn-pausar" style="border-color:#e53935;color:#e53935;" onclick="restarStock('${art.id}', ${art.stock || 0})">📦− <span class="btn-txt">Restar</span></button>` : ''}
                     <button class="btn-eliminar" onclick="eliminarPublicacion('${art.id}')">🗑️ <span class="btn-txt">Eliminar</span></button>
                 </div>` : ''}
             `;
@@ -1827,6 +1828,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             if (isNaN(cantidad) || cantidad <= 0) { alert('⚠️ Ingresá un número mayor a 0.'); return; }
             const nuevoStock = stockActual + cantidad;
             const { error } = await _supabase.from('articulos').update({ stock: nuevoStock, activo: true }).eq('id', id);
+            if (error) { alert('❌ Error: ' + error.message); return; }
+            alert(`✅ Stock actualizado: ahora tenés ${nuevoStock} unidad${nuevoStock !== 1 ? 'es' : ''}.`);
+            cargarArticulos(categoriaActual);
+        }
+
+        async function restarStock(id, stockActual) {
+            const input = prompt(`Stock actual: ${stockActual} unidad${stockActual !== 1 ? 'es' : ''}.\n¿Cuántas unidades querés restar?`);
+            if (input === null) return;
+            const cantidad = parseInt(input);
+            if (isNaN(cantidad) || cantidad <= 0) { alert('⚠️ Ingresá un número mayor a 0.'); return; }
+            const nuevoStock = Math.max(0, stockActual - cantidad);
+            if (cantidad > stockActual && !confirm(`Eso dejaría el stock en 0. ¿Confirmás?`)) return;
+            const { error } = await _supabase.from('articulos').update({ stock: nuevoStock }).eq('id', id);
             if (error) { alert('❌ Error: ' + error.message); return; }
             alert(`✅ Stock actualizado: ahora tenés ${nuevoStock} unidad${nuevoStock !== 1 ? 'es' : ''}.`);
             cargarArticulos(categoriaActual);
