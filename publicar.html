@@ -231,8 +231,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         const { data: { user } } = await _supabase.auth.getUser();
         if (!user) { alert("⚠️ Tenés que iniciar sesión para publicar."); window.location.href = 'login.html'; return; }
 
-        const { data: perfil } = await _supabase.from('perfiles').select('mp_access_token').eq('id', user.id).maybeSingle();
-        if (!perfil?.mp_access_token) {
+        const { data: perfil } = await _supabase.from('perfiles').select('mp_conectado').eq('id', user.id).maybeSingle();
+        if (!perfil?.mp_conectado) {
             const chk = document.getElementById('acepta_online');
             const label = chk.closest('label');
             chk.checked = false;
@@ -698,8 +698,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 return;
             }
             if (aceptaOnline) {
-                const { data: perfil } = await _supabase.from('perfiles').select('mp_access_token').eq('id', user.id).maybeSingle();
-                if (!perfil?.mp_access_token) {
+                const { data: perfil } = await _supabase.from('perfiles').select('mp_conectado').eq('id', user.id).maybeSingle();
+                if (!perfil?.mp_conectado) {
                     msgDiv.style.color = "red";
                     msgDiv.innerText = "❌ Para aceptar pagos online necesitás conectar tu cuenta de Mercado Pago desde Mi Perfil.";
                     return;
