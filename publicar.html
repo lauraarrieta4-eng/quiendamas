@@ -644,7 +644,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             return;
         }
         const esInfo = !!document.getElementById('link-descarga')?.value.trim();
-        if (modoVenta === 'venta' && !esInfo) {
+        // El stock se exige SOLO si el campo esta a la vista. Antes esta condicion
+        // repetia a mano la lista de excepciones y se habia desincronizado: la
+        // pagina escondia el campo para servicios y avisos, pero la validacion lo
+        // seguia pidiendo, y no habia donde completarlo.
+        const pideStock = document.getElementById('bloque-stock').style.display !== 'none';
+        if (modoVenta === 'venta' && !esInfo && pideStock) {
             const stockVal = parseInt(document.getElementById('stock').value);
             if (!stockVal || stockVal < 1) {
                 msgDiv.style.color = "red";
@@ -742,5 +747,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         }
     }
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"f7fd32a29c1e42d1b5cde0a897924f7c","r":1,"spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
