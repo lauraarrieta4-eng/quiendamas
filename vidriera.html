@@ -1151,14 +1151,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     .range(0, _PAGE_SIZE - 1);
                 if (error) throw error;
 
-                // También traer publicaciones pausadas propias
-                let pausadas = [];
-                if (usuarioActualId) {
-                    const { data: dp } = await _supabase.from('articulos').select('*')
-                        .eq('perfil_id', usuarioActualId).eq('activo', false).neq('tipo_venta', 'subasta').is('comprador_id', null).is('ganador_id', null)
-                        .order('created_at', { ascending: false });
-                    pausadas = dp || [];
-                }
+                // Las pausadas NO van en la pantalla principal: se manejan desde
+                // "mis publicaciones". La consulta que estaba acá nunca devolvía
+                // nada porque pedía `ganador_id is null` y todos los artículos
+                // tenían un ganador inventado por un valor por defecto de la
+                // tabla; al limpiarlo, empezaron a aparecer mezcladas con las
+                // activas, incluidas las que la dueña había dado de baja.
+                const pausadas = [];
 
                 const lista = document.getElementById('articulos-lista');
                 lista.innerHTML = '';
@@ -2932,6 +2931,7 @@ async function eliminarPublicacion(id) {
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"f7fd32a29c1e42d1b5cde0a897924f7c","r":1,"spa":2}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"f7fd32a29c1e42d1b5cde0a897924f7c","r":1,"spa":2}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"f7fd32a29c1e42d1b5cde0a897924f7c","r":1,"spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
