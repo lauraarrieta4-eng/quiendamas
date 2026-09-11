@@ -339,7 +339,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <b>Billetera:</b> Ualá
             </div>
             <div class="modal-aviso">
-                📌 Una vez realizada la transferencia, verificamos el pago y liberamos los datos del comprador en un plazo de hasta 24hs hábiles. Consultas: <b>quiendamas.app@gmail.com</b>
+                📌 Una vez realizada la transferencia, verificamos el pago y liberamos los datos del comprador en un plazo de hasta 24hs hábiles. Consultas: <b><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8bfafee2eee5efeae6eaf8a5eafbfbcbece6eae2e7a5e8e4e6">[email&#160;protected]</a></b>
             </div>
             <button class="btn-cerrar-modal" onclick="cerrarModalVendedor()">Cerrar</button>
         </div>
@@ -359,7 +359,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <b>Billetera:</b> Ualá
             </div>
             <div class="modal-aviso">
-                📌 Una vez realizada la transferencia, verificamos el pago y te enviamos los datos del comprador en hasta 24hs hábiles. Consultas: <b>quiendamas.app@gmail.com</b>
+                📌 Una vez realizada la transferencia, verificamos el pago y te enviamos los datos del comprador en hasta 24hs hábiles. Consultas: <b><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="59282c303c373d3834382a77382929193e34383035773a3634">[email&#160;protected]</a></b>
             </div>
             <button class="btn-cerrar-modal" onclick="cerrarModalVentaDirecta()">Cerrar</button>
         </div>
@@ -373,7 +373,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div style="background:#e8f5e9; border-radius:12px; padding:15px; margin:15px 0; font-size:0.92em; color:#333; line-height:1.7; text-align:left;">
                 ✅ Reservaste este artículo con éxito.<br>
                 ⏳ El vendedor recibirá una notificación y, una vez que abone la comisión de la plataforma, <b>se pondrá en contacto con vos</b> para coordinar la entrega.<br>
-                📧 Si tenés dudas escribinos a <b>quiendamas.app@gmail.com</b>
+                📧 Si tenés dudas escribinos a <b><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="60111509050e04010d01134e01101020070d01090c4e030f0d">[email&#160;protected]</a></b>
             </div>
             <button style="background:#43a047; margin-top:5px;" onclick="cerrarModalCompraOk()">¡Entendido!</button>
         </div>
@@ -646,7 +646,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <button id="btn-cargar-mas" onclick="cargarMasArticulos()" style="display:none;background:#43a047;color:white;border:none;border-radius:24px;padding:12px 32px;font-size:0.9em;font-weight:700;cursor:pointer;font-family:inherit;">Cargar más ↓</button>
     </div>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         function escapeHtml(str) {
             return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
         }
@@ -2573,7 +2573,7 @@ async function eliminarPublicacion(id) {
             document.getElementById('modal-miperfil').classList.add('activo');
             document.getElementById('miperfil-msg').innerText = '';
             const { data: { user } } = await _supabase.auth.getUser();
-            const { data: perfil } = await _supabase.from('perfiles').select('*').eq('id', usuarioActualId).maybeSingle();
+            const { data: perfil } = await _supabase.from('perfiles').select('nombre_completo, apodo, cuil, telefono, direccion, avatar_url, mp_conectado, ciudad, provincia, verificado, tipo_cuenta, nombre_comercio, ventas_count, banner_url, descripcion_comercio, horario_atencion, tiene_delivery, costo_delivery, tiempo_retiro, avatar_url').eq('id', usuarioActualId).maybeSingle();
             if (perfil) {
                 document.getElementById('miperfil-nombre').innerText = perfil.nombre_completo || 'Usuario';
                 document.getElementById('miperfil-apodo').value = perfil.apodo || '';
@@ -2835,7 +2835,7 @@ async function eliminarPublicacion(id) {
             Dinahuapi · Bariloche · Patagonia Argentina
         </div>
         <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;">
-            <a href="mailto:quiendamasapp@gmail.com" style="
+            <a href="/cdn-cgi/l/email-protection#0372766a666d67626e627062737343646e626a6f2d606c6e" style="
                 display: flex; align-items: center; gap: 7px;
                 background: rgba(255,255,255,0.15);
                 color: white; text-decoration: none;
@@ -2843,7 +2843,7 @@ async function eliminarPublicacion(id) {
                 font-size: 0.83em; font-weight: bold;
                 transition: background 0.2s;
             " onmouseover="this.style.background='rgba(255,255,255,0.28)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
-                ✉️ quiendamasapp@gmail.com
+                ✉️ <span class="__cf_email__" data-cfemail="71000418141f15101c100210010131161c10181d5f121e1c">[email&#160;protected]</span>
             </a>
             <a href="https://wa.me/5492944800443" target="_blank" style="
                 display: flex; align-items: center; gap: 7px;
@@ -2916,5 +2916,6 @@ async function eliminarPublicacion(id) {
   </div>
 </div>
 
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"f7fd32a29c1e42d1b5cde0a897924f7c","r":1,"spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>

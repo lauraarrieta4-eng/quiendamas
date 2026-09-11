@@ -277,7 +277,7 @@ async function confirmarPago(articuloId, btn) {
   if (!confirm('¿Confirmar la transferencia? El vendedor va a poder ver los datos del comprador.')) return;
   btn.disabled = true;
   btn.innerText = '⏳...';
-  const { error } = await _supabase.from('articulos').update({ pago_confirmado: true }).eq('id', articuloId);
+  const { error } = await _supabase.rpc('confirmar_pago', { articulo: articuloId });
   if (error) {
     alert('❌ Error: ' + error.message);
     btn.disabled = false;
@@ -526,5 +526,6 @@ async function limpiarSubastasViejas(btn) {
 
 init();
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"f7fd32a29c1e42d1b5cde0a897924f7c","r":1,"spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
