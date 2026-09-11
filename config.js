@@ -4,4 +4,4 @@ const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const _supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
 
 const COMISION_PRESENCIAL_PCT = 4;
-const COMISION_ONLINE_PCT = 6;
+const COMISION_ONLINE_PCT = 4;
